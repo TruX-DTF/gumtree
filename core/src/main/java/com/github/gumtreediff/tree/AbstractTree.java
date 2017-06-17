@@ -283,7 +283,26 @@ public abstract class AbstractTree implements ITree {
             return ctx.getTypeLabel(this);
         }
     }
-
+    
+    @Override
+    public String toTreeString_jihun(TreeContext ctx){
+    	StringBuffer b = new StringBuffer();
+        for (ITree t : TreeUtils.preOrder(this)){
+        	if(!ctx.getTypeLabel(t).contains("Literal"))
+        		b.append(t.toPrettyString(ctx) + "\t");
+        }
+        return b.toString();
+    }
+    
+    /*@Override
+    public String toPrettyString(TreeContext ctx) {
+        if (hasLabel()) {
+            return getType()+ ": " + getLabel();
+        } else {
+            return getLabel();
+        }
+    }*/
+    
     public static class FakeTree extends AbstractTree {
         public FakeTree(ITree... trees) {
             children = new ArrayList<ITree>(trees.length);

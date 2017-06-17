@@ -1,6 +1,7 @@
 package com.github.gumtreediff.actions.model;
 
 import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.TreeContext;
 import com.github.gumtreediff.tree.ITree;
 
 public abstract class Action {
@@ -23,4 +24,9 @@ public abstract class Action {
 
     public abstract String toString();
 
+    public String toString_jihun(TreeContext ctx){
+//    	return getName() + " " + node.toPrettyString(ctx);
+    	return getName() + " " + node.toTreeString_jihun(ctx);
+//    	return getName() + " " + node.toTreeString() + " to " + parent.toShortString() + " at " + pos;
+    }
 }

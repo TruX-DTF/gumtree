@@ -169,6 +169,8 @@ public interface ITree {
     public String toTreeString();
 
     public abstract String toPrettyString(TreeContext ctx);
+    
+    public String toTreeString_jihun(TreeContext ctx);
 
     interface TreeInfo {
     }

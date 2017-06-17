@@ -26,5 +26,7 @@ public abstract class Addition extends Action {
     public String toString() {
         return getName() + " " + node.toTreeString() + " to " + parent.toShortString() + " at " + pos;
     }
+    
+    
 
 }

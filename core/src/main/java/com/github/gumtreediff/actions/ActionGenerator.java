@@ -136,7 +136,6 @@ public class ActionGenerator {
             }
         }
 
-
         //FIXME should ensure isomorphism.
     }
 
