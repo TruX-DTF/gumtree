@@ -1,17 +1,36 @@
+/*
+ * This file is part of GumTree.
+ *
+ * GumTree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GumTree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
+ * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ */
+
 package com.github.gumtreediff.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.github.gumtreediff.io.TreeIoUtils;
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.TreeContext;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.ListIterator;
 
-import com.github.gumtreediff.io.TreeIoUtils;
-import org.junit.Test;
+import java.io.ByteArrayOutputStream;
 
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
+import static org.junit.Assert.*;
 
 public class TestTreeIoUtils {
 
@@ -32,11 +51,13 @@ public class TestTreeIoUtils {
         // Refresh metrics is called because it is automatically called in fromXML
         tc.validate();
 
-        TreeIoUtils.toXml(tc).writeTo("target/test-classes/test-serialize.xml");
-        TreeContext tca = TreeIoUtils.fromXmlFile("target/test-classes/test-serialize.xml");
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        TreeIoUtils.toXml(tc).writeTo(bos);
+        TreeContext tca = TreeIoUtils.fromXml().generateFromString(bos.toString());
         ITree ca = tca.getRoot();
 
-        assertTrue(a.isClone(ca));
+        assertTrue(a.isIsomorphicTo(ca));
         assertTrue(ca.getType() == 0);
         assertTrue(tc.getTypeLabel(ca).equals("type0"));
         assertTrue(ca.getLabel().equals("a"));

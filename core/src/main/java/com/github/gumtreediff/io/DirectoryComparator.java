@@ -1,6 +1,26 @@
+/*
+ * This file is part of GumTree.
+ *
+ * GumTree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GumTree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
+ * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ */
+
 package com.github.gumtreediff.io;
 
-import com.github.gumtreediff.tree.Pair;
+import com.github.gumtreediff.utils.Pair;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -117,25 +137,16 @@ public class DirectoryComparator {
         long l2 = Files.size(f2.toPath());
         if (l1 != l2) return true;
         else {
-            FileInputStream fis1 = new FileInputStream(f1);
-            DataInputStream dis1 = new DataInputStream(fis1);
-            FileInputStream fis2 = new FileInputStream(f2);
-            DataInputStream dis2 = new DataInputStream(fis2);
-
-            int c1, c2;
-            while ((c1 = dis1.read()) != -1) {
-                c2 = dis2.read();
-                if (c1 != c2) {
-                    dis1.close();
-                    dis2.close();
-                    return true;
+            try (DataInputStream dis1 = new DataInputStream(new FileInputStream(f1));
+                 DataInputStream dis2 = new DataInputStream(new FileInputStream(f2))) {
+                int c1, c2;
+                while ((c1 = dis1.read()) != -1) {
+                    c2 = dis2.read();
+                    if (c1 != c2)
+                        return true;
                 }
+                return false;
             }
-
-            dis1.close();
-            dis2.close();
-
-            return false;
         }
     }
 

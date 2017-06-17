@@ -14,7 +14,6 @@ import com.github.gumtreediff.tree.TreeContext;
 public class Test {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		String a = "if (!a){}";
 		String b = "if (isTrue(a)){}";
 		ArrayList<String> ret = compareTwoFilesWithGumTree(a, b);
@@ -53,7 +52,7 @@ public class Test {
 			List<Action> actions = ag.getActions();
 
 			for(Action ac : actions){
-				String s = rootTokenOfAction(ac.toString_jihun(tc1));
+				String s = rootTokenOfAction(ac.toString_Kui(tc1));
 				if (!"".equals(s)) ret.add(s);
 			}
 			
@@ -75,7 +74,9 @@ public class Test {
 				if (j > 0)	 {
 					String s = action.substring(j);
 					return subAction.trim() + " " + s.substring(0, s.indexOf("\t"));
-				} else return "";
+				} else {
+					return action;
+				}
 				
 			}
 		} else {

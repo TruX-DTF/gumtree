@@ -1,3 +1,23 @@
+/*
+ * This file is part of GumTree.
+ *
+ * GumTree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GumTree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
+ * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ */
+
 package com.github.gumtreediff.test;
 
 import static org.junit.Assert.*;
@@ -64,18 +84,6 @@ public class TestTreeUtils {
         assertEquals(2, root.getChildren().get(1).getId());
         assertEquals(3, root.getChildren().get(0).getChildren().get(0).getId());
         assertEquals(4, root.getChildren().get(0).getChildren().get(1).getId());
-    }
-
-    @Test
-    public void testRemoveCompletelyMappedDescendants() {
-        ITree dst = TreeLoader.getDummyDst();
-        dst.getChildren().get(0).setMatched(true);
-        dst.getChildren().get(0).getChildren().get(0).getChildren().get(0).setMatched(true);
-        dst.getChildren().get(1).setMatched(true);
-        dst.getChildren().get(1).getChildren().get(0).setMatched(true);
-        dst = TreeUtils.removeCompletelyMapped(dst);
-        TreeUtils.computeSize(dst);
-        assertTrue(dst.getSize() == 5);
     }
 
     @Test

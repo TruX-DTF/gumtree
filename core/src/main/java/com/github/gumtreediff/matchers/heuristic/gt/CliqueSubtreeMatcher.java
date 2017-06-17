@@ -1,28 +1,47 @@
+/*
+ * This file is part of GumTree.
+ *
+ * GumTree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GumTree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
+ * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ */
+
 package com.github.gumtreediff.matchers.heuristic.gt;
 
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.MultiMappingStore;
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.Pair;
+import com.github.gumtreediff.utils.Pair;
 import com.github.gumtreediff.matchers.Mapping;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.*;
 
-public class CliqueSubtreeMatcher extends SubtreeMatcher {
+public class CliqueSubtreeMatcher extends AbstractSubtreeMatcher {
 
     public CliqueSubtreeMatcher(ITree src, ITree dst, MappingStore store) {
         super(src, dst, store);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-    public void filterMappings(MultiMappingStore mmappings) {
+    @Override
+    public void filterMappings(MultiMappingStore multiMappings) {
         TIntObjectHashMap<Pair<List<ITree>, List<ITree>>> cliques = new TIntObjectHashMap<>();
-        for (Mapping m : mmappings) {
+        for (Mapping m : multiMappings) {
             int hash = m.getFirst().getHash();
             if (!cliques.containsKey(hash))
-                cliques.put(hash, new Pair(new ArrayList<ITree>(), new ArrayList<ITree>()));
+                cliques.put(hash, new Pair<>(new ArrayList<>(), new ArrayList<>()));
             cliques.get(hash).getFirst().add(m.getFirst());
             cliques.get(hash).getSecond().add(m.getSecond());
         }
@@ -32,7 +51,7 @@ public class CliqueSubtreeMatcher extends SubtreeMatcher {
         for (int hash : cliques.keys()) {
             Pair<List<ITree>, List<ITree>> clique = cliques.get(hash);
             if (clique.getFirst().size() == 1 && clique.getSecond().size() == 1) {
-                addFullMapping(clique.getFirst().get(0), clique.getSecond().get(0));
+                addMappingRecursively(clique.getFirst().get(0), clique.getSecond().get(0));
                 cliques.remove(hash);
             } else
                 ccliques.add(clique);
@@ -45,14 +64,7 @@ public class CliqueSubtreeMatcher extends SubtreeMatcher {
             Collections.sort(cliqueAsMappings, new MappingComparator(cliqueAsMappings));
             Set<ITree> srcIgnored = new HashSet<>();
             Set<ITree> dstIgnored = new HashSet<>();
-            while (cliqueAsMappings.size() > 0) {
-                Mapping mapping = cliqueAsMappings.remove(0);
-                if (!(srcIgnored.contains(mapping.getFirst()) || dstIgnored.contains(mapping.getSecond()))) {
-                    addFullMapping(mapping.getFirst(), mapping.getSecond());
-                    srcIgnored.add(mapping.getFirst());
-                    dstIgnored.add(mapping.getSecond());
-                }
-            }
+            retainBestMapping(cliqueAsMappings, srcIgnored, dstIgnored);
         }
     }
 

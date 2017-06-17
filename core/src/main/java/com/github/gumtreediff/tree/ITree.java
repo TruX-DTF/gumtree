@@ -1,177 +1,237 @@
+/*
+ * This file is part of GumTree.
+ *
+ * GumTree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GumTree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
+ * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ */
+
 package com.github.gumtreediff.tree;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
+/**
+ * Interface to represent abstract syntax trees.
+ */
 public interface ITree {
 
-    // Begin constants
-    public static final String OPEN_SYMBOL = "[(";
-    public static final String CLOSE_SYMBOL = ")]";
-    public static final String SEPARATE_SYMBOL = "@@";
-    public static final int NO_ID = Integer.MIN_VALUE;
-    public static final String NO_LABEL = "";
-    public static final int NO_VALUE = -1;
+    String OPEN_SYMBOL = "[(";
+    String CLOSE_SYMBOL = ")]";
+    String SEPARATE_SYMBOL = "@@";
+
+    int NO_ID = Integer.MIN_VALUE;
+
+    String NO_LABEL = "";
+
+    int NO_VALUE = -1;
+
+    /**
+     * @see com.github.gumtreediff.tree.hash.HashGenerator
+     * @return a hash (probably unique) representing the tree
+     */
+    int getHash();
+
+    void setHash(int hash);
+
+    /**
+     * @return all the nodes contained in the tree, using a pre-order.
+     */
+    List<ITree> getTrees();
+
+    Iterable<ITree> preOrder();
+
+    Iterable<ITree> postOrder();
+
+    Iterable<ITree> breadthFirst();
 
     /**
      * Add the given tree as a child, and update its parent.
      */
-    public abstract void addChild(ITree t);
+    void addChild(ITree t);
 
     /**
-     * Indicate whether or not all the descendants of the trees are already mapped.
+     * Insert the given tree as the position-th child, and update its parent.
      */
-    public abstract boolean areDescendantsMatched();
+    void insertChild(ITree t, int position);
+
+    void setChildren(List<ITree> children);
+
+    /**
+     * @return the position of the child, or -1 if the given child is not in the children list.
+     */
+    int getChildPosition(ITree child);
+
+    /**
+     * @param position the child position, starting at 0
+     */
+    ITree getChild(int position);
+
+    List<ITree> getChildren();
+
+    /**
+     * @return a boolean indicating if the tree has at least one child or not
+     */
+    boolean isLeaf();
+
+    /**
+     * @return all the descendants (children, children of children, etc.) of the tree,
+     *     using a pre-order.
+     */
+    List<ITree> getDescendants();
+
+    /**
+     * Set the parent of this node. The parent won't have this node in its
+     * children list
+     */
+    void setParent(ITree parent);
+
+    /**
+     * Set the parent of this node. The parent will have this node in its
+     * children list, at the last position
+     */
+    void setParentAndUpdateChildren(ITree parent);
+
+    /**
+     * @return a boolean indicating if the tree has a parent or not
+     */
+    boolean isRoot();
+
+    ITree getParent();
+
+    /**
+     * @return the list of all parents of the node (parent, parent of parent, etc.)
+     */
+    List<ITree> getParents();
+
+    /**
+     * @return the position of the node in its parent children list
+     */
+    int positionInParent();
 
     /**
      * Make a deep copy of the tree.
+     * Deep copy of node however shares Metadata
      * @return a deep copy of the tree.
      */
-    public abstract ITree deepCopy();
+    ITree deepCopy();
 
     /**
-     * Returns the position of the given child in the tree.
-     * @return the position of the child, or -1 if the given child is not in the children list.
+     * @see TreeUtils#computeDepth(ITree)
+     * @return the depth of the tree, defined as the distance to the root
      */
-    public abstract int getChildPosition(ITree child);
+    int getDepth();
 
-    public abstract List<ITree> getChildren();
-
-    public abstract ITree getChild(int position);
-
-    public abstract String getChildrenLabels();
-
-    public abstract int getDepth();
+    void setDepth(int depth);
 
     /**
-     * Returns all the descendants of the tree, using a pre-order.
+     * @see TreeUtils#computeHeight(ITree)
+     * @return the height of the tree, defined as the maximal depth of its descendants.
      */
-    public abstract List<ITree> getDescendants();
+    int getHeight();
 
-    public abstract int getHash();
-
-    public abstract int getEndPos();
-
-    public abstract int getHeight();
-
-    public abstract int getId();
-
-    public abstract boolean hasLabel();
-
-    public abstract String getLabel();
-
-    public abstract int[] getLcPosEnd();
-
-    public abstract int[] getLcPosStart();
-
-    public abstract List<ITree> getLeaves();
-
-    public abstract int getLength();
-
-    public abstract ITree getParent();
+    void setHeight(int height);
 
     /**
-     * Returns all the parents of the tree.
+     * @see TreeUtils#numbering(Iterable)
+     * @see TreeUtils#preOrderNumbering(ITree)
+     * @see TreeUtils#postOrderNumbering(ITree)
+     * @see TreeUtils#breadthFirstNumbering(ITree)
+     * @return the number of the node
      */
-    public abstract List<ITree> getParents();
+    int getId();
 
-    public abstract int getPos();
+    void setId(int id);
 
-    public abstract String getShortLabel();
+    boolean hasLabel();
 
-    public abstract int getSize();
+    String getLabel();
 
-    public abstract Object getTmpData();
+    void setLabel(String label);
+
+    int getPos();
+
+    void setPos(int pos);
+
+    int getLength();
+
+    void setLength(int length);
 
     /**
-     * Return all the nodes contains in the tree, using a pre-order.
+     * @return the absolute character index where the tree ends
      */
-    public abstract List<ITree> getTrees();
-
-    public abstract int getType();
+    default int getEndPos()  {
+        return getPos() + getLength();
+    }
 
     /**
-     * Indicates if the two trees are isomorphics.
+     * @see TreeUtils#computeSize(ITree)
+     * @return the number of all nodes contained in the tree
      */
-    public abstract boolean isClone(ITree tree);
+    int getSize();
+
+    void setSize(int size);
+
+    int getType();
+
+    void setType(int type);
 
     /**
-     * Indicate if the trees have the same type.
+     * @return a boolean indicating if the trees have the same type.
      */
-    public abstract boolean isCompatible(ITree t);
+    boolean hasSameType(ITree t);
 
     /**
-     * Indicate whether or not the tree has children.
+     * @see #toStaticHashString()
+     * @see #getHash()
+     * @return a boolean indicating if the two trees are isomorphics, defined has
+     *     having the same hash and the same hash serialization.
      */
-    public abstract boolean isLeaf();
-
-    /**
-     * Indicate whether or not the tree is mappable to the given tree.
-     * @return true if both trees are not mapped and if the trees have the same type, false either.
-     */
-    public abstract boolean isMatchable(ITree t);
-
-    public abstract boolean isMatched();
-
-    public abstract boolean isRoot();
+    boolean isIsomorphicTo(ITree tree);
 
     /**
      * Indicate whether or not the tree is similar to the given tree.
      * @return true if they are compatible and have same label, false either
      */
-    public abstract boolean isSimilar(ITree t);
+    boolean hasSameTypeAndLabel(ITree t);
 
-    public abstract Iterable<ITree> preOrder();
+    /**
+     * Refresh hash, size, depth and height of the tree.
+     * @see com.github.gumtreediff.tree.hash.HashGenerator
+     * @see TreeUtils#computeDepth(ITree)
+     * @see TreeUtils#computeHeight(ITree)
+     * @see TreeUtils#computeSize(ITree)
+     */
+    void refresh();
 
-    public abstract Iterable<ITree> postOrder();
+    String toStaticHashString();
 
-    public abstract Iterable<ITree> breadthFirst();
+    String toShortString();
 
-    public abstract int positionInParent();
+    String toTreeString();
 
-    public abstract void refresh();
+    String toPrettyString(TreeContext ctx);
 
-    public abstract void setChildren(List<ITree> children);
+    Object getMetadata(String key);
 
-    public abstract void setDepth(int depth);
+    Object setMetadata(String key, Object value);
 
-    public abstract void setHash(int hash);
-
-    public abstract void setHeight(int height);
-
-    public abstract void setId(int id);
-
-    public abstract void setLabel(String label);
-
-    public abstract void setLcPosEnd(int[] lcPosEnd);
-
-    public abstract void setLcPosStart(int[] lcPosStart);
-
-    public abstract void setLength(int length);
-
-    public abstract void setMatched(boolean matched);
-
-    public abstract void setParent(ITree parent);
-
-    public abstract void setParentAndUpdateChildren(ITree parent);
-
-    public abstract void setPos(int pos);
-
-    public abstract void setSize(int size);
-
-    public abstract void setTmpData(Object tmpData);
-
-    public abstract void setType(int type);
-
-    public abstract String toStaticHashString();
-
-    public abstract String toShortString();
-
-    public String toTreeString();
-
-    public abstract String toPrettyString(TreeContext ctx);
+    Iterator<Entry<String, Object>> getMetadata();
     
-    public String toTreeString_jihun(TreeContext ctx);
-
-    interface TreeInfo {
-    }
+    public String toTreeString_Kui(TreeContext ctx);
+    
+    public abstract String getChildrenLabels();
 }

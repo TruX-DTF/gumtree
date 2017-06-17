@@ -1,3 +1,23 @@
+/*
+ * This file is part of GumTree.
+ *
+ * GumTree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GumTree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
+ * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ */
+
 package com.github.gumtreediff.matchers;
 
 import com.github.gumtreediff.tree.ITree;
@@ -17,10 +37,10 @@ public abstract class Matcher {
 
     protected final MappingStore mappings;
 
-    public Matcher(ITree src, ITree dst, MappingStore store) {
+    public Matcher(ITree src, ITree dst, MappingStore mappings) {
         this.src = src;
         this.dst = dst;
-        this.mappings = store;
+        this.mappings = mappings;
     }
 
     public abstract void match();
@@ -42,18 +62,16 @@ public abstract class Matcher {
     }
 
     protected void addMapping(ITree src, ITree dst) {
-        src.setMatched(true);
-        dst.setMatched(true);
         mappings.link(src, dst);
     }
 
-    protected void addFullMapping(ITree src, ITree dst) {
-        List<ITree> csrcs = src.getTrees();
-        List<ITree> cdsts = dst.getTrees();
-        for (int i = 0; i < csrcs.size(); i++) {
-            ITree csrc = csrcs.get(i);
-            ITree cdst = cdsts.get(i);
-            addMapping(csrc, cdst);
+    protected void addMappingRecursively(ITree src, ITree dst) {
+        List<ITree> srcTrees = src.getTrees();
+        List<ITree> dstTrees = dst.getTrees();
+        for (int i = 0; i < srcTrees.size(); i++) {
+            ITree currentSrcTree = srcTrees.get(i);
+            ITree currentDstTree = dstTrees.get(i);
+            addMapping(currentSrcTree, currentDstTree);
         }
     }
 
@@ -74,24 +92,19 @@ public abstract class Matcher {
     }
 
     protected int numberOfCommonDescendants(ITree src, ITree dst) {
-        Set<ITree> dstDescs = new HashSet<>(dst.getDescendants());
+        Set<ITree> dstDescandants = new HashSet<>(dst.getDescendants());
         int common = 0;
 
         for (ITree t : src.getDescendants()) {
             ITree m = mappings.getDst(t);
-            if (m != null && dstDescs.contains(m))
+            if (m != null && dstDescandants.contains(m))
                 common++;
         }
 
         return common;
     }
 
-    protected void clean() {
-        for (ITree t : src.getTrees())
-            if (!mappings.hasSrc(t))
-                t.setMatched(false);
-        for (ITree t : dst.getTrees())
-            if (!mappings.hasDst(t))
-                t.setMatched(false);
+    public boolean isMappingAllowed(ITree src, ITree dst) {
+        return src.hasSameType(dst) && !(mappings.hasSrc(src) || mappings.hasDst(dst));
     }
 }
