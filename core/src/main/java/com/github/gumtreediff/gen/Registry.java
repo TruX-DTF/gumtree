@@ -69,7 +69,8 @@ public abstract class Registry<K, C, A> {
         protected abstract boolean handle(K key);
     }
 
-    protected Factory<? extends C> defaultFactory(Class<? extends C> clazz, Class... signature) {
+    @SuppressWarnings("rawtypes")
+	protected Factory<? extends C> defaultFactory(Class<? extends C> clazz, Class... signature) {
         try {
             Constructor<? extends C> ctor = clazz.getConstructor(signature);
             return (args) -> ctor.newInstance(args);

@@ -1,7 +1,6 @@
 package com.github.gumtreediff.matchers;
 
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.ITree;
 
 import java.util.HashSet;
 import java.util.List;

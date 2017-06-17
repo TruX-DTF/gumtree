@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.gumtreediff.io.TreeIoUtils;
-import com.github.gumtreediff.io.TreeIoUtils;
 
 public class TreeContext {
 

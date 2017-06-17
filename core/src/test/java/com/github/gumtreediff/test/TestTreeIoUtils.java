@@ -10,7 +10,6 @@ import java.util.ListIterator;
 import com.github.gumtreediff.io.TreeIoUtils;
 import org.junit.Test;
 
-import com.github.gumtreediff.io.TreeIoUtils;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 

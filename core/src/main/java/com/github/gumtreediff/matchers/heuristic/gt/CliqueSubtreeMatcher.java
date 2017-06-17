@@ -5,10 +5,6 @@ import com.github.gumtreediff.matchers.MultiMappingStore;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.Pair;
 import com.github.gumtreediff.matchers.Mapping;
-import com.github.gumtreediff.matchers.MappingStore;
-import com.github.gumtreediff.matchers.MultiMappingStore;
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.Pair;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.*;
@@ -19,7 +15,8 @@ public class CliqueSubtreeMatcher extends SubtreeMatcher {
         super(src, dst, store);
     }
 
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public void filterMappings(MultiMappingStore mmappings) {
         TIntObjectHashMap<Pair<List<ITree>, List<ITree>>> cliques = new TIntObjectHashMap<>();
         for (Mapping m : mmappings) {

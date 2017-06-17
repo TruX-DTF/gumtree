@@ -1,9 +1,6 @@
 package com.github.gumtreediff.tree.hash;
 
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.ITree;
-
-import static com.github.gumtreediff.tree.hash.HashUtils.*;
 
 public abstract class StaticHashGenerator implements HashGenerator {
 

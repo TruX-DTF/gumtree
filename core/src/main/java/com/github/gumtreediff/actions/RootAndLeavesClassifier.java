@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.github.gumtreediff.actions.model.Delete;
 import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.actions.model.Delete;
 import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
@@ -54,7 +53,7 @@ public class RootAndLeavesClassifier extends TreeClassifier {
         }
         srcDelTrees = fSrcDelTrees;
 
-        Set<ITree> fSrcMvTrees = new HashSet<>(); // FIXME check why it's unused
+//        Set<ITree> fSrcMvTrees = new HashSet<>(); // FIXME check why it's unused
         for (ITree t: srcDelTrees) {
             if (!srcDelTrees.contains(t.getParent()))
                 fSrcDelTrees.add(t);

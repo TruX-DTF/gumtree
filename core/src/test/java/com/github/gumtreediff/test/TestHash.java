@@ -7,9 +7,6 @@ import com.github.gumtreediff.tree.hash.RollingHashGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.hash.RollingHashGenerator;
-
 public class TestHash {
 
     ITree root;

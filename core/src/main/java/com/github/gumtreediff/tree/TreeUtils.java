@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.github.gumtreediff.matchers.Mapping;
-import com.github.gumtreediff.matchers.Mapping;
 
 public final class TreeUtils {
 

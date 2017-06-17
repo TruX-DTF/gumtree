@@ -1,7 +1,6 @@
 package com.github.gumtreediff.matchers;
 
 import com.github.gumtreediff.gen.Registry;
-import com.github.gumtreediff.gen.Registry;
 import com.github.gumtreediff.tree.ITree;
 
 public class Matchers extends Registry.NamedRegistry<String, Matcher, Register> {

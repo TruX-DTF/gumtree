@@ -21,7 +21,8 @@ import java.util.Set;
  */
 public class CompleteBottomUpMatcher extends Matcher {
 
-    private static final double SIM_THRESHOLD = Double.parseDouble(System.getProperty("gumtree.match.bu.sim", "0.3"));
+    @SuppressWarnings("unused")
+	private static final double SIM_THRESHOLD = Double.parseDouble(System.getProperty("gumtree.match.bu.sim", "0.3"));
 
     private static final int SIZE_THRESHOLD = Integer.parseInt(System.getProperty("gumtree.match.bu.size", "1000"));
 

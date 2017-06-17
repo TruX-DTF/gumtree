@@ -3,9 +3,6 @@ package com.github.gumtreediff.matchers.heuristic.gt;
 import com.github.gumtreediff.algo.HungarianAlgorithm;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.MultiMappingStore;
-import com.github.gumtreediff.algo.HungarianAlgorithm;
-import com.github.gumtreediff.matchers.MappingStore;
-import com.github.gumtreediff.matchers.MultiMappingStore;
 import com.github.gumtreediff.tree.ITree;
 
 import java.util.*;
