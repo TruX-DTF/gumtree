@@ -22,8 +22,6 @@ package com.github.gumtreediff.gen.jdt;
 
 import com.github.gumtreediff.gen.TreeGenerator;
 import com.github.gumtreediff.tree.TreeContext;
-import com.github.gumtreediff.gen.TreeGenerator;
-import com.github.gumtreediff.tree.TreeContext;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;

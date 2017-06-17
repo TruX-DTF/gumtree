@@ -29,10 +29,6 @@ import com.github.gumtreediff.tree.TreeContext;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 
-import com.github.gumtreediff.gen.jdt.cd.EntityType;
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
-
 public abstract class AbstractJdtVisitor extends ASTVisitor {
 
     protected TreeContext context = new TreeContext();
