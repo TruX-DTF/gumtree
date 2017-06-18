@@ -27,6 +27,8 @@ import java.io.*;
 public abstract class TreeGenerator {
 
     protected abstract TreeContext generate(Reader r) throws IOException;
+    
+    protected abstract TreeContext generate(Reader r, int astParserType) throws IOException;
 
     public TreeContext generateFromReader(Reader r) throws IOException {
         TreeContext ctx = generate(r);
@@ -48,5 +50,27 @@ public abstract class TreeGenerator {
 
     public TreeContext generateFromString(String content) throws IOException {
         return generateFromReader(new StringReader(content));
+    }
+    
+    public TreeContext generateFromReader(Reader r, int astParserType) throws IOException {
+        TreeContext ctx = generate(r, astParserType);
+        ctx.validate();
+        return ctx;
+    }
+
+    public TreeContext generateFromFile(String path, int astParserType) throws IOException {
+        return generateFromReader(new FileReader(path), astParserType);
+    }
+
+    public TreeContext generateFromFile(File file, int astParserType) throws IOException {
+        return generateFromReader(new FileReader(file), astParserType);
+    }
+
+    public TreeContext generateFromStream(InputStream stream, int astParserType) throws IOException {
+        return generateFromReader(new InputStreamReader(stream), astParserType);
+    }
+
+    public TreeContext generateFromString(String content, int astParserType) throws IOException {
+        return generateFromReader(new StringReader(content), astParserType);
     }
 }
