@@ -1,8 +1,27 @@
+/*
+ * This file is part of GumTree.
+ *
+ * GumTree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GumTree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
+ * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ */
+
 package com.github.gumtreediff.client.diff;
 
 import com.github.gumtreediff.client.Option;
 import com.github.gumtreediff.client.Client;
-import com.github.gumtreediff.client.Option;
 import com.github.gumtreediff.gen.Generators;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.matchers.Matchers;
@@ -15,26 +34,26 @@ import java.util.ArrayList;
 public abstract class AbstractDiffClient<O extends AbstractDiffClient.Options> extends Client {
 
     protected final O opts;
-    public static final String SYNTAX = "Syntax: diff [options] fileSrc fileDst";
+    public static final String SYNTAX = "Syntax: diff [options] baseFile destFile";
     private TreeContext src;
     private TreeContext dst;
 
     public static class Options implements Option.Context {
-        protected String matcher;
-        protected ArrayList<String> generators = new ArrayList<>();
-        protected String src;
-        protected String dst;
+        public String matcher;
+        public ArrayList<String> generators = new ArrayList<>();
+        public String src;
+        public String dst;
 
         @Override
         public Option[] values() {
-            return new Option[]{
-                    new Option("-m", "The qualified name of the class implementing the matcher.", 1){
+            return new Option[] {
+                    new Option("-m", "The qualified name of the class implementing the matcher.", 1) {
                         @Override
                         protected void process(String name, String[] args) {
                             matcher = args[0];
                         }
                     },
-                    new Option("-g", "Preferred generator to use (can be used more than once).", 1){
+                    new Option("-g", "Preferred generator to use (can be used more than once).", 1) {
                         @Override
                         protected void process(String name, String[] args) {
                             generators.add(args[0]);
@@ -103,7 +122,11 @@ public abstract class AbstractDiffClient<O extends AbstractDiffClient.Options> e
 
     private TreeContext getTreeContext(String file) {
         try {
-            TreeContext t = Generators.getInstance().getTree(file);
+            TreeContext t;
+            if (opts.generators.isEmpty())
+                t = Generators.getInstance().getTree(file);
+            else
+                t = Generators.getInstance().getTree(opts.generators.get(0), file);
             return t;
         } catch (IOException e) {
             e.printStackTrace();

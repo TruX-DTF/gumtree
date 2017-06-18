@@ -14,21 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
- * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ * Copyright 2016 Floréal Morandat <florealm@gmail.com>
  */
 
 $(function(){
-    $("#infos").popover();
-
     $("body").keypress(function (event) {
         switch (event.which) {
-            case 116:
-                $('html, body').animate({scrollTop: 0}, 100);
-                break;
-            case 98:
-                $("html, body").animate({ scrollTop: $(document).height() }, 100);
-                break;
             case 113:
                 window.location = "/quit";
                 break;

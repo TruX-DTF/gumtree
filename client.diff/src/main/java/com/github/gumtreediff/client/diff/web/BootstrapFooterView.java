@@ -18,23 +18,20 @@
  * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
  */
 
-$(function(){
-    $("#infos").popover();
+package com.github.gumtreediff.client.diff.web;
 
-    $("body").keypress(function (event) {
-        switch (event.which) {
-            case 116:
-                $('html, body').animate({scrollTop: 0}, 100);
-                break;
-            case 98:
-                $("html, body").animate({ scrollTop: $(document).height() }, 100);
-                break;
-            case 113:
-                window.location = "/quit";
-                break;
-            case 108:
-                window.location = "/list";
-                break;
-        }
-    });
-});
+import org.rendersnake.HtmlCanvas;
+import org.rendersnake.Renderable;
+
+import java.io.IOException;
+
+public class BootstrapFooterView implements Renderable {
+
+    @Override
+    public void renderOn(HtmlCanvas html) throws IOException {
+        html
+        .macros().javascript("/dist/jquery.min.js")
+        .macros().javascript("/dist/bootstrap.min.js");
+    }
+
+}
