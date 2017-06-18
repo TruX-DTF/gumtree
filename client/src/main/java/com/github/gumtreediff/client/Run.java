@@ -1,3 +1,23 @@
+/*
+ * This file is part of GumTree.
+ *
+ * GumTree is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GumTree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
+ * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
+ */
+
 package com.github.gumtreediff.client;
 
 import com.github.gumtreediff.gen.Generators;
@@ -10,17 +30,12 @@ import java.lang.reflect.InvocationTargetException;
 
 public class Run {
 
-//    public static boolean USE_EXPERIMENTAL() {
-// This is a method not a constant otherwise, there won't be any way to set it (due to class loading order)
-//        return Boolean.parseBoolean(System.getProperty("gumtree.client.experimental", "false"));
-//    }
-
     public static class Options implements Option.Context {
         @Override
         public Option[] values() {
             return new Option[]{
                     new Option("-c", "Set global property (-c property value). "
-                            + "Properties do not need to be prefixed by gumtree.", 2){
+                            + "Properties do not need to be prefixed by gumtree.", 2) {
 
                         @Override
                         protected void process(String name, String[] args) {
@@ -38,8 +53,10 @@ public class Run {
         Reflections reflections = new Reflections("com.github.gumtreediff.gen");
 
         reflections.getSubTypesOf(TreeGenerator.class).forEach(
-                gen -> { com.github.gumtreediff.gen.Register a = gen.getAnnotation(com.github.gumtreediff.gen.Register.class);
-                if (a != null)
+                gen -> {
+                    com.github.gumtreediff.gen.Register a =
+                            gen.getAnnotation(com.github.gumtreediff.gen.Register.class);
+                    if (a != null)
                         Generators.getInstance().install(gen, a);
             });
     }
@@ -48,7 +65,9 @@ public class Run {
         Reflections reflections = new Reflections("com.github.gumtreediff.client");
 
         reflections.getSubTypesOf(Client.class).forEach(
-                cli -> { com.github.gumtreediff.client.Register a = cli.getAnnotation(com.github.gumtreediff.client.Register.class);
+                cli -> {
+                    com.github.gumtreediff.client.Register a =
+                            cli.getAnnotation(com.github.gumtreediff.client.Register.class);
                 if (a != null)
                     Clients.getInstance().install(cli, a);
             });
@@ -75,10 +94,10 @@ public class Run {
     }
 
     public static void main(String[] args) {
-        initClients();
-
         Options opts = new Options();
         args = Option.processCommandLine(args, opts);
+
+        initClients();
 
         Registry.Factory<? extends Client> client;
         if (args.length == 0) {
@@ -101,8 +120,11 @@ public class Run {
         listCommand(out);
     }
 
-    public static void listCommand(PrintStream out) {
+    @SuppressWarnings("rawtypes")
+	public static void listCommand(PrintStream out) {
         out.println("Available Commands:");
+        for (Registry.Entry cmd: Clients.getInstance().getEntries())
+            out.println("* " + cmd);
     }
 
     static class Help extends Option.Help {
