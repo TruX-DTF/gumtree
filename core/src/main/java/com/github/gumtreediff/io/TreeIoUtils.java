@@ -667,6 +667,11 @@ public final class TreeIoUtils {
             return null;
         }
 
+		@Override
+		protected TreeContext generate(Reader source, int astParserType) throws IOException {
+			return generate(source);
+		}
+
         private static String labelForAttribute(StartElement s, QName attrName) {
             Attribute attr = s.getAttributeByName(attrName);
             return attr == null ? ITree.NO_LABEL : attr.getValue();

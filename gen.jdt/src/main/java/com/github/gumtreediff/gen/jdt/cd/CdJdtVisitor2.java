@@ -20,8 +20,11 @@
 
 package com.github.gumtreediff.gen.jdt.cd;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+import java.util.Vector;
 
 import com.github.gumtreediff.gen.jdt.AbstractJdtVisitor;
 import org.eclipse.jdt.core.dom.*;
@@ -38,20 +41,14 @@ import com.github.gumtreediff.tree.Tree;
  * INRIA removed fNodeStack since it's inherited with the new
  */
 @SuppressWarnings("unused")
-public class CdJdtVisitor extends AbstractJdtVisitor {
+public class CdJdtVisitor2 extends AbstractJdtVisitor {
     private static final String COLON_SPACE = ": ";
     private boolean fEmptyJavaDoc;
     private boolean fInMethodDeclaration;
 
     @Override
     public boolean visit(Block node) {
-        // skip block as it is not interesting
         return true;
-    }
-
-    @Override
-    public void endVisit(Block node) {
-        // do nothing pop is not needed (see visit(Block))
     }
 
     @SuppressWarnings("unchecked")
@@ -275,7 +272,7 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(TypeLiteral node) {
-        pushNode(node, "");
+        pushNode(node, ""); // TODO
         return true;
     }
 
@@ -300,7 +297,7 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
     @SuppressWarnings("unchecked")
     @Override
     public boolean visit(VariableDeclarationExpression node) {
-        pushNode(node, "");
+        pushNode(node, ""); // TODO
         visitListAsNode(EntityType.MODIFIERS, node.modifiers());
         node.getType().accept(this);
         visitListAsNode(EntityType.FRAGMENTS, node.fragments());
@@ -315,10 +312,6 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
     @Override
     public boolean visit(VariableDeclarationFragment node) {
         pushNode(node, node.getName().getFullyQualifiedName());
-        Expression exp = node.getInitializer();
-        if (exp != null) {
-        	pushNode(exp, exp.toString());
-        }
         return false;
     }
 
@@ -495,8 +488,10 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(IfStatement node) {
-        String expression = node.getExpression().toString();
-        pushNode(node, expression/* , node.getStartPosition(), node.getLength() */);
+        pushNode(node, "if");
+
+        Expression expression = node.getExpression();
+        expression.accept(this);
 
         Statement stmt = node.getThenStatement();
         if (stmt != null) {
@@ -508,7 +503,7 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
         stmt = node.getElseStatement();
         if (stmt != null) {
             pushNode(stmt, "ElseBlock");
-            node.getElseStatement().accept(this);
+            stmt.accept(this);
             popNode();
         }
         return false;
@@ -602,10 +597,10 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
     @SuppressWarnings("unchecked")
     @Override
     public boolean visit(TryStatement node) {
-        pushNode(node, "try");
+        pushNode(node, "");
 
         Statement stmt = node.getBody();
-        pushNode(stmt, "TryBody");
+        pushNode(stmt, "");
         stmt.accept(this);
         popNode();
 
@@ -614,7 +609,7 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
         stmt = node.getFinally();
         if (stmt != null) {
             // @Inria
-            pushNode(stmt, "Finally");
+            pushNode(stmt, "");
             stmt.accept(this);
             popNode();
         }
@@ -628,14 +623,7 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(VariableDeclarationStatement node) {
-//        pushNode(node, node.toString()); //TODO
-    	Type type = node.getType();
-    	type.accept(this);
-    	List<?> fragments = node.fragments();
-    	for (Object obj : fragments) {
-    		VariableDeclarationFragment fragment = (VariableDeclarationFragment) obj;
-    		fragment.accept(this);
-    	}
+        pushNode(node, node.toString());
         return false;
     }
 
@@ -655,4 +643,504 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
         popNode();
     }
 
+    @Override
+	public boolean visit(ArrayAccess node) {
+		/**
+		 * ArrayAccess:
+		 *    Expression <b>[</b> Expression <b>]</b>
+		 */
+		Expression arrayExpression = node.getArray(); // MyExpression.leftHandExpression
+		Expression indexExpression = node.getIndex(); // MyExpression.rightHandExpression
+		return false;
+	}
+
+	@Override
+	public boolean visit(ArrayCreation node) {
+		/**
+		 * ArrayCreation:
+		 *    <b>new</b> PrimitiveType <b>[</b> Expression <b>]</b> { <b>[</b> Expression <b>]</b> } { <b>[</b> <b>]</b> }
+		 *    <b>new</b> TypeName [ <b>&lt;</b> Type { <b>,</b> Type } <b>&gt;</b> ]
+		 *        <b>[</b> Expression <b>]</b> { <b>[</b> Expression <b>]</b> } { <b>[</b> <b>]</b> }
+		 *    <b>new</b> PrimitiveType <b>[</b> <b>]</b> { <b>[</b> <b>]</b> } ArrayInitializer
+		 *    <b>new</b> TypeName [ <b>&lt;</b> Type { <b>,</b> Type } <b>&gt;</b> ]
+		 *        <b>[</b> <b>]</b> { <b>[</b> <b>]</b> } ArrayInitializer
+		 */
+		ArrayType arrayType = node.getType();   // MyExpression.qualifier
+		if (arrayType != null) {
+		}
+		
+		List<?> dimensions = node.dimensions(); // MyExpression.subExpresions
+		for (Object obj : dimensions) {
+			Expression exp = (Expression) obj;
+		}
+		
+		ArrayInitializer initializer = node.getInitializer(); // MyExpression.arguments
+		if (initializer != null) {
+		}
+		return false;
+	}
+
+	@Override
+	public boolean visit(ArrayInitializer node) {
+		List<?> exps = node.expressions();
+		for (Object obj : exps) {
+			Expression exp = (Expression) obj;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean visit(Assignment node) {
+		/**
+		 * Assignment:
+		 *    Expression AssignmentOperator Expression
+		 * AssignmentOperator:<code>
+		 *    <b>=</b> ASSIGN
+		 *    <b>+=</b> PLUS_ASSIGN
+		 *    <b>-=</b> MINUS_ASSIGN
+		 *    <b>*=</b> TIMES_ASSIGN
+		 *    <b>/=</b> DIVIDE_ASSIGN
+		 *    <b>&amp;=</b> BIT_AND_ASSIGN
+		 *    <b>|=</b> BIT_OR_ASSIGN
+		 *    <b>^=</b> BIT_XOR_ASSIGN
+		 *    <b>%=</b> REMAINDER_ASSIGN
+		 *    <b>&lt;&lt;=</b> LEFT_SHIFT_ASSIGN
+		 *    <b>&gt;&gt;=</b> RIGHT_SHIFT_SIGNED_ASSIGN
+		 *    <b>&gt;&gt;&gt;=</b> RIGHT_SHIFT_UNSIGNED_ASSIGN</code>
+		 */
+		Expression leftHandExp = node.getLeftHandSide();
+		Expression rightHandExp = node.getRightHandSide();
+		Assignment.Operator op = node.getOperator();
+		
+		return false;
+	}
+
+	@Override 
+	public boolean visit(BooleanLiteral node) {
+		return false;
+	}
+	
+	@Override
+	public boolean visit(CastExpression node) {
+		/**
+		 * Cast expression AST node type.
+		 * CastExpression:
+		 *    <b>(</b> Type <b>)</b> Expression
+		 */
+		Type castType = node.getType();        // qualifier
+		Expression exp = node.getExpression(); // rightHandExpression
+		return false;
+	}
+
+	@Override 
+	public boolean visit(CharacterLiteral node) {
+		return false;
+	}
+	
+	@Override
+	public boolean visit(ClassInstanceCreation node) {
+		/**
+		 * ClassInstanceCreation:
+		 *        [ Expression <b>.</b> ]
+		 *            <b>new</b> [ <b>&lt;</b> Type { <b>,</b> Type } <b>&gt;</b> ]
+		 *            Type <b>(</b> [ Expression { <b>,</b> Expression } ] <b>)</b>
+		 *            [ AnonymousClassDeclaration ]
+		 */
+		Type type = node.getType(); // qualifier, Constructor
+		Expression exp = node.getExpression(); 
+		if (exp != null) { // File.newFile();
+		}
+		
+		List<?> arguments = node.arguments();
+		if (arguments != null) {
+			for (int i = 0, size = arguments.size(); i < size; i ++) {
+				Expression argument = (Expression) arguments.get(i);
+			}
+		}
+		
+//		/**
+//		 * AnonymousClassDeclaration:
+//		 *        <b>{</b> ClassBodyDeclaration <b>}</b>
+//		 */
+//		AnonymousClassDeclaration acd = node.getAnonymousClassDeclaration();
+//		if (acd != null) {
+//			@SuppressWarnings("unused")
+//			List<?> bodyDeclarations = acd.bodyDeclarations(); // a Class 
+//			System.out.println("AnonymousClassDeclaration" + node.toString());
+//		}
+
+		return false;
+	}
+	
+	@Override
+	public boolean visit(ConditionalExpression node) {
+		// Expression <b>?</b> Expression <b>:</b> Expression
+		Expression conditionalExp = node.getExpression(); // left
+		Expression thenExp = node.getThenExpression();    // middle
+		return false;
+	}
+
+	@Override
+	public boolean visit(CreationReference node) {
+		/**
+		 * Creation reference expression AST node type (added in JLS8 API).
+		 * CreationReference:
+		 *     Type <b>::</b> 
+		 *         [ <b>&lt;</b> Type { <b>,</b> Type } <b>&gt;</b> ]
+		 *         <b>new</b>
+		 */
+		Type type = node.getType();
+		List<?> typeArguments =  node.typeArguments();
+		if (typeArguments != null) {
+			for (Object obj : typeArguments) {
+				Type typeArgument = (Type) obj;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean visit(ExpressionMethodReference node) {
+		/**
+		 * ExpressionMethodReference:
+		 *     Expression <b>::</b> 
+		 *         [ <b>&lt;</b> Type { <b>,</b> Type } <b>&gt;</b> ]
+		 *         Identifier
+		 */
+		Expression exp = node.getExpression();
+		List<?> typeArguments = node.typeArguments();
+		if (typeArguments != null) {
+			for (Object obj : typeArguments) {
+				Type typeArgument = (Type) obj;
+			}
+		}
+		String methodName = node.getName().getIdentifier();
+		return false;
+	}
+
+	@Override
+	public boolean visit(FieldAccess node) {
+		/**
+		 * FieldAccess:
+		 * 		Expression <b>.</b> Identifier
+		 */ 
+		Expression exp = node.getExpression();    // leftHandExp
+		String identifier = node.getName().toString();  // identifier
+		return false;
+	}
+
+	@Override
+	public boolean visit(InfixExpression node) {
+		/**
+		 * InfixExpression:
+		 *    Expression InfixOperator Expression { InfixOperator Expression }
+		 * InfixOperator:<code>
+		 *    <b>*</b>	TIMES
+		 *    <b>/</b>  DIVIDE
+		 *    <b>%</b>  REMAINDER
+		 *    <b>+</b>  PLUS
+		 *    <b>-</b>  MINUS
+		 *    <b>&lt;&lt;</b>  LEFT_SHIFT
+		 *    <b>&gt;&gt;</b>  RIGHT_SHIFT_SIGNED
+		 *    <b>&gt;&gt;&gt;</b>  RIGHT_SHIFT_UNSIGNED
+		 *    <b>&lt;</b>  LESS
+		 *    <b>&gt;</b>  GREATER
+		 *    <b>&lt;=</b>  LESS_EQUALS
+		 *    <b>&gt;=</b>  GREATER_EQUALS
+		 *    <b>==</b>  EQUALS
+		 *    <b>!=</b>  NOT_EQUALS
+		 *    <b>^</b>  XOR
+		 *    <b>&amp;</b>  AND
+		 *    <b>|</b>  OR
+		 *    <b>&amp;&amp;</b>  CONDITIONAL_AND
+		 *    <b>||</b>  CONDITIONAL_OR</code>
+		 */
+		InfixExpression.Operator infixOperator = node.getOperator();
+		Expression leftExp = node.getLeftOperand();
+		
+		List<?> extendedOperands = node.extendedOperands();
+		if (extendedOperands != null && extendedOperands.size() > 0) {
+			String nodeStr = node.toString();
+			nodeStr = nodeStr.substring(leftExp.toString().length()).trim();
+			nodeStr = nodeStr.substring(infixOperator.toString().length()).trim();
+			
+		} else {
+			Expression rightExp = node.getRightOperand();
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean visit(InstanceofExpression node) {
+		/**
+		 * InstanceofExpression:
+		 *    Expression <b>instanceof</b> Type
+		 */
+		Expression exp = node.getLeftOperand();
+		Type type = node.getRightOperand();
+		
+		return false;
+	}
+
+	@Override
+	public boolean visit(LambdaExpression node) {
+		// Lambda: (argument) -> (body)
+		List<?> parameters = node.parameters();//VariableDeclaration   arguments
+		for (Object obj : parameters) {
+			VariableDeclaration var = (VariableDeclaration) obj;
+
+			if (var instanceof SingleVariableDeclaration) {
+				/**
+				 * SingleVariableDeclaration:
+				 *    { ExtendedModifier } Type {Annotation} [ <b>...</b> ] Identifier { Dimension } [ <b>=</b> Expression ]
+				 */
+				SingleVariableDeclaration svd = (SingleVariableDeclaration) var;
+				Type type = svd.getType();
+				String identifier = svd.getName().getIdentifier(); // Identifier
+				Vector<String> tokenV = new Vector<>();
+				tokenV.add(type.toString());
+				tokenV.add(identifier);
+
+				Expression exp = svd.getInitializer();
+				if (exp != null) {
+				}
+			} else if (var instanceof VariableDeclarationFragment) {
+				/**
+				 * VariableDeclarationFragment:
+				 *    Identifier { Dimension } [ <b>=</b> Expression ]
+				 * Dimension:
+				 * 	{ Annotation } <b>[]</b>
+				 */
+				VariableDeclarationFragment fragment = (VariableDeclarationFragment) var;
+				String identifier = fragment.getName().getIdentifier(); // Identifier
+				Vector<String> tokenV = new Vector<String>();
+				tokenV.add(identifier);
+				List<?> dimensions = fragment.extraDimensions();
+
+				if (dimensions != null) {
+					int dimensionSize = dimensions.size();
+				}
+				Expression exp = fragment.getInitializer();
+				if (exp != null) {
+				}
+			}
+		}
+		ASTNode body = node.getBody();
+		if (body != null) {
+			if (body instanceof Block) {
+				// TODO
+//				return super.visit((Block) body);
+			} else if (body instanceof Expression) {
+				Expression exp = (Expression) body;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean visit(MethodInvocation node) {
+		/**
+		 * MethodInvocation:
+		 *     [ Expression <b>.</b> ]
+		 *         [ <b>&lt;</b> Type { <b>,</b> Type } <b>&gt;</b> ]
+		 *         Identifier <b>(</b> [ Expression { <b>,</b> Expression } ] <b>)</b>
+		 */
+		Expression firstExp = node.getExpression(); // may be null, get() / A.get();
+		if (firstExp != null) {  // leftHandExp
+		}
+
+		String methodName = node.getName().toString();
+		pushNode(node, node.getName().toString()); // TODO
+		
+		
+		List<?> arguments = node.arguments();
+		if (arguments != null) {
+			for (int i = 0, size = arguments.size(); i < size; i ++) {
+				Expression exp = (Expression) arguments.get(i);
+				pushNode(exp, exp.toString());
+			}
+		}
+		popNode();
+		return false;
+	}
+	
+	@Override 
+	public boolean visit(NullLiteral node) {
+		// NullLiteral null;
+		return false;
+	}
+
+	@Override
+	public boolean visit(NumberLiteral node) {
+		// NumberLiteral + number
+		return false;
+	}
+
+	@Override
+	public boolean visit(ParenthesizedExpression node) {
+		// ( Expression )
+		Expression exp = node.getExpression();
+		return false;
+	}
+
+	@Override
+	public boolean visit(PostfixExpression node) {
+		// Expression PostfixOperator
+		Expression exp = node.getOperand(); // leftHandExp
+		/**
+		 * PostfixOperator:
+		 *    <b><code>++</code></b>  <code>INCREMENT</code>
+		 *    <b><code>--</code></b>  <code>DECREMENT</code>
+		 */
+		PostfixExpression.Operator operator = node.getOperator();
+		
+		return false;
+	}
+
+	@Override
+	public boolean visit(PrefixExpression node) {
+		// PrefixOperator Expression
+		/**
+		 * PrefixOperator:
+		 *    <b><code>++</code></b>  <code>INCREMENT</code>
+		 *    <b><code>--</code></b>  <code>DECREMENT</code>
+		 *    <b><code>+</code></b>  <code>PLUS</code>
+		 *    <b><code>-</code></b>  <code>MINUS</code>
+		 *    <b><code>~</code></b>  <code>COMPLEMENT</code>
+		 *    <b><code>!</code></b>  <code>NOT</code>
+		 */
+		Expression exp = node.getOperand(); // rightHandExp
+		PrefixExpression.Operator op = node.getOperator();
+		// TODO
+		pushNode(node, op.toString());
+		pushNode(exp, exp.toString());
+		popNode();
+		return false;
+	}
+
+	@Override
+	public boolean visit(QualifiedName node) {
+		// Name <b>.</b> SimpleName
+		Name name = node.getQualifier();
+		String simpleName = node.getName().getIdentifier();
+		
+		if (name.isSimpleName()) {
+		} else {
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean visit(SimpleName node) {
+		return false;
+	}
+	
+	@Override
+	public boolean visit(StringLiteral node) {
+		// StringLiteral + "......"
+		return false;
+	}
+
+	@Override
+	public boolean visit(SuperFieldAccess node) {
+		// [ ClassName <b>.</b> ] <b>super</b> <b>.</b> Identifier
+		Name className = node.getQualifier(); // may be null, qualifier
+		if (className != null) {
+			if (className.isSimpleName()) {
+			} else {
+			}
+		}
+
+		String identifier = node.getName().getIdentifier(); // identifier
+		return false;
+	}
+
+	@Override
+	public boolean visit(SuperMethodInvocation node) {
+		/**
+		 * Simple or qualified "super" method invocation expression AST node type.
+		 * SuperMethodInvocation:
+		 *     [ ClassName <b>.</b> ] <b>super</b> <b>.</b>
+		 *         [ <b>&lt;</b> Type { <b>,</b> Type } <b>&gt;</b> ]
+		 *         Identifier <b>(</b> [ Expression { <b>,</b> Expression } ] <b>)</b>
+		 */
+		Name className = node.getQualifier(); // may be null
+		if (className != null) {
+			if (className.isSimpleName()) {
+			} else {
+			}
+		}
+		String methodName = node.getName().getIdentifier(); /// method name, identifier
+		
+		List<?> arguments = node.arguments();
+		if (arguments != null) {
+			for (int i = 0, size = arguments.size(); i < size; i ++ ) {
+				Expression exp = (Expression) arguments.get(i);
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean visit(ThisExpression node) {
+		Name className = node.getQualifier(); // may be null, qualifier
+		if (className != null) {
+			if (className.isSimpleName()) {
+			} else {
+			}
+		}
+		// ThisExpression + this
+		return false;
+	}
+	
+//
+//	@Override
+//	public boolean visit(VariableDeclarationExpression node) {
+//		/**
+//		 * VariableDeclarationExpression:
+//		 *    { ExtendedModifier } Type VariableDeclarationFragment
+//		 *         { <b>,</b> VariableDeclarationFragment }
+//		 */
+//		String modifier = parseModifier(node.modifiers());
+//		myExpression.setModifier(modifier);
+//		Type type = node.getType(); // qualifier
+//		myExpression.setExpressionType(ExpressionType.VariableDeclarationExpression);
+//		myExpression.setQualifier(type.toString());
+//		if (!"".equals(modifier)) {
+//			tokenVec.addAll(Arrays.asList(modifier.split(", ")));
+//		}
+//		tokenVec.add(type.toString());
+//		
+//		List<?> fragments = node.fragments(); //subExpression
+//		for (Object obj : fragments) {
+//			/**
+//			 * VariableDeclarationFragment:
+//			 *    Identifier { Dimension } [ <b>=</b> Expression ]
+//			 * Dimension:
+//			 * 	{ Annotation } <b>[]</b>
+//			 */
+//			MyExpression myExp = new MyExpression();
+//			myExp.setExpressionType(ExpressionType.VariableDeclarationFragment);
+//			VariableDeclarationFragment fragment = (VariableDeclarationFragment) obj;
+//			String identifier = fragment.getName().getIdentifier(); // Identifier
+//			myExp.setIdentifier(identifier);
+//			Vector<String> tokenV = new Vector<String>();
+//			tokenV.add(identifier);
+//
+//			Expression exp = fragment.getInitializer();
+//			if (exp != null) {
+//				ExpressionVisitor expVisitor = new ExpressionVisitor();
+//				exp.accept(expVisitor);
+//				myExp.setRightHandExpression(expVisitor.myExpression);
+//				tokenV.addAll(expVisitor.getTokenVec());
+//			}
+//			myExp.setTokenVec(tokenV);
+//			tokenVec.addAll(tokenV);
+//			myExpression.getSubExpresions().add(myExp);
+//		}
+//		myExpression.setTokenVec(tokenVec);
+//		return false;
+//	}
+	
 }

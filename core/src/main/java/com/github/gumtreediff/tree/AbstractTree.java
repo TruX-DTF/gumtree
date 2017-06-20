@@ -54,7 +54,7 @@ public abstract class AbstractTree implements ITree {
     	StringBuffer b = new StringBuffer();
     	for (ITree t : TreeUtils.preOrder(this)){
     		if(!ctx.getTypeLabel(t).contains("Literal"))
-    			b.append(t.toPrettyString(ctx) + ",\t");
+    			b.append(t.toPrettyString(ctx)   + " Pos:" + this.getPos() + "\t");
     	}
     	return b.toString();
 	}

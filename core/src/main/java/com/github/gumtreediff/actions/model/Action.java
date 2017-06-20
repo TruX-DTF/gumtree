@@ -46,7 +46,7 @@ public abstract class Action {
 
     public String toString_Kui(TreeContext ctx){
 //     return getName() + " " + node.toPrettyString(ctx);
-       return getName() + " " + node.toTreeString_Kui(ctx);// + ", Pos: " + node.getPos();
+       return getName() + " " + node.toTreeString_Kui(ctx);// + " Pos:" + node.getPos();
 //     return getName() + " " + node.toTreeString() + " to " + parent.toShortString() + " at " + pos;
     }
 }
