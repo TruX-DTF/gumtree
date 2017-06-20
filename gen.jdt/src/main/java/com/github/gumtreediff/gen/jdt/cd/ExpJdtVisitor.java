@@ -87,7 +87,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
 	@Override
 	public boolean visit(Assignment node) {
-		pushNode(node, node.getOperator().toString()); // TODO
+		pushNode(node, node.getOperator().toString());
 		Expression leftHandExp = node.getLeftHandSide();
 		leftHandExp.accept(this);
 		Expression rightHandExp = node.getRightHandSide();
@@ -190,8 +190,8 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
 	@Override
 	public boolean visit(InfixExpression node) {
-		InfixExpression.Operator infixOperator = node.getOperator(); // TODO
-		pushNode(node, node.toString());
+		InfixExpression.Operator infixOperator = node.getOperator();
+		pushNode(node, infixOperator.toString());
 		Expression leftExp = node.getLeftOperand();
 		List<?> extendedOperands = node.extendedOperands();
 		Expression rightExp;
@@ -387,7 +387,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
 	@Override
 	public boolean visit(PostfixExpression node) {
-		pushNode(node, node.getOperator().toString());// TODO operator
+		pushNode(node, node.getOperator().toString());
 		Expression exp = node.getOperand();
 		exp.accept(this);
 		return false;
@@ -400,7 +400,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
 	@Override
 	public boolean visit(PrefixExpression node) {
-		pushNode(node, node.toString());// node.getOperator().toString() TODO
+		pushNode(node, node.getOperator().toString());
 		Expression exp = node.getOperand();
 		exp.accept(this);
 		return false;
@@ -760,7 +760,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
         pushNode(node, node.toString());
         Expression exp = node.getInitializer();
         if (exp != null) {
-        	pushNode(exp, exp.toString());
+        	pushNode(exp, exp.getClass().getSimpleName() + COLON + exp.toString());
         }
         return false;
     }
