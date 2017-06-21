@@ -19,10 +19,16 @@ import com.github.gumtreediff.tree.TreeContext;
 public class Test {
 
 	public static void main(String[] args) {
-		String a = "File sr = new File(home); int a = 1; if (!a){}"; //"{if (!a){}}";
+		String a = "File sr = FileUtil.newFile(home); int a = 1; if (!a){}"; //"{if (!a){}}";
 		String b = "File sr = new File(home, Property.PROPERTIES_FILE);if (isTrue(a)){} int a = 1;";//"{if (isTrue(a)){}}";
 		ArrayList<String> ret = compareTwoFilesWithGumTree(a, b);
-		System.out.println(ret);
+		System.out.println(ret + "\n");
+		
+		/**
+		 * Position of actions:
+		 * DEL, UPD, MOV: the positions of changed source code are the positions of these source code in previous java file.
+		 * INS: the positions of changed source code is the position of the source code in revised java file.
+		 */
 		for (String str : ret) {
 			System.out.println(str);
 		}
@@ -69,110 +75,116 @@ public class Test {
 
 	private static String parseAction(String actStr) {
 		// UPD 25@@!a from !a to isTrue(a) at 69
-		int nodeTypePos = actStr.indexOf(" ");
-		String nodeTypeInteger = actStr.substring(nodeTypePos, actStr.indexOf("@@")).trim();
-		String nodeTypeStr = mapping.get(Integer.parseInt(nodeTypeInteger));
-		String act = actStr.substring(0, actStr.indexOf(nodeTypeInteger));
-		act += nodeTypeStr;
-		act += actStr.substring(actStr.indexOf("@@"));
-		return act;
+		String[] actStrArrays = actStr.split("@@");
+		actStr = "";
+		int length = actStrArrays.length;
+		for (int i =0; i < length - 1; i ++) {
+			String actStrFrag = actStrArrays[i];
+			int index = actStrFrag.lastIndexOf(" ") + 1;
+			String nodeType = actStrFrag.substring(index);
+			nodeType = ASTNodeMapping.get(Integer.parseInt(nodeType));
+			actStrFrag = actStrFrag.substring(0, index) + nodeType + "@@";
+			actStr += actStrFrag;
+		}
+		actStr += actStrArrays[length - 1];
+		return actStr;
 	}
 	
-	private static Map<Integer, String> mapping;
+	private static Map<Integer, String> ASTNodeMapping;
 	
 	static {
-		mapping  = new HashMap<Integer, String>();
-		mapping.put(1, "AnonymousClassDeclaration");
-		mapping.put(2, "ArrayAccess");
-		mapping.put(3, "ArrayCreation");
-		mapping.put(4, "ArrayInitializer");
-		mapping.put(5, "ArrayType");
-		mapping.put(6, "AssertStatement");
-		mapping.put(7, "Assignment");
-		mapping.put(8, "Block");
-		mapping.put(9, "BooleanLiteral");
-		mapping.put(10, "BreakStatement");
-		mapping.put(11, "CastExpression");
-		mapping.put(12, "CatchClause");
-		mapping.put(13, "CharacterLiteral");
-		mapping.put(14, "ClassInstanceCreation");
-		mapping.put(15, "CompilationUnit");
-		mapping.put(16, "ConditionalExpression");
-		mapping.put(17, "ConstructorInvocation");
-		mapping.put(18, "ContinueStatement");
-		mapping.put(19, "DoStatement");
-		mapping.put(20, "EmptyStatement");
-		mapping.put(21, "ExpressionStatement");
-		mapping.put(22, "FieldAccess");
-		mapping.put(23, "FieldDeclaration");
-		mapping.put(24, "ForStatement");
-		mapping.put(25, "IfStatement");
-		mapping.put(26, "ImportDeclaration");
-		mapping.put(27, "InfixExpression");
-		mapping.put(28, "Initializer");
-		mapping.put(29, "Javadoc");
-		mapping.put(30, "LabeledStatement");
-		mapping.put(31, "MethodDeclaration");
-		mapping.put(32, "MethodInvocation");
-		mapping.put(33, "NullLiteral");
-		mapping.put(34, "NumberLiteral");
-		mapping.put(35, "PackageDeclaration");
-		mapping.put(36, "ParenthesizedExpression");
-		mapping.put(37, "PostfixExpression");
-		mapping.put(38, "PrefixExpression");
-		mapping.put(39, "PrimitiveType");
-		mapping.put(40, "QualifiedName");
-		mapping.put(41, "ReturnStatement");
-		mapping.put(42, "SimpleName");
-		mapping.put(43, "SimpleType");
-		mapping.put(44, "SingleVariableDeclaration");
-		mapping.put(45, "StringLiteral");
-		mapping.put(46, "SuperConstructorInvocation");
-		mapping.put(47, "SuperFieldAccess");
-		mapping.put(48, "SuperMethodInvocation");
-		mapping.put(49, "SwitchCase");
-		mapping.put(50, "SwitchStatement");
-		mapping.put(51, "SynchronizedStatement");
-		mapping.put(52, "ThisExpression");
-		mapping.put(53, "ThrowStatement");
-		mapping.put(54, "TryStatement");
-		mapping.put(55, "TypeDeclaration");
-		mapping.put(56, "TypeDeclarationStatement");
-		mapping.put(57, "TypeLiteral");
-		mapping.put(58, "VariableDeclarationExpression");
-		mapping.put(59, "VariableDeclarationFragment");
-		mapping.put(60, "VariableDeclarationStatement");
-		mapping.put(61, "WhileStatement");
-		mapping.put(62, "InstanceofExpression");
-		mapping.put(63, "LineComment");
-		mapping.put(64, "BlockComment");
-		mapping.put(65, "TagElement");
-		mapping.put(66, "TextElement");
-		mapping.put(67, "MemberRef");
-		mapping.put(68,"MethodRef");
-		mapping.put(69, "MethodRefParameter");
-		mapping.put(70, "EnhancedForStatement");
-		mapping.put(71, "EnumDeclaration");
-		mapping.put(72, "EnumConstantDeclaration");
-		mapping.put(73, "TypeParameter");
-		mapping.put(74, "ParameterizedType");
-		mapping.put(75, "QualifiedType");
-		mapping.put(76, "WildcardType");
-		mapping.put(77, "NormalAnnotation");
-		mapping.put(78, "MarkerAnnotation");
-		mapping.put(79, "SingleMemberAnnotation");
-		mapping.put(80, "MemberValuePair");
-		mapping.put(81, "AnnotationTypeDeclaration");
-		mapping.put(82, "AnnotationTypeMemberDeclaration");
-		mapping.put(83, "Modifier");
-		mapping.put(84, "UnionType"); 
-		mapping.put(85, "Dimension");
-		mapping.put(86, "LambdaExpression");
-		mapping.put(87, "IntersectionType");
-		mapping.put(88, "NameQualifiedType");
-		mapping.put(89, "CreationReference");
-		mapping.put(90, "ExpressionMethodReference");
-		mapping.put(91, "SuperMethhodReference");
-		mapping.put(92, "TypeMethodReference");
+		ASTNodeMapping  = new HashMap<Integer, String>();
+		ASTNodeMapping.put(1, "AnonymousClassDeclaration");
+		ASTNodeMapping.put(2, "ArrayAccess");
+		ASTNodeMapping.put(3, "ArrayCreation");
+		ASTNodeMapping.put(4, "ArrayInitializer");
+		ASTNodeMapping.put(5, "ArrayType");
+		ASTNodeMapping.put(6, "AssertStatement");
+		ASTNodeMapping.put(7, "Assignment");
+		ASTNodeMapping.put(8, "Block");
+		ASTNodeMapping.put(9, "BooleanLiteral");
+		ASTNodeMapping.put(10, "BreakStatement");
+		ASTNodeMapping.put(11, "CastExpression");
+		ASTNodeMapping.put(12, "CatchClause");
+		ASTNodeMapping.put(13, "CharacterLiteral");
+		ASTNodeMapping.put(14, "ClassInstanceCreation");
+		ASTNodeMapping.put(15, "CompilationUnit");
+		ASTNodeMapping.put(16, "ConditionalExpression");
+		ASTNodeMapping.put(17, "ConstructorInvocation");
+		ASTNodeMapping.put(18, "ContinueStatement");
+		ASTNodeMapping.put(19, "DoStatement");
+		ASTNodeMapping.put(20, "EmptyStatement");
+		ASTNodeMapping.put(21, "ExpressionStatement");
+		ASTNodeMapping.put(22, "FieldAccess");
+		ASTNodeMapping.put(23, "FieldDeclaration");
+		ASTNodeMapping.put(24, "ForStatement");
+		ASTNodeMapping.put(25, "IfStatement");
+		ASTNodeMapping.put(26, "ImportDeclaration");
+		ASTNodeMapping.put(27, "InfixExpression");
+		ASTNodeMapping.put(28, "Initializer");
+		ASTNodeMapping.put(29, "Javadoc");
+		ASTNodeMapping.put(30, "LabeledStatement");
+		ASTNodeMapping.put(31, "MethodDeclaration");
+		ASTNodeMapping.put(32, "MethodInvocation");
+		ASTNodeMapping.put(33, "NullLiteral");
+		ASTNodeMapping.put(34, "NumberLiteral");
+		ASTNodeMapping.put(35, "PackageDeclaration");
+		ASTNodeMapping.put(36, "ParenthesizedExpression");
+		ASTNodeMapping.put(37, "PostfixExpression");
+		ASTNodeMapping.put(38, "PrefixExpression");
+		ASTNodeMapping.put(39, "PrimitiveType");
+		ASTNodeMapping.put(40, "QualifiedName");
+		ASTNodeMapping.put(41, "ReturnStatement");
+		ASTNodeMapping.put(42, "SimpleName");
+		ASTNodeMapping.put(43, "SimpleType");
+		ASTNodeMapping.put(44, "SingleVariableDeclaration");
+		ASTNodeMapping.put(45, "StringLiteral");
+		ASTNodeMapping.put(46, "SuperConstructorInvocation");
+		ASTNodeMapping.put(47, "SuperFieldAccess");
+		ASTNodeMapping.put(48, "SuperMethodInvocation");
+		ASTNodeMapping.put(49, "SwitchCase");
+		ASTNodeMapping.put(50, "SwitchStatement");
+		ASTNodeMapping.put(51, "SynchronizedStatement");
+		ASTNodeMapping.put(52, "ThisExpression");
+		ASTNodeMapping.put(53, "ThrowStatement");
+		ASTNodeMapping.put(54, "TryStatement");
+		ASTNodeMapping.put(55, "TypeDeclaration");
+		ASTNodeMapping.put(56, "TypeDeclarationStatement");
+		ASTNodeMapping.put(57, "TypeLiteral");
+		ASTNodeMapping.put(58, "VariableDeclarationExpression");
+		ASTNodeMapping.put(59, "VariableDeclarationFragment");
+		ASTNodeMapping.put(60, "VariableDeclarationStatement");
+		ASTNodeMapping.put(61, "WhileStatement");
+		ASTNodeMapping.put(62, "InstanceofExpression");
+		ASTNodeMapping.put(63, "LineComment");
+		ASTNodeMapping.put(64, "BlockComment");
+		ASTNodeMapping.put(65, "TagElement");
+		ASTNodeMapping.put(66, "TextElement");
+		ASTNodeMapping.put(67, "MemberRef");
+		ASTNodeMapping.put(68,"MethodRef");
+		ASTNodeMapping.put(69, "MethodRefParameter");
+		ASTNodeMapping.put(70, "EnhancedForStatement");
+		ASTNodeMapping.put(71, "EnumDeclaration");
+		ASTNodeMapping.put(72, "EnumConstantDeclaration");
+		ASTNodeMapping.put(73, "TypeParameter");
+		ASTNodeMapping.put(74, "ParameterizedType");
+		ASTNodeMapping.put(75, "QualifiedType");
+		ASTNodeMapping.put(76, "WildcardType");
+		ASTNodeMapping.put(77, "NormalAnnotation");
+		ASTNodeMapping.put(78, "MarkerAnnotation");
+		ASTNodeMapping.put(79, "SingleMemberAnnotation");
+		ASTNodeMapping.put(80, "MemberValuePair");
+		ASTNodeMapping.put(81, "AnnotationTypeDeclaration");
+		ASTNodeMapping.put(82, "AnnotationTypeMemberDeclaration");
+		ASTNodeMapping.put(83, "Modifier");
+		ASTNodeMapping.put(84, "UnionType"); 
+		ASTNodeMapping.put(85, "Dimension");
+		ASTNodeMapping.put(86, "LambdaExpression");
+		ASTNodeMapping.put(87, "IntersectionType");
+		ASTNodeMapping.put(88, "NameQualifiedType");
+		ASTNodeMapping.put(89, "CreationReference");
+		ASTNodeMapping.put(90, "ExpressionMethodReference");
+		ASTNodeMapping.put(91, "SuperMethhodReference");
+		ASTNodeMapping.put(92, "TypeMethodReference");
 	}
 }
