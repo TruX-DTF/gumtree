@@ -36,6 +36,6 @@ public class Move extends Addition {
     @Override
     public String toString() {
     	// node.toShortString: getType()@@getLabel()
-        return getName() + " " + node.toShortString() + " at " + node.getPos();
+        return getName() + " " + node.toShortString() + " @AT@ " + node.getPos();
     }
 }

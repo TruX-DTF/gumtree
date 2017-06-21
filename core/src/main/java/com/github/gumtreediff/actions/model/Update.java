@@ -43,7 +43,7 @@ public class Update extends Action {
     @Override
     public String toString() {
     	// node.toShortString: getType()@@getLabel()
-        return getName() + " " + node.toShortString() + " from " + node.getLabel() + " to " + value + " at " + node.getPos();
+        return getName() + " " + node.toShortString() + " @FROM@ " + node.getLabel() + " @TO@ " + value + " @AT@ " + node.getPos() + " @LENGTH@ " + node.getLength();
     }
 
 }

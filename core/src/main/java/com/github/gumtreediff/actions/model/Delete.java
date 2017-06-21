@@ -36,6 +36,7 @@ public class Delete extends Action {
     @Override
     public String toString() {
     	// node.toShortString: getType()@@getLabel()
-        return getName() + " " + node.toShortString() + " / "+node.getChildrenLabels() + " at " + node.getPos();
+//        return getName() + " " + node.toShortString() + " / "+node.getChildrenLabels() + " at " + node.getPos();
+    	return getName() + " " + node.toShortString() + " @AT@ " + node.getPos();
     }
 }
