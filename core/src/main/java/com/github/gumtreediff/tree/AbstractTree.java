@@ -50,16 +50,6 @@ public abstract class AbstractTree implements ITree {
 	}
     
     @Override
-	public String toTreeString_Kui(TreeContext ctx){
-    	StringBuffer b = new StringBuffer();
-    	for (ITree t : TreeUtils.preOrder(this)){
-    		if(!ctx.getTypeLabel(t).contains("Literal"))
-    			b.append(t.toPrettyString(ctx)   + " Pos:" + this.getPos() + "\t");
-    	}
-    	return b.toString();
-	}
-
-    @Override
     public int getChildPosition(ITree child) {
         return getChildren().indexOf(child);
     }

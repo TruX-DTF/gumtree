@@ -21,7 +21,6 @@
 package com.github.gumtreediff.actions.model;
 
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
 
 public abstract class Action {
 
@@ -44,9 +43,4 @@ public abstract class Action {
     @Override
     public abstract String toString();
 
-    public String toString_Kui(TreeContext ctx){
-//     return getName() + " " + node.toPrettyString(ctx);
-       return getName() + " " + node.toTreeString_Kui(ctx);// + " Pos:" + node.getPos();
-//     return getName() + " " + node.toTreeString() + " to " + parent.toShortString() + " at " + pos;
-    }
 }

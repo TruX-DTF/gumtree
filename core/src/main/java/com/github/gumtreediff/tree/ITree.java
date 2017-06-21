@@ -231,7 +231,5 @@ public interface ITree {
 
     Iterator<Entry<String, Object>> getMetadata();
     
-    public String toTreeString_Kui(TreeContext ctx);
-    
     public abstract String getChildrenLabels();
 }
