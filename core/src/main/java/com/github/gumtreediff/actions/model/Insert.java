@@ -33,9 +33,4 @@ public class Insert extends Addition {
         return "INS";
     }
 
-    @Override
-    public String toString() {
-    	// node.toShortString: getType()@@getLabel()
-        return getName() + " " + node.toShortString() + " @AT@ " + node.getPos();
-    }
 }

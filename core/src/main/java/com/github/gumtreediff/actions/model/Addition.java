@@ -44,7 +44,8 @@ public abstract class Addition extends Action {
 
     @Override
     public String toString() {
-        return getName() + " " + node.toTreeString() + " to " + parent.toShortString() + " at " + pos;
+//        return getName() + " " + node.toTreeString() + " to " + parent.toShortString() + " at " + pos;
+    	return getName() + " " + node.toShortString() + " to " + parent.toShortString() + " at " + node.getPos();
     }
 
 }
