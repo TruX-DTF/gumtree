@@ -33,7 +33,9 @@ public class JdtVisitor3  extends AbstractJdtVisitor {
 
     @Override
     public void preVisit(ASTNode n) {
-        pushNode(n, getLabel(n));
+    	if (! (n instanceof Javadoc)) {
+    		pushNode(n, getLabel(n));
+    	}
     }
 
     protected String getLabel(ASTNode n) {
@@ -303,6 +305,11 @@ public class JdtVisitor3  extends AbstractJdtVisitor {
         return "";
     }
 
+    @Override 
+    public boolean visit(Javadoc node) {
+    	return false;
+    }
+    
     @Override
     public boolean visit(QualifiedName node) {
     	return false;
@@ -310,6 +317,8 @@ public class JdtVisitor3  extends AbstractJdtVisitor {
     
     @Override
     public void postVisit(ASTNode n) {
-        popNode();
+    	if (!(n instanceof Javadoc)) {
+    		popNode();
+    	}
     }
 }
