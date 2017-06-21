@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.dom.*;
 
 import com.github.gumtreediff.gen.jdt.cd.EntityType;
 
+@SuppressWarnings("unused")
 public class JdtVisitor2  extends AbstractJdtVisitor {
     public JdtVisitor2() {
         super();
@@ -666,7 +667,6 @@ public class JdtVisitor2  extends AbstractJdtVisitor {
         popNode();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean visit(TryStatement node) {
         pushNode(node, "");

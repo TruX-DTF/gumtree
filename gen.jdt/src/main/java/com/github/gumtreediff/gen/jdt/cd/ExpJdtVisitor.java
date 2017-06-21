@@ -248,7 +248,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 		Expression exp = node.getExpression();
 		if (exp != null) {
 			exp.accept(this);
-			popNode();
+//			popNode();
 		}
 		List<?> arguments = node.arguments();
 		visitList(arguments);
@@ -481,9 +481,11 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     @Override
     public boolean visit(VariableDeclarationExpression node) {
         pushNode(node, node.toString());
-        visitListAsNode(EntityType.MODIFIERS, node.modifiers());
+//        visitList(node.modifiers());
+//        visitListAsNode(EntityType.MODIFIERS, node.modifiers());
         node.getType().accept(this);
-        visitListAsNode(EntityType.FRAGMENTS, node.fragments());
+//        visitList(node.fragments());
+//        visitListAsNode(EntityType.FRAGMENTS, node.fragments());
         return false;
     }
 
@@ -526,6 +528,19 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     private boolean fInMethodDeclaration;
     
     @Override
+	public boolean visit(ImportDeclaration node) {
+    	String nodeStr = node.toString();
+    	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
+    	pushNode(node, nodeStr);
+    	return false;
+    }
+    
+    @Override
+    public void endVisit(ImportDeclaration node) {
+    	popNode();
+    }
+    
+    @Override
     public boolean visit(Javadoc node) {
         return false;
     }
@@ -563,11 +578,14 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(FieldDeclaration node) {
-        pushNode(node, node.toString());
-        visitListAsNode(EntityType.MODIFIERS, node.modifiers());
+    	String nodeStr = node.toString();
+    	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
+    	pushNode(node, nodeStr);
+        visitList(node.modifiers());
+//        visitListAsNode(EntityType.MODIFIERS, node.modifiers());
         node.getType().accept(this);
-        visitListAsNode(EntityType.FRAGMENTS, node.fragments());
-
+        visitList(node.fragments());
+//        visitListAsNode(EntityType.FRAGMENTS, node.fragments());
         return false;
     }
 
@@ -605,27 +623,52 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
         return !result.equals("");
     }
 
-    @Override
-    public boolean visit(MethodDeclaration node) {
-        fInMethodDeclaration = true;
+	@Override
+	public boolean visit(MethodDeclaration node) {
+		fInMethodDeclaration = true;
+		List<?> modifiers = node.modifiers();
+		Type returnType = node.isConstructor() ? null : node.getReturnType2();
+		List<?> typeParameters = node.typeParameters();
+		SimpleName methodName = node.getName();
+		List<?> parameters = node.parameters();
+		List<?> exceptionTypes = node.thrownExceptionTypes();
+		
+		String methodLabel = "";
+		for (Object obj : modifiers) {
+			methodLabel += obj.toString() + ", ";
+		}
+		methodLabel += (returnType == null) ? "" : (returnType.toString() + ", ");
+		for (Object obj : typeParameters) {
+			methodLabel += obj.toString() + ", ";
+		}
+		methodLabel += methodName + ", ";
+		for (Object obj : parameters) {
+			methodLabel += obj.toString() + ", ";
+		}
+		for (Object obj : exceptionTypes) {
+			methodLabel += obj.toString() + ", ";
+		}
+		pushNode(node, methodLabel);
+		visitList(modifiers);
+		// visitListAsNode(EntityType.MODIFIERS, node.modifiers());
+		if (returnType != null) {
+			returnType.accept(this);
+		}
+		visitList(typeParameters);
+		visitList(parameters);
+		visitList(exceptionTypes);
+//		visitListAsNode(EntityType.TYPE_ARGUMENTS, node.typeParameters());
+//		visitListAsNode(EntityType.PARAMETERS, node.parameters());
+//		visitListAsNode(EntityType.THROW, node.thrownExceptionTypes());
 
-        pushNode(node, node.getName().toString());//TODO
+		// The body can be null when the method declaration is from a interface
+		if (node.getBody() != null) {
+			node.getBody().accept(this);
+//			popNode();
+		}
+		return false;
 
-        visitListAsNode(EntityType.MODIFIERS, node.modifiers());
-        if (node.getReturnType2() != null) {
-            node.getReturnType2().accept(this);
-        }
-        visitListAsNode(EntityType.TYPE_ARGUMENTS, node.typeParameters());
-        visitListAsNode(EntityType.PARAMETERS, node.parameters());
-        visitListAsNode(EntityType.THROW, node.thrownExceptionTypes());
-
-        // The body can be null when the method declaration is from a interface
-        if (node.getBody() != null) {
-            node.getBody().accept(this);
-        }
-        return false;
-
-    }
+	}
 
     @Override
     public void endVisit(MethodDeclaration node) {
@@ -730,11 +773,11 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     	SimpleName variableName = node.getName();
     	Expression exp = node.getInitializer();
         pushNode(node, node.toString());
-        type.accept(this);
-        variableName.accept(this);
-        if (exp != null) {
-        	exp.accept(this);
-        }
+//        type.accept(this);
+//        variableName.accept(this);
+//        if (exp != null) {
+//        	exp.accept(this);
+//        }
         return false;
     }
 
@@ -757,10 +800,10 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(VariableDeclarationFragment node) {
-        pushNode(node, node.toString());
+    	pushNode(node, node.toString());
         Expression exp = node.getInitializer();
         if (exp != null) {
-        	pushNode(exp, exp.getClass().getSimpleName() + COLON + exp.toString());
+//        	exp.accept(this);
         }
         return false;
     }
@@ -810,7 +853,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(CatchClause node) {
-        pushNode(node, ((SimpleType) node.getException().getType()).getName().getFullyQualifiedName());
+        pushNode(node, node.getException().toString());//((SimpleType) node.getException().getType()).getName().getFullyQualifiedName()
         node.getBody().accept(this);
         return false;
     }
@@ -823,13 +866,16 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     ////-------------------Statements-------------------
     @Override
     public boolean visit(Block node) {
-        // skip block as it is not interesting
-        return true;
+    	List<?> statements = node.statements();
+    	for (Object obj : statements) {
+    		Statement stmt = (Statement) obj;
+    		stmt.accept(this);
+    	}
+        return false;
     }
 
     @Override
     public void endVisit(Block node) {
-        // do nothing pop is not needed (see visit(Block))
     }
 
     @Override
@@ -840,11 +886,11 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
         if (msg != null) {
             value += ", Msg-" + msg.getClass().getSimpleName() + COLON + msg.toString();
             pushNode(node, value);
-            exp.accept(this);
-            msg.accept(this);
+//            exp.accept(this);
+//            msg.accept(this);
         } else {
         	pushNode(node, value);
-            exp.accept(this);
+//            exp.accept(this);
         }
         return false;
     }
@@ -867,9 +913,12 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(ConstructorInvocation node) {
-        pushNode(node, node.toString());
+        String nodeStr = node.toString();
+        nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
+        pushNode(node, nodeStr);
+        List<?> typeArguments = node.typeArguments();
         List<?> arguments = node.arguments(); // TODO
-        visitList(arguments);
+//        visitList(arguments);
         return false;
     }
 
@@ -893,7 +942,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     public boolean visit(DoStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
-        exp.accept(this);
+//        exp.accept(this);
         node.getBody().accept(this);
         return false;
     }
@@ -916,9 +965,9 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     public boolean visit(EnhancedForStatement node) {
     	SingleVariableDeclaration parameter = node.getParameter();
     	Expression exp = node.getExpression();
-        pushNode(node, parameter.toString() + COLON + exp.toString());
-        parameter.accept(this);
-        exp.accept(this);
+        pushNode(node, parameter.toString() + ", " + exp.getClass().getSimpleName() + COLON + exp.toString());
+//        parameter.accept(this);
+//        exp.accept(this);
         node.getBody().accept(this);
         return false;
     }
@@ -931,8 +980,8 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     @Override
     public boolean visit(ExpressionStatement node) {
     	Expression exp = node.getExpression();
-        pushNode(node, exp.getClass().getSimpleName() + COLON + node.toString());
-        exp.accept(this);
+        pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
+//        exp.accept(this);
         return false;
     }
 
@@ -954,9 +1003,9 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 		value += update.toString();
         
         pushNode(node, value);
-		visitList(init);
-		exp.accept(this);
-		visitList(update);
+//		visitList(init);
+//		exp.accept(this);
+//		visitList(update);
 		
 		node.getBody().accept(this);
         return false;
@@ -972,7 +1021,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
         Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         
-        exp.accept(this);
+//        exp.accept(this);
         Statement stmt = node.getThenStatement();
         if (stmt != null) {
             pushNode(stmt, "ThenBlock");
@@ -1011,7 +1060,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     	Expression exp = node.getExpression();
     	if (exp != null) {
     		pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
-    		exp.accept(this);
+//    		exp.accept(this);
     	} else {
             pushNode(node, "");
     	}
@@ -1025,12 +1074,14 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(SuperConstructorInvocation node) {
+    	String nodeStr = node.toString();
+    	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
         pushNode(node, node.toString());
-        List<?> arguments = node.arguments();
-        for (Object obj : arguments) {
-        	Expression argu = (Expression) obj;
-        	argu.accept(this);
-        }
+//        List<?> arguments = node.arguments();
+//        for (Object obj : arguments) {
+//        	Expression argu = (Expression) obj;
+//        	argu.accept(this);
+//        }
         return false;
     }
 
@@ -1043,8 +1094,8 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     public boolean visit(SwitchCase node) {
     	Expression exp = node.getExpression();
     	if (exp != null) {
-    		pushNode(node, "case-" + exp.getClass().getSimpleName() + COLON + exp.toString());
-    		exp.accept(this);
+    		pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
+//    		exp.accept(this);
     	} else {
     		pushNode(node, "default");
     	}
@@ -1060,7 +1111,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     public boolean visit(SwitchStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
-        exp.accept(this);
+//        exp.accept(this);
         visitList(node.statements());
         return false;
     }
@@ -1073,7 +1124,8 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     @Override
     public boolean visit(SynchronizedStatement node) {
     	Expression exp = node.getExpression();
-        pushNode(node, "synchronized-" + exp.getClass().getSimpleName() + COLON + exp.toString());
+        pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
+//        exp.accept(this);
         node.getBody().accept(this);
         return false;
     }
@@ -1087,7 +1139,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     public boolean visit(ThrowStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
-        exp.accept(this);
+//        exp.accept(this);
         return false;
     }
 
@@ -1101,13 +1153,13 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     	List<?> resources = node.resources();
     	if (resources != null) {
     		pushNode(node, "try:" + resources.toString());
-    		visitList(resources);
+//    		visitList(resources);
     	} else {
     		pushNode(node, "try");
     	}
 
     	node.getBody().accept(this);
-        popNode();
+//        popNode();
 
         visitListAsNode(EntityType.CATCH_CLAUSES, node.catchClauses());
 
@@ -1138,11 +1190,18 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     
     @Override
     public boolean visit(VariableDeclarationStatement node) {
+    	String nodeStr = node.toString();
+    	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
         pushNode(node, node.toString());
     	Type type = node.getType();
-    	type.accept(this);
+//    	type.accept(this);
     	List<?> fragments = node.fragments();
-    	visitList(fragments);
+//    	visitList(fragments);
+    	 for (Object obj : fragments) {
+         	ASTNode fragment = (ASTNode) obj;
+         	fragment.accept(this);
+//        	popNode();
+         }
         return false;
     }
 
@@ -1155,7 +1214,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     public boolean visit(WhileStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
-        exp.accept(this);
+//        exp.accept(this);
         node.getBody().accept(this);
         return false;
     }
