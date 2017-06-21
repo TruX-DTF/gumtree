@@ -8,3 +8,6 @@ samples/
 .idea/
 *.iml
 .DS_Store
+OUTPUT/
+logs/
+gen.jdt/src/main/java/edu/lu/uni/serval/gumtree/GumTreeAnalysis.java
