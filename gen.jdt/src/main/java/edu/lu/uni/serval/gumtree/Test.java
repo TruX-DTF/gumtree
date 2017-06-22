@@ -16,11 +16,14 @@ import com.github.gumtreediff.matchers.Matchers;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 
+import edu.lu.uni.serval.gen.jdt.rowToken.RowTokenJdtTreeGenerator;
+
 public class Test {
 
 	public static void main(String[] args) {
 		String a = "File sr = FileUtil.newFile(home); int a = 1; if (!a){}"; //"{if (!a){}}";
-		String b = "File sr = new File(home, Property.PROPERTIES_FILE);if (isTrue(a)){} int a = 1;";//"{if (isTrue(a)){}}";
+		String b = "File sr = new File(home);if (!isTrue(a)){} int a = 1;";//"{if (isTrue(a)){}}";
+
 		ArrayList<String> ret = compareTwoFilesWithGumTree(a, b);
 		System.out.println(ret + "\n");
 		
@@ -44,8 +47,10 @@ public class Test {
 //			Run.initGenerators();
 //			tc1 = Generators.getInstance().getTree(fileA);
 //			tc2 = Generators.getInstance().getTree(fileB);
-			tc1 = new JdtTreeGenerator3().generateFromString(fileA, ASTParser.K_STATEMENTS);
-			tc2 = new JdtTreeGenerator3().generateFromString(fileB, ASTParser.K_STATEMENTS);
+			tc1 = new RowTokenJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
+			tc2 = new RowTokenJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
+//			tc1 = new JdtTreeGenerator3().generateFromString(fileA, ASTParser.K_STATEMENTS);
+//			tc2 = new JdtTreeGenerator3().generateFromString(fileB, ASTParser.K_STATEMENTS);
 //			tc1 = new CdJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
 //			tc2 = new CdJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
 //			tc1 = new ExpJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
@@ -94,6 +99,7 @@ public class Test {
 	
 	static {
 		ASTNodeMapping  = new HashMap<Integer, String>();
+		ASTNodeMapping.put(0, "ASTNode");
 		ASTNodeMapping.put(1, "AnonymousClassDeclaration");
 		ASTNodeMapping.put(2, "ArrayAccess");
 		ASTNodeMapping.put(3, "ArrayCreation");
