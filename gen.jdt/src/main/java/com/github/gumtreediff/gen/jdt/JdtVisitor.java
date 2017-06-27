@@ -31,7 +31,9 @@ public class JdtVisitor  extends AbstractJdtVisitor {
 
     @Override
     public void preVisit(ASTNode n) {
-        pushNode(n, getLabel(n));
+    	if (! (n instanceof Comment || n instanceof TagElement || n instanceof TextElement)) {
+    		pushNode(n, getLabel(n));
+    	}
     }
 
     protected String getLabel(ASTNode n) {
@@ -46,15 +48,25 @@ public class JdtVisitor  extends AbstractJdtVisitor {
         if (n instanceof PrefixExpression) return ((PrefixExpression) n).getOperator().toString();
         if (n instanceof PostfixExpression) return ((PostfixExpression) n).getOperator().toString();
         if (n instanceof Assignment) return ((Assignment) n).getOperator().toString();
-        if (n instanceof TextElement) return n.toString();
-        if (n instanceof TagElement) return ((TagElement) n).getTagName();
+//        if (n instanceof TextElement) return n.toString();
+//        if (n instanceof TagElement) return ((TagElement) n).getTagName();
 
         return "";
+    }
+    
+    @Override
+    public boolean visit(Javadoc node) {
+    	return false;
     }
 
     @Override
     public boolean visit(TagElement e) {
-        return true;
+        return false;
+    }
+    
+    @Override
+    public boolean visit(TextElement node) {
+    	return false;
     }
 
     @Override
@@ -64,6 +76,8 @@ public class JdtVisitor  extends AbstractJdtVisitor {
 
     @Override
     public void postVisit(ASTNode n) {
-        popNode();
+    	if (! (n instanceof Comment || n instanceof TagElement || n instanceof TextElement)) {
+    		popNode();
+    	}
     }
 }
