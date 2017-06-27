@@ -68,7 +68,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		arrayType.accept(this);
 		//List<?> dimensions = node.dimensions();// TODO
 		ArrayInitializer initializer = node.getInitializer();
-		initializer.accept(this);
+		if (initializer != null) {
+			initializer.accept(this);
+		}
 		return false;
 	}
 
@@ -778,7 +780,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         
         pushNode(node, value);
 		visitList(init);
-		exp.accept(this);
+		if (exp != null) {
+			exp.accept(this);
+		}
 		visitList(update);
 		
 		node.getBody().accept(this);
