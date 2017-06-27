@@ -10,12 +10,13 @@ import org.eclipse.jdt.core.dom.ASTParser;
 
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.gen.jdt.JdtTreeGenerator3;
+import com.github.gumtreediff.gen.jdt.cd.CdJdtTreeGenerator;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.matchers.Matchers;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 
+import edu.lu.uni.serval.gen.jdt.exp.ExpJdtTreeGenerator;
 import edu.lu.uni.serval.gen.jdt.rowToken.RowTokenJdtTreeGenerator;
 
 public class Test {
@@ -35,12 +36,14 @@ public class Test {
 		for (String str : ret) {
 			System.out.println(str);
 		}
+		
+		// Regroup GumTree Results.
+		
 	}
 	
 	public static ArrayList<String> compareTwoFilesWithGumTree(String fileA, String fileB) {
 		
 		ArrayList<String> ret = new ArrayList<String>();
-		
 		try {
 			TreeContext tc1 = null;
 			TreeContext tc2 = null;
@@ -55,20 +58,21 @@ public class Test {
 //			tc2 = new CdJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
 //			tc1 = new ExpJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
 //			tc2 = new ExpJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
+			System.out.println(tc1);
+			System.out.println(tc2);
 			ITree t1 = tc1.getRoot();
 			ITree t2 = tc2.getRoot();
-			
 			Matcher m = Matchers.getInstance().getMatcher(t1, t2);
 			m.match();
 			
 			ActionGenerator ag = new ActionGenerator(t1, t2, m.getMappings());
 			ag.generate();
 			List<Action> actions = ag.getActions();
+			ListSorter<Action> sorter = new ListSorter<>(actions);
+			actions = sorter.sortAscending();
 			for(Action ac : actions){
 				String s = parseAction(ac.toString());
-				if (!"".equals(s)){
-					ret.add(s);
-				}
+				ret.add(s);
 			}
 			
 		} catch (IOException e) {
@@ -77,7 +81,7 @@ public class Test {
 
 		return ret;
 	}
-
+	
 	private static String parseAction(String actStr) {
 		// UPD 25@@!a from !a to isTrue(a) at 69
 		String[] actStrArrays = actStr.split("@@");
