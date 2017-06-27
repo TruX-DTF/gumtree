@@ -357,11 +357,13 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     	if (!(arrayExp instanceof Name || !isSimplestMethodInvocation(arrayExp))) {
     		arrayExp.accept(this);
     	}
+    	popNode();
 		Expression indexExpression = node.getIndex();
 		pushNode(indexExpression, "ArrayIndex:" + indexExpression.getClass().getSimpleName() + ":" + indexExpression.toString()); //"ArrayIndex-" + 
 		if (!(indexExpression instanceof NumberLiteral || indexExpression instanceof SimpleName || !isSimplestMethodInvocation(arrayExp))) {
 			indexExpression.accept(this);
 		}
+    	popNode();
 		return false;
 	}
 
@@ -433,6 +435,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			visitSubExpression(argu);
 			popNode();
 		}
+    	popNode();
 		return false;
 	}
 
@@ -529,6 +532,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			visitSubExpression(argu);
 			popNode();
 		}
+    	popNode();
 		return false;
 	}
 
@@ -654,6 +658,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			visitSubExpression(argu);
 			popNode();
 		}
+    	popNode();
 		return false;
 	}
 
