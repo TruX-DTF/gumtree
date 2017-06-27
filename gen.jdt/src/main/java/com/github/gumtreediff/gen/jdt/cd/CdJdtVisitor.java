@@ -45,13 +45,13 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(Block node) {
-        // skip block as it is not interesting
+    	pushNode(node, "Block");
         return true;
     }
 
     @Override
     public void endVisit(Block node) {
-        // do nothing pop is not needed (see visit(Block))
+    	popNode();
     }
 
     @SuppressWarnings("unchecked")
@@ -401,7 +401,7 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(CatchClause node) {
-        pushNode(node, ((SimpleType) node.getException().getType()).getName().getFullyQualifiedName());
+        pushNode(node, node.getException().toString());
         // since exception type is used as value, visit children by hand
         node.getBody().accept(this);
         return false;
