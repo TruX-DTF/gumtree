@@ -1,4 +1,4 @@
-package com.github.gumtreediff.gen.jdt.cd;
+package edu.lu.uni.serval.gen.jdt.exp;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;

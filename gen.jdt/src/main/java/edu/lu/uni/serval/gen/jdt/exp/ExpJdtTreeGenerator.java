@@ -18,7 +18,7 @@
  * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
  */
 
-package com.github.gumtreediff.gen.jdt.cd;
+package edu.lu.uni.serval.gen.jdt.exp;
 
 import com.github.gumtreediff.gen.Register;
 import com.github.gumtreediff.gen.jdt.AbstractJdtVisitor;
