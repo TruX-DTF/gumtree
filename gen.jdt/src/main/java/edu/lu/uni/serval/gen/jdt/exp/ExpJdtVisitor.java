@@ -38,7 +38,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	@Override
 	public boolean visit(SingleMemberAnnotation node) {
 		// TODO Auto-generated method stub
-		return super.visit(node);
+		return false;
 	}
 
 	@Override
@@ -66,7 +66,8 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		pushNode(node, node.toString());
 		ArrayType arrayType = node.getType();
 		arrayType.accept(this);
-		//List<?> dimensions = node.dimensions();// TODO
+		List<?> dimensions = node.dimensions();
+		visitList(dimensions);
 		ArrayInitializer initializer = node.getInitializer();
 		if (initializer != null) {
 			initializer.accept(this);
@@ -488,7 +489,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     @Override
     public boolean visit(VariableDeclarationExpression node) {
         pushNode(node, node.toString());
-        visitList(node.modifiers());
+        List<?> modifiers = node.modifiers();
+        for (Object obj : modifiers) {
+        	IExtendedModifier modifier = (IExtendedModifier) obj;
+        	if (modifier.isModifier()) {
+        		((Modifier)modifier).accept(this);
+        	}
+        }
         node.getType().accept(this);
         visitList(node.fragments());
         return false;
@@ -559,7 +566,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	String nodeStr = node.toString();
     	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
     	pushNode(node, nodeStr);
-        visitList(node.modifiers());
+    	List<?> modifiers = node.modifiers();
+        for (Object obj : modifiers) {
+        	IExtendedModifier modifier = (IExtendedModifier) obj;
+        	if (modifier.isModifier()) {
+        		((Modifier)modifier).accept(this);
+        	}
+        }
         node.getType().accept(this);
         visitList(node.fragments());
         return false;
@@ -592,7 +605,10 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		
 		String methodLabel = "";
 		for (Object obj : modifiers) {
-			methodLabel += obj.toString() + ", ";
+			IExtendedModifier modifier = (IExtendedModifier) obj;
+			if (modifier.isModifier()) {
+				methodLabel += obj.toString() + ", ";
+			}
 		}
 		methodLabel += (returnType == null) ? "" : (returnType.toString() + ", ");
 		for (Object obj : typeParameters) {
@@ -606,7 +622,12 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			methodLabel += obj.toString() + ", ";
 		}
 		pushNode(node, methodLabel);
-		visitList(modifiers);
+        for (Object obj : modifiers) {
+        	IExtendedModifier modifier = (IExtendedModifier) obj;
+        	if (modifier.isModifier()) {
+        		((Modifier)modifier).accept(this);
+        	}
+        }
 		if (returnType != null) {
 			returnType.accept(this);
 		}
@@ -798,14 +819,27 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         Statement stmt = node.getThenStatement();
         if (stmt != null) {
             pushNode(stmt, "ThenBlock");
-            stmt.accept(this);
+            if (stmt instanceof Block) {
+            	Block block = (Block) stmt;
+                List<?> stmts = block.statements();
+                visitList(stmts);
+            } else {
+            	stmt.accept(this);
+            }
+            
             popNode();
         }
 
         stmt = node.getElseStatement();
         if (stmt != null) {
             pushNode(stmt, "ElseBlock");
-            node.getElseStatement().accept(this);
+            if (stmt instanceof Block) {
+            	Block block = (Block) stmt;
+                List<?> stmts = block.statements();
+                visitList(stmts);
+            } else {
+            	stmt.accept(this);
+            }
             popNode();
         }
         return false;
