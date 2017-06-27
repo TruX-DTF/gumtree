@@ -25,7 +25,7 @@ import com.github.gumtreediff.tree.ITree;
 public class Delete extends Action {
 
     public Delete(ITree node) {
-        super(node);
+        super(node, node.getPos(), node.getLength());
     }
 
     @Override

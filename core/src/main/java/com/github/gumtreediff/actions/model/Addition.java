@@ -26,12 +26,9 @@ public abstract class Addition extends Action {
 
     protected ITree parent;
 
-    protected int pos;
-
     public Addition(ITree node, ITree parent, int pos) {
-        super(node);
+    	super(node, node.getPos(), node.getLength());
         this.parent = parent;
-        this.pos = pos;
     }
 
     public ITree getParent() {
@@ -39,7 +36,7 @@ public abstract class Addition extends Action {
     }
 
     public int getPosition() {
-        return pos;
+        return position;
     }
 
     @Override
@@ -48,7 +45,7 @@ public abstract class Addition extends Action {
     	if (!parent.isRoot() && (parent.toShortString().startsWith("8@@") || parent.toShortString().startsWith("0@@Block:"))) {
     		parent = parent.getParent();
     	}
-    	return getName() + " " + node.toShortString() + " @TO@ " + parent.toShortString() + " @AT@ " + node.getPos();
+    	return getName() + " " + node.toShortString() + " @TO@ " + parent.toShortString() + " @AT@ " + position;
     }
 
 }

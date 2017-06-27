@@ -27,7 +27,7 @@ public class Update extends Action {
     private String value;
 
     public Update(ITree node, String value) {
-        super(node);
+        super(node, node.getPos(), node.getLength());
         this.value = value;
     }
 
@@ -43,7 +43,7 @@ public class Update extends Action {
     @Override
     public String toString() {
     	// node.toShortString: getType()@@getLabel()
-        return getName() + " " + node.toShortString() + " @FROM@ " + node.getLabel() + " @TO@ " + value + " @AT@ " + node.getPos() + " @LENGTH@ " + node.getLength();
+        return getName() + " " + node.toShortString() + " @TO@ " + value + " @AT@ " + node.getPos() + " @LENGTH@ " + node.getLength();
     }
 
 }
