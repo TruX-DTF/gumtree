@@ -2,18 +2,17 @@ package edu.lu.uni.serval.gen.jdt.exp;
 
 import java.util.List;
 
-import com.github.gumtreediff.gen.jdt.AbstractJdtVisitor;
-import com.github.gumtreediff.gen.jdt.cd.EntityType;
+import com.github.gumtreediff.gen.jdt.cd.CdJdtVisitor;
 
 import org.eclipse.jdt.core.dom.*;
 
 /**
- * Extend CdJdtVisitor by visiting Expressions.
+ * Extend CdJdtVisitor by visiting Expressions and adding expression type to tree label.
  * 
  * @author kui.liu
  *
  */
-public class ExpJdtVisitor extends AbstractJdtVisitor {
+public class ExpJdtVisitor extends CdJdtVisitor {
 	////---------------Expressions---------------
 	//  ----------------Annotation---------------
 	@Override
@@ -554,11 +553,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(TypeDeclaration node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(FieldDeclaration node) {
     	String nodeStr = node.toString();
     	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
@@ -567,11 +561,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
         node.getType().accept(this);
         visitList(node.fragments());
         return false;
-    }
-
-    @Override
-    public void endVisit(FieldDeclaration node) {
-        popNode();
     }
 
     @Override
@@ -632,22 +621,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 
 	}
 
-    @Override
-    public void endVisit(MethodDeclaration node) {
-        popNode();
-    }
-
-    @Override
-    public boolean visit(Modifier node) {
-        pushNode(node, node.getKeyword().toString());
-        return false;
-    }
-
-    @Override
-    public void endVisit(Modifier node) {
-        popNode();
-    }
-
     //-----------------Types-----------------
     @Override
     public boolean visit(NameQualifiedType node) {
@@ -670,19 +643,9 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(ParameterizedType node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(PrimitiveType node) {
         pushNode(node, node.getPrimitiveTypeCode().toString());
         return false;
-    }
-
-    @Override
-    public void endVisit(PrimitiveType node) {
-        popNode();
     }
 
     @Override
@@ -692,34 +655,12 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(QualifiedType node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(SimpleType node) {
         pushNode(node, node.getName().getFullyQualifiedName());
         return false;
     }
-
-    @Override
-    public void endVisit(SimpleType node) {
-        popNode();
-    }
-
-    @Override
-    public boolean visit(WildcardType node) {
-        String bound = node.isUpperBound() ? "extends" : "super";
-        pushNode(node, bound);
-        return true;
-    }
-
-    @Override
-    public void endVisit(WildcardType node) {
-        popNode();
-    }
     //-----------------Types-----------------
-
+    
     @Override
     public boolean visit(SingleVariableDeclaration node) {
     	Type type = node.getType();
@@ -733,24 +674,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
         }
         return false;
     }
-
-    @Override
-    public void endVisit(SingleVariableDeclaration node) {
-        popNode();
-    }
-
-    @Override
-    public boolean visit(TypeParameter node) {
-        pushNode(node, node.getName().getFullyQualifiedName());
-        visitList(node.typeBounds());
-        return false;
-    }
-
-    @Override
-    public void endVisit(TypeParameter node) {
-        popNode();
-    }
-
+    
     @Override
     public boolean visit(VariableDeclarationFragment node) {
     	pushNode(node, node.toString());
@@ -759,11 +683,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
         	exp.accept(this);
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(VariableDeclarationFragment node) {
-        popNode();
     }
 
     /////////////////////
@@ -778,31 +697,7 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     ////***************BODY VISITOR*************************
     private static final String COLON = ":";
 
-
-    @Override
-    public boolean visit(CatchClause node) {
-        pushNode(node, node.getException().toString());
-        node.getBody().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(CatchClause node) {
-        popNode();
-    }
-
     ////-------------------Statements-------------------
-    @Override
-    public boolean visit(Block node) {
-    	pushNode(node, "Block");
-        return true;
-    }
-
-    @Override
-    public void endVisit(Block node) {
-    	popNode();
-    }
-
     @Override
     public boolean visit(AssertStatement node) {
     	Expression exp = node.getExpression();
@@ -821,22 +716,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(AssertStatement node) {
-        popNode();
-    }
-
-    @Override
-    public boolean visit(BreakStatement node) {
-        pushNode(node, node.getLabel() != null ? node.getLabel().toString() : "");
-        return false;
-    }
-
-    @Override
-    public void endVisit(BreakStatement node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(ConstructorInvocation node) {
         String nodeStr = node.toString();
         nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
@@ -849,33 +728,12 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(ConstructorInvocation node) {
-        popNode();
-    }
-
-    @Override
-    public boolean visit(ContinueStatement node) {
-        pushNode(node, node.getLabel() != null ? node.getLabel().toString() : "");
-        return false;
-    }
-
-    @Override
-    public void endVisit(ContinueStatement node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(DoStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
         node.getBody().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(DoStatement node) {
-        popNode();
     }
 
     @Override
@@ -899,21 +757,11 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(EnhancedForStatement node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(ExpressionStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(ExpressionStatement node) {
-        popNode();
     }
 
     @Override
@@ -935,11 +783,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
 		
 		node.getBody().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(ForStatement node) {
-        popNode();
     }
 
     @Override
@@ -965,23 +808,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(IfStatement node) {
-        popNode();
-    }
-
-    @Override
-    public boolean visit(LabeledStatement node) {
-        pushNode(node, node.getLabel().getFullyQualifiedName());
-        node.getBody().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(LabeledStatement node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(ReturnStatement node) {
     	Expression exp = node.getExpression();
     	if (exp != null) {
@@ -994,22 +820,12 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(ReturnStatement node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(SuperConstructorInvocation node) {
     	String nodeStr = node.toString();
     	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
         pushNode(node, node.toString());
         visitList(node.arguments());
         return false;
-    }
-
-    @Override
-    public void endVisit(SuperConstructorInvocation node) {
-        popNode();
     }
 
     @Override
@@ -1025,22 +841,12 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(SwitchCase node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(SwitchStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
         visitList(node.statements());
         return false;
-    }
-
-    @Override
-    public void endVisit(SwitchStatement node) {
-        popNode();
     }
 
     @Override
@@ -1053,21 +859,11 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(SynchronizedStatement node) {
-        popNode();
-    }
-
-    @Override
     public boolean visit(ThrowStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(ThrowStatement node) {
-        popNode();
     }
 
     @Override
@@ -1094,22 +890,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     }
 
     @Override
-    public void endVisit(TryStatement node) {
-        popNode();
-    }
-
-    @Override
-    public boolean visit(TypeDeclarationStatement node) {
-        // skip, only type declaration is interesting
-        return true;
-    }
-
-    @Override
-    public void endVisit(TypeDeclarationStatement node) {
-        // do nothing
-    }
-    
-    @Override
     public boolean visit(VariableDeclarationStatement node) {
     	String nodeStr = node.toString();
     	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
@@ -1119,11 +899,6 @@ public class ExpJdtVisitor extends AbstractJdtVisitor {
     	List<?> fragments = node.fragments();
     	visitList(fragments);
         return false;
-    }
-
-    @Override
-    public void endVisit(VariableDeclarationStatement node) {
-        popNode();
     }
 
     @Override
