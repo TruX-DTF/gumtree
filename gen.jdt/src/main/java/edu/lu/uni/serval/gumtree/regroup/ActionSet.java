@@ -1,144 +1,65 @@
-package edu.lu.uni.serval.gumtree;
+package edu.lu.uni.serval.gumtree.regroup;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jdt.core.dom.ASTParser;
-
-import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.gen.jdt.cd.CdJdtTreeGenerator;
-import com.github.gumtreediff.matchers.Matcher;
-import com.github.gumtreediff.matchers.Matchers;
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
 
-import edu.lu.uni.serval.gen.jdt.exp.ExpJdtTreeGenerator;
-import edu.lu.uni.serval.gen.jdt.rowToken.RowTokenJdtTreeGenerator;
-import edu.lu.uni.serval.gumtree.regroup.ActionSet;
+public class ActionSet {
+	
+	private String astNodeType;
+	private Action action;
+	private List<ActionSet>	subActions = new ArrayList<>();
 
-public class Test {
+	public String getAstNodeType() {
+		return astNodeType;
+	}
 
-	public static void main(String[] args) {
-		String a = "File sr = FileUtil.newFile(home); int a = 1; if (!a){}"; //"{if (!a){}}";
-		String b = "File sr = new File(home);if (!isTrue(a)){} int a = 1;";//"{if (isTrue(a)){}}";
+	public void setAstNodeType(String astNodeType) {
+		this.astNodeType = astNodeType;
+	}
 
-		ArrayList<String> ret = compareTwoFilesWithGumTree(a, b);
-		System.out.println(ret + "\n");
-		
-		/**
-		 * Position of actions:
-		 * DEL, UPD, MOV: the positions of changed source code are the positions of these source code in previous java file.
-		 * INS: the positions of changed source code is the position of the source code in revised java file.
-		 */
-		for (String str : ret) {
-			System.out.println(str);
+	public Action getAction() {
+		return action;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
+	public List<ActionSet> getSubActions() {
+		return subActions;
+	}
+
+	public void setSubActions(List<ActionSet> subActions) {
+		this.subActions = subActions;
+	}
+
+	@Override
+	public String toString() {
+		String str = parseAction(action.toString()) + "\n";
+		for (ActionSet actionSet : subActions) {
+			try {
+				BufferedReader reader = new BufferedReader(new StringReader(actionSet.toString()));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					str += "----" + line + "\n";
+				}
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		// Regroup GumTree Results.
-		
+		 
+		return str;
 	}
 	
-	public static ArrayList<String> compareTwoFilesWithGumTree(String fileA, String fileB) {
-		
-		ArrayList<String> ret = new ArrayList<String>();
-		List<ActionSet> actionSets = new ArrayList<>();
-		
-		try {
-			TreeContext tc1 = null;
-			TreeContext tc2 = null;
-//			Run.initGenerators();
-//			tc1 = Generators.getInstance().getTree(fileA);
-//			tc2 = Generators.getInstance().getTree(fileB);
-			tc1 = new RowTokenJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
-			tc2 = new RowTokenJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
-//			tc1 = new JdtTreeGenerator3().generateFromString(fileA, ASTParser.K_STATEMENTS);
-//			tc2 = new JdtTreeGenerator3().generateFromString(fileB, ASTParser.K_STATEMENTS);
-//			tc1 = new CdJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
-//			tc2 = new CdJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
-//			tc1 = new ExpJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
-//			tc2 = new ExpJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
-			System.out.println(tc1);
-			System.out.println(tc2);
-			ITree t1 = tc1.getRoot();
-			ITree t2 = tc2.getRoot();
-			Matcher m = Matchers.getInstance().getMatcher(t1, t2);
-			m.match();
-			
-			ActionGenerator ag = new ActionGenerator(t1, t2, m.getMappings());
-			ag.generate();
-			List<Action> actions = ag.getActions();
-			ListSorter<Action> sorter = new ListSorter<>(actions);
-			actions = sorter.sortAscending();
-			
-			ActionSet actionSet = null;
-			for(Action act : actions){
-				Action parentAct = findParentAction(act, actions);
-				if (parentAct == null) {
-					actionSet = new ActionSet();
-					actionSet.setAction(act);
-					actionSets.add(actionSet);
-				} else {
-					if (!addToAactionSet(act, parentAct, actionSet)) {
-						System.err.println("Didn't find the parent action of Action: " + act.toString());
-					}
-				}
-				String s = parseAction(act.toString());
-				ret.add(s);
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println();
-		for (ActionSet actionSet : actionSets) {
-			System.out.println(actionSet.toString());
-		}
-
-		return ret;
-	}
-	
-	private static boolean addToAactionSet(Action act, Action parentAct, ActionSet actionSet) {
-		ITree parentTree = parentAct.getNode();
-		ITree tree = actionSet.getAction().getNode();
-		if (tree.equals(parentTree)) {
-			ActionSet actSet = new ActionSet();
-			actSet.setAction(act);
-			actionSet.getSubActions().add(actSet);
-			return true;
-		} else {
-			List<ActionSet> subActionSets = actionSet.getSubActions();
-			if (subActionSets.size() > 0) {
-				boolean isAdded = false;
-				for (ActionSet subActionSet : subActionSets) {
-					isAdded = addToAactionSet(act, parentAct, subActionSet);
-					if (isAdded) {
-						break;
-					}
-				}
-				return isAdded;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	private static Action findParentAction(Action action, List<Action> actions) {
-		ITree node = action.getNode();
-		ITree parent = node.getParent();
-		for (Action act : actions) {
-			if (act.getNode().equals(parent)) {
-				return act;
-			}
-		}
-		return null;
-	}
-
-	private static String parseAction(String actStr) {
+	private String parseAction(String actStr) {
 		// UPD 25@@!a from !a to isTrue(a) at 69
 		String[] actStrArrays = actStr.split("@@");
 		actStr = "";
