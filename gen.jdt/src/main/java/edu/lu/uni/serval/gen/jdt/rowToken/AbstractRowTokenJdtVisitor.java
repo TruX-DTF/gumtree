@@ -20,59 +20,27 @@
 
 package edu.lu.uni.serval.gen.jdt.rowToken;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 
-import com.github.gumtreediff.gen.jdt.cd.EntityType;
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
+import com.github.gumtreediff.gen.jdt.AbstractJdtVisitor;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTVisitor;
 
-public abstract class AbstractRowTokenJdtVisitor extends ASTVisitor {
-
-    protected TreeContext context = new TreeContext();
-
-    private Deque<ITree> trees = new ArrayDeque<>();
+/**
+ * Create AbstractRowTokenJdtVisitor by extending AbstractJdtVisitor and overriding pushNode method.
+ * 
+ * Remove the ASTNode type in trees.
+ * 
+ * @author kui.liu
+ *
+ */
+public abstract class AbstractRowTokenJdtVisitor extends AbstractJdtVisitor {
 
     public AbstractRowTokenJdtVisitor() {
-        super(true);
+        super();
     }
 
-    public TreeContext getTreeContext() {
-        return context;
-    }
-
+    @Override
     protected void pushNode(ASTNode n, String label) {
         push(0, "", label, n.getStartPosition(), n.getLength());
     }
 
-    protected void pushFakeNode(EntityType n, int startPosition, int length) {
-        int type = -n.ordinal(); // Fake types have negative types (but does it matter ?)
-        String typeName = n.name();
-        push(type, typeName, "", startPosition, length);
-    }
-
-    private void push(int type, String typeName, String label, int startPosition, int length) {
-        ITree t = context.createTree(type, label, typeName);
-        t.setPos(startPosition);
-        t.setLength(length);
-
-        if (trees.isEmpty())
-            context.setRoot(t);
-        else {
-            ITree parent = trees.peek();
-            t.setParentAndUpdateChildren(parent);
-        }
-
-        trees.push(t);
-    }
-
-    protected ITree getCurrentParent() {
-        return trees.peek();
-    }
-
-    protected void popNode() {
-        trees.pop();
-    }
 }

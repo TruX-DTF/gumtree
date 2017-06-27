@@ -1,31 +1,18 @@
-/*
- * This file is part of GumTree.
- *
- * GumTree is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * GumTree is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with GumTree.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Copyright 2011-2015 Jean-Rémy Falleri <jr.falleri@gmail.com>
- * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com> *
- */
-
-
 package edu.lu.uni.serval.gen.jdt.rowToken;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.*;
 
+import edu.lu.uni.serval.gen.jdt.exp.ExpressionRebuilder;
+
+/**
+ * RowTokenJdtVisitor is used to visit the row tokens of source code and label trees' nodes with ASTNode types.
+ * 
+ * @author kui.liu
+ *
+ */
 public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     public RowTokenJdtVisitor() {
         super();
@@ -54,10 +41,10 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 				for (Object obj : modifiers) {
 					methodLabel += obj.toString() + ", ";
 				}
-				methodLabel += (returnType == null) ? "" : (returnType.toString() + ", ");
 				for (Object obj : typeParameters) {
 					methodLabel += obj.toString() + ", ";
 				}
+				methodLabel += (returnType == null) ? "" : (returnType.toString() + ", ");
 				methodLabel += methodName + ", ";
 				for (Object obj : parameters) {
 					methodLabel += obj.toString() + ", ";
@@ -102,7 +89,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			} else if (n instanceof ArrayInitializer) {
 				return "ArrayInitializer:" + ((ArrayInitializer)n).toString();
 			} else if (n instanceof Assignment) { // = += -= etc.
-				return "Assignment:" + ((Assignment) n).getOperator().toString();
+				return "Assignment:" + ((Assignment) n).toString();
 			} else if (n instanceof BooleanLiteral) {// true, false
 				return "BooleanLiteral:" + ((BooleanLiteral) n).toString();
 			} else if (n instanceof CastExpression) {
@@ -116,13 +103,13 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			} else if (n instanceof FieldAccess) {
 				return "FieldAccess:" + ((FieldAccess)n).toString();
 			} else if (n instanceof InfixExpression) {
-				return "InfixExpression:" + ((InfixExpression) n).getOperator().toString();
+				return "InfixExpression:" + ((InfixExpression) n).toString();
 			} else if (n instanceof InstanceofExpression) {
 				return "InstanceofExpression:" + ((InstanceofExpression)n).toString();
 			} else if (n instanceof LambdaExpression) {
 				return "LambdaExpression:"+((LambdaExpression)n).toString();
 			} else if (n instanceof MethodInvocation) {
-				return "MethodInvocation:"+((MethodInvocation)n).toString();
+				return "MethodInvocation:"+ ((MethodInvocation) n).toString();
 			} else if (n instanceof MethodReference) { 
 				// CreationReference, ExpressionMethodReference, SuperMethodReference, TypeMethodReference.
 			} else if (n instanceof Name) { // (SimpleName, QualifiedName)
@@ -138,17 +125,17 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			} else if (n instanceof ParenthesizedExpression) {
 				return "ParenthesizedExpression:"+((ParenthesizedExpression)n).toString();
 			} else if (n instanceof PostfixExpression) {
-				return "PostfixExpression:"+((PostfixExpression) n).getOperator().toString();
+				return "PostfixExpression:"+((PostfixExpression) n).toString();
 			} else if (n instanceof PrefixExpression) {
-				return "PrefixExpression:"+((PrefixExpression) n).getOperator().toString();
+				return "PrefixExpression:"+((PrefixExpression) n).toString();
 			} else if (n instanceof StringLiteral) {
 				return "StringLiteral:"+((StringLiteral) n).getEscapedValue();
 			} else if (n instanceof ThisExpression) {
 				return "this";
 			} else if (n instanceof SuperFieldAccess) {
-				return "super:" + ((SuperFieldAccess)n).toString();
+				return "SuperField:" + ((SuperFieldAccess)n).toString();
 			} else if (n instanceof SuperMethodInvocation) {
-				return ((SuperMethodInvocation)n).toString();
+				return "SuperMethod:" + ((SuperMethodInvocation)n).toString();
 			} else if (n instanceof TypeLiteral) {
 				return "TypeLiteral:" +((TypeLiteral)n).toString();
 			} else if (n instanceof VariableDeclarationExpression){
@@ -169,6 +156,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		// } else if (n instanceof PackageDeclaration) {
 		} else if (n instanceof Statement) {
 			if (n instanceof Block) {
+				return "Block:";
 			} else if (n instanceof AssertStatement) {
 				AssertStatement node = (AssertStatement) n;
 				Expression exp = node.getExpression();
@@ -180,7 +168,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 				return "AssertStatement:"+value;
 			} else if (n instanceof BreakStatement) {
 				BreakStatement node = (BreakStatement) n;
-				return "BreakStatement:"+node.getLabel() != null ? node.getLabel().toString() : "";
+				return "BreakStatement:"+ (node.getLabel() != null ? node.getLabel().toString() : "");
 			} else if (n instanceof ConstructorInvocation) {
 				ConstructorInvocation node = (ConstructorInvocation) n;
 				String nodeStr = node.toString();
@@ -188,7 +176,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		        return "ConstructorInvocation:"+nodeStr;
 			} else if (n instanceof ContinueStatement) {
 				ContinueStatement node = (ContinueStatement) n;
-				return "ContinueStatement:"+node.getLabel() != null ? node.getLabel().toString() : "";
+				return "ContinueStatement:"+ (node.getLabel() != null ? node.getLabel().toString() : "");
 			} else if (n instanceof DoStatement) {
 				DoStatement node = (DoStatement) n;
 				Expression exp = node.getExpression();
@@ -262,7 +250,6 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		    	} else {
 		    		return "TryStatement: ";
 		    	}
-		    	// TODO how to solve the Finally node of TryStatement?
 			} else if (n instanceof TypeDeclarationStatement) {
 				// TypeDeclaration, EnumDeclaration
 			} else if (n instanceof VariableDeclarationStatement) {
@@ -308,17 +295,661 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     	
         return "";
     }
+    
+    private boolean isSimplestMethodInvocation(Expression exp) {
+    	if (exp instanceof MethodInvocation) {
+    		MethodInvocation node = (MethodInvocation) exp;
+    		Expression e = node.getExpression();
+    		if (e != null) return false;
+    		List<?> typeArguments = node.typeArguments();
+    		if (typeArguments.size() > 0) return false;
+    		List<?> arguments = node.arguments();
+    		if (arguments.size() > 0) {
+    			return false;
+    		} else {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
-    @Override 
-    public boolean visit(Javadoc node) {
+    private void visitSubExpression(Expression exp) {
+    	if (!(exp instanceof BooleanLiteral || exp instanceof CharacterLiteral ||
+				exp instanceof Name || exp instanceof NullLiteral ||
+				exp instanceof NumberLiteral || exp instanceof StringLiteral ||
+				exp instanceof ThisExpression || isSimplestMethodInvocation(exp))) {
+			exp.accept(this);
+		}
+    }
+    
+    private void visitList(List<?> list) {
+        for (Object obj : list) {
+        	ASTNode node = (ASTNode) obj;
+            (node).accept(this);
+        }
+    }
+    
+    ////---------------Expressions---------------
+	//  ----------------Annotation---------------
+	@Override
+	public boolean visit(MarkerAnnotation node) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean visit(NormalAnnotation node) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean visit(SingleMemberAnnotation node) {
+		// TODO Auto-generated method stub
+		return super.visit(node);
+	}
+	// ---------------Annotation---------------
+	
+    @Override
+	public boolean visit(ArrayAccess node) {
+    	Expression arrayExp = node.getArray();
+    	pushNode(arrayExp, "ArrayName:" + arrayExp.getClass().getSimpleName() + ":" + arrayExp.toString()); //"ArrayName-" + 
+    	if (!(arrayExp instanceof Name || !isSimplestMethodInvocation(arrayExp))) {
+    		arrayExp.accept(this);
+    	}
+		Expression indexExpression = node.getIndex();
+		pushNode(indexExpression, "ArrayIndex:" + indexExpression.getClass().getSimpleName() + ":" + indexExpression.toString()); //"ArrayIndex-" + 
+		if (!(indexExpression instanceof NumberLiteral || indexExpression instanceof SimpleName || !isSimplestMethodInvocation(arrayExp))) {
+			indexExpression.accept(this);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean visit(ArrayCreation node) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(ArrayInitializer node) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(Assignment node) {
+		Expression leftHandExp = node.getLeftHandSide();
+		pushNode(leftHandExp, "LeftHandExp:" + leftHandExp.getClass().getSimpleName() + ":" + leftHandExp.toString());
+		if (!(leftHandExp instanceof SimpleName)) {
+			leftHandExp.accept(this);
+		}
+		popNode();
+		String op = node.getOperator().toString();
+		push(0, "", "Operator:" + op, leftHandExp.getStartPosition() + leftHandExp.getLength() + 1, op.length());
+		popNode();
+		
+		Expression rightHandExp = node.getRightHandSide();
+		pushNode(rightHandExp, "RighttHandExp:" + rightHandExp.getClass().getSimpleName() + ":" + rightHandExp.toString());
+		visitSubExpression(rightHandExp);
+		popNode();
+		return false;
+	}
+
+	@Override
+	public boolean visit(BooleanLiteral node) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(CastExpression node) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(CharacterLiteral node) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(ClassInstanceCreation node) {
+		Expression exp = node.getExpression();
+		if (exp != null) {
+			pushNode(exp, "" + exp.getClass().getSimpleName() + ":" + exp.toString());
+			popNode();
+		}
+		List<?> typeArguments = node.typeArguments();
+		for (Object obj : typeArguments) {
+			Type typeArgu = (Type) obj;
+			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
+			popNode();
+		}
+		
+		Type type = node.getType();
+		pushNode(type, "ClassName:" + type.getClass().getSimpleName() + ":" + type.toString());
+		
+		List<?> arguments = node.arguments();
+		for (Object obj : arguments) {
+			Expression argu = (Expression) obj;
+			pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
+			visitSubExpression(argu);
+			popNode();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean visit(ConditionalExpression node) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(FieldAccess node) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(InfixExpression node) {
+		InfixExpression.Operator infixOperator = node.getOperator();
+		Expression leftExp = node.getLeftOperand();
+		List<?> extendedOperands = node.extendedOperands();
+		Expression rightExp;
+		if (extendedOperands != null && extendedOperands.size() > 0) {
+			String nodeStr = node.toString();
+			nodeStr = nodeStr.substring(leftExp.toString().length()).trim();
+			nodeStr = nodeStr.substring(infixOperator.toString().length()).trim();
+			ExpressionRebuilder expRebuilder = new ExpressionRebuilder();
+			rightExp = expRebuilder.createExpression(nodeStr);
+		} else {
+			rightExp = node.getRightOperand();
+		}
+		pushNode(leftExp, "LeftExp:" + leftExp.getClass().getSimpleName() + ":" + leftExp.toString());
+		visitSubExpression(leftExp);
+		popNode();
+		
+		String op = infixOperator.toString();
+		push(0, "", "InfixOperator:" + op, leftExp.getStartPosition() + leftExp.getLength() + 1, op.length());
+		popNode();
+		
+		pushNode(rightExp, "RightExp:" + rightExp.getClass().getSimpleName() + ":" + rightExp.toString());
+		visitSubExpression(leftExp);
+		popNode();
+		return false;
+	}
+
+	@Override
+	public boolean visit(InstanceofExpression node) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(LambdaExpression node) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(MethodInvocation node) {
+		Expression exp = node.getExpression();
+		List<?> typeArguments = node.typeArguments();
+		SimpleName methodName = node.getName();
+		List<?> arguments = node.arguments();
+		String arguStr = arguments.toString();
+		arguStr = arguStr.substring(arguStr.length() - 1);
+		List<MethodInvocation> methods = new ArrayList<>();
+		while (exp != null) {
+			if (exp instanceof MethodInvocation) {
+				MethodInvocation method = (MethodInvocation) exp;
+				methods.add(0, method);
+				exp = method.getExpression();
+			} else {
+				pushNode(exp, "ClassName:" + exp.toString());
+				popNode();
+				exp = null;
+			}
+		}
+		for (MethodInvocation method : methods) {
+			pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName());
+			List<?> argumentsList = method.arguments();
+			for (Object obj : argumentsList) {
+				Expression argu = (Expression) obj;
+				pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
+				visitSubExpression(argu);
+				popNode();
+			}
+			popNode();
+		}
+		for (Object obj : typeArguments) {
+			Expression typeArgu = (Expression) obj;
+			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
+			popNode();
+		}
+		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
+		
+		for (Object obj : arguments) {
+			Expression argu = (Expression) obj;
+			pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
+			visitSubExpression(argu);
+			popNode();
+		}
+		return false;
+	}
+
+	// ----------------MethodReference----------------
+	@Override
+	public boolean visit(CreationReference node) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(ExpressionMethodReference node) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(SuperMethodReference node) {
+		// TODO Auto-generated method stub
+		return super.visit(node);
+	}
+
+	@Override
+	public void endVisit(SuperMethodReference node) {
+		// TODO Auto-generated method stub
+		super.endVisit(node);
+	}
+	
+	@Override
+	public boolean visit(TypeMethodReference node) {
+		// TODO Auto-generated method stub
+		return super.visit(node);
+	}
+
+	@Override
+	public void endVisit(TypeMethodReference node) {
+		// TODO Auto-generated method stub
+		super.endVisit(node);
+	}
+	// ----------------MethodReference----------------
+	
+	// ----------------Name----------------
+	@Override
+	public boolean visit(QualifiedName node) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(SimpleName node) {
+		return false;
+	}
+	// ----------------Name----------------
+
+	@Override
+	public boolean visit(NullLiteral node) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(NumberLiteral node) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(ParenthesizedExpression node) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(PostfixExpression node) {
+		Expression exp = node.getOperand();
+		pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
+		visitSubExpression(exp);
+		popNode();
+		String op = node.getOperator().toString();
+		push(0, "", "Operator:" + op, exp.getStartPosition() + exp.getLength() + 1, op.length());
+		popNode();
+		return false;
+	}
+
+	@Override
+	public boolean visit(PrefixExpression node) {
+		String op = node.getOperator().toString();
+		push(0, "", "Operator:" + op, node.getStartPosition(), op.length());
+		popNode();
+		Expression exp = node.getOperand();
+		pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
+		visitSubExpression(exp);
+		popNode();
+		return false;
+	}
+
+	@Override
+	public boolean visit(StringLiteral node) {
+		return false;
+	}
+
+	@Override
+	public boolean visit(SuperFieldAccess node) {
+		Name className = node.getQualifier();
+		if (className != null) {
+			pushNode(className, className.getFullyQualifiedName());
+			popNode();
+		}
+		SimpleName identifier = node.getName();
+		pushNode(identifier, identifier.getFullyQualifiedName());
+		popNode();
+		return false;
+	}
+
+	@Override
+	public boolean visit(SuperMethodInvocation node) {
+		Name className = node.getQualifier();
+		if (className != null) {
+			pushNode(className, className.getFullyQualifiedName());
+			popNode();
+		}
+		SimpleName methodName = node.getName();
+		pushNode(methodName, methodName.getFullyQualifiedName());
+		
+		List<?> arguments = node.arguments();
+		for (Object obj : arguments) {
+			Expression argu = (Expression) obj;
+			pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
+			visitSubExpression(argu);
+			popNode();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean visit(ThisExpression node) {
+		return false;
+	}
+
+    @Override
+    public boolean visit(TypeLiteral node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(VariableDeclarationExpression node) {
+    	List<?> modifiers = node.modifiers();
+    	for (Object obj : modifiers) {
+    		IExtendedModifier modifier = (IExtendedModifier) obj;
+    		if (modifier.isModifier()) {
+    			pushNode((Modifier) modifier, "Modifier:" + modifier.toString());
+    			popNode();
+    		}
+    	}
+    	Type type = node.getType();
+    	pushNode(type, type.getClass().getSimpleName() + ":" + type.toString());
+    	popNode();
+    	List<?> fragments = node.fragments();
+    	visitList(fragments);
+        return false;
+    }
+
+    ////---------------End of Expressions---------------
+    
+    ////////
+    @Override
+   	public boolean visit(ArrayType node) {
+   		return false;
+   	}
+
+	@Override
+	public boolean visit(Dimension node) {
+		return false;
+	}
+
+
+	///////////////////
+    @Override
+	public boolean visit(ImportDeclaration node) {
     	return false;
     }
     
     @Override
-    public boolean visit(QualifiedName node) {
+    public boolean visit(Javadoc node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(TypeDeclaration node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(FieldDeclaration node) {
+    	List<?> modifiers = node.modifiers();
+    	for (Object obj : modifiers) {
+    		IExtendedModifier modifier = (IExtendedModifier) obj;
+    		if (modifier.isModifier()) {
+    			pushNode((Modifier) modifier, "Modifier:" + modifier.toString());
+    			popNode();
+    		}
+    	}
+    	
+    	Type type = node.getType();
+    	pushNode(type, type.getClass().getSimpleName() + ":" + type.toString());
+    	popNode();
+    	List<?> fragments = node.fragments();
+    	visitList(fragments);
+        return false;
+    }
+
+    @Override
+	public boolean visit(Initializer node) {
+		return true;
+	}
+    
+	@Override
+	public boolean visit(MethodDeclaration node) {
+		List<?> modifiers = node.modifiers();
+    	for (Object obj : modifiers) {
+    		IExtendedModifier modifier = (IExtendedModifier) obj;
+    		if (modifier.isModifier()) {
+    			pushNode((Modifier) modifier, "Modifier:" + modifier.toString());
+    			popNode();
+    		}
+    	}
+    	
+    	Type returnType = node.isConstructor() ? null : node.getReturnType2();
+    	if (returnType != null) {
+    		pushNode(returnType, returnType.getClass().getSimpleName() + ":" + returnType.toString());
+        	popNode();
+    	}
+//		List<?> typeParameters = node.typeParameters();
+//		SimpleName methodName = node.getName();
+//		List<?> parameters = node.parameters();
+//		List<?> exceptionTypes = node.thrownExceptionTypes();
+//		
+		// The body can be null when the method declaration is from a interface
+		if (node.getBody() != null) {
+			node.getBody().accept(this);
+		}
+		return false;
+	}
+
+    @Override
+    public boolean visit(Modifier node) {
+        return false;
+    }
+
+    //-----------------Types-----------------
+    @Override
+    public boolean visit(NameQualifiedType node) {
+    	// Name <b>.</b> { Annotation } SimpleName
     	return false;
     }
     
+    @Override
+    public boolean visit(ParameterizedType node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrimitiveType node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(QualifiedType node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SimpleType node) {
+        return false;
+    }
+
+
+    @Override
+    public boolean visit(WildcardType node) {
+        return true;
+    }
+    //-----------------Types-----------------
+
+    @Override
+    public boolean visit(SingleVariableDeclaration node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(TypeParameter node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(VariableDeclarationFragment node) {
+        return true;
+    }
+
+    ////***************Statements*************************
+    @Override
+    public boolean visit(CatchClause node) {
+        return true;
+    }
+
+    ////-------------------Statements-------------------
+    @Override
+    public boolean visit(Block node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(AssertStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(BreakStatement node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(ConstructorInvocation node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(ContinueStatement node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(DoStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(EmptyStatement node) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(EnhancedForStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(ExpressionStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(ForStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(IfStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(LabeledStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(ReturnStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(SuperConstructorInvocation node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(SwitchCase node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(SwitchStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(SynchronizedStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(ThrowStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(TryStatement node) {
+    	List<?> resources = node.resources();
+    	visitList(resources);
+    	node.getBody().accept(this);
+    	List<?> catchClauses = node.catchClauses(); // CatchClause
+    	visitList(catchClauses);
+    	Block finallyBlock = node.getFinally();
+    	if (finallyBlock != null) {
+    		pushNode(finallyBlock, "Finally");
+        	finallyBlock.accept(this);
+        	popNode();
+    	}
+        return false;
+    }
+
+    @Override
+    public boolean visit(TypeDeclarationStatement node) {
+        // skip, only type declaration is interesting
+        return true;
+    }
+
+    @Override
+    public boolean visit(VariableDeclarationStatement node) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(WhileStatement node) {
+        return true;
+    }
+
     @Override
     public void postVisit(ASTNode n) {
     	if (!(n instanceof Comment || n instanceof TagElement || n instanceof TextElement)) {
