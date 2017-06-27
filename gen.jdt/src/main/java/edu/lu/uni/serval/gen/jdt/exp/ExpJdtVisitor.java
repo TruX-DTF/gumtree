@@ -93,7 +93,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(Assignment node) {
-		pushNode(node, node.getOperator().toString());
+		pushNode(node, node.toString());
 		Expression leftHandExp = node.getLeftHandSide();
 		leftHandExp.accept(this);
 		String op = node.getOperator().toString();
@@ -199,21 +199,23 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(InfixExpression node) {
-		InfixExpression.Operator infixOperator = node.getOperator();
-		pushNode(node, infixOperator.toString());
+		String op = node.getOperator().toString();
+		pushNode(node, node.toString());
 		Expression leftExp = node.getLeftOperand();
 		List<?> extendedOperands = node.extendedOperands();
 		Expression rightExp;
 		if (extendedOperands != null && extendedOperands.size() > 0) {
 			String nodeStr = node.toString();
 			nodeStr = nodeStr.substring(leftExp.toString().length()).trim();
-			nodeStr = nodeStr.substring(infixOperator.toString().length()).trim();
+			nodeStr = nodeStr.substring(op.toString().length()).trim();
 			ExpressionRebuilder expRebuilder = new ExpressionRebuilder();
 			rightExp = expRebuilder.createExpression(nodeStr);
 		} else {
 			rightExp = node.getRightOperand();
 		}
 		leftExp.accept(this);
+		push(0, "Operator", op, leftExp.getStartPosition() + leftExp.getLength() + 1, op.length());
+		popNode();
 		rightExp.accept(this);
 		return false;
 	}
@@ -395,9 +397,12 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(PostfixExpression node) {
-		pushNode(node, node.getOperator().toString());
+		pushNode(node, node.toString());
 		Expression exp = node.getOperand();
 		exp.accept(this);
+		String op = node.getOperator().toString();
+		push(0, "Operator", op, exp.getStartPosition() + exp.getLength() + 1, op.length());
+		popNode();
 		return false;
 	}
 
@@ -408,7 +413,10 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(PrefixExpression node) {
-		pushNode(node, node.getOperator().toString());
+		pushNode(node, node.toString());
+		String op = node.getOperator().toString();
+		push(0, "Operator", op, node.getStartPosition(), op.length());
+		popNode();
 		Expression exp = node.getOperand();
 		exp.accept(this);
 		return false;
