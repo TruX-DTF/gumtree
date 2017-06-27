@@ -1,8 +1,5 @@
 package edu.lu.uni.serval.gumtree.regroup;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,21 +36,24 @@ public class ActionSet {
 	public void setSubActions(List<ActionSet> subActions) {
 		this.subActions = subActions;
 	}
+	
+	private List<String> strList = new ArrayList<>();
 
 	@Override
 	public String toString() {
-		String str = parseAction(action.toString()) + "\n";
+		String str = parseAction(action.toString());
+		strList.add(str);
 		for (ActionSet actionSet : subActions) {
-			try {
-				BufferedReader reader = new BufferedReader(new StringReader(actionSet.toString()));
-				String line = null;
-				while ((line = reader.readLine()) != null) {
-					str += "----" + line + "\n";
-				}
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			actionSet.toString();
+			List<String> strList1 = actionSet.strList;
+			for (String str1 : strList1) {
+				strList.add("----" + str1);
 			}
+		}
+		
+		str = "";
+		for (String str1 : strList) {
+			str += str1 + "\n";
 		}
 		 
 		return str;
