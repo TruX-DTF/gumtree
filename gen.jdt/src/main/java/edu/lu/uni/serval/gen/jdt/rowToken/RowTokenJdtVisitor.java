@@ -313,13 +313,15 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     	return false;
     }
 
-    private void visitSubExpression(Expression exp) {
+    private boolean visitSubExpression(Expression exp) {
     	if (!(exp instanceof BooleanLiteral || exp instanceof CharacterLiteral ||
 				exp instanceof Name || exp instanceof NullLiteral ||
 				exp instanceof NumberLiteral || exp instanceof StringLiteral ||
 				exp instanceof ThisExpression || isSimplestMethodInvocation(exp))) {
 			exp.accept(this);
+			return true;
 		}
+    	return false;
     }
     
     private void visitList(List<?> list) {
@@ -353,17 +355,21 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     @Override
 	public boolean visit(ArrayAccess node) {
     	Expression arrayExp = node.getArray();
-    	pushNode(arrayExp, "ArrayName:" + arrayExp.getClass().getSimpleName() + ":" + arrayExp.toString()); //"ArrayName-" + 
     	if (!(arrayExp instanceof Name || !isSimplestMethodInvocation(arrayExp))) {
     		arrayExp.accept(this);
+    	} else {
+    		pushNode(arrayExp, "ArrayName:" + arrayExp.getClass().getSimpleName() + ":" + arrayExp.toString()); //"ArrayName-" + 
+    		popNode();
     	}
-    	popNode();
+    	
 		Expression indexExpression = node.getIndex();
-		pushNode(indexExpression, "ArrayIndex:" + indexExpression.getClass().getSimpleName() + ":" + indexExpression.toString()); //"ArrayIndex-" + 
 		if (!(indexExpression instanceof NumberLiteral || indexExpression instanceof SimpleName || !isSimplestMethodInvocation(arrayExp))) {
 			indexExpression.accept(this);
+		} else {
+			pushNode(indexExpression, "ArrayIndex:" + indexExpression.getClass().getSimpleName() + ":" + indexExpression.toString()); //"ArrayIndex-" + 
+			popNode();
 		}
-    	popNode();
+    	
 		return false;
 	}
 
@@ -380,19 +386,23 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 	@Override
 	public boolean visit(Assignment node) {
 		Expression leftHandExp = node.getLeftHandSide();
-		pushNode(leftHandExp, "LeftHandExp:" + leftHandExp.getClass().getSimpleName() + ":" + leftHandExp.toString());
 		if (!(leftHandExp instanceof SimpleName)) {
 			leftHandExp.accept(this);
+		} else {
+			pushNode(leftHandExp, "LeftHandExp:" + leftHandExp.getClass().getSimpleName() + ":" + leftHandExp.toString());
+			popNode();
 		}
-		popNode();
+		
 		String op = node.getOperator().toString();
 		push(0, "", "Operator:" + op, leftHandExp.getStartPosition() + leftHandExp.getLength() + 1, op.length());
 		popNode();
 		
 		Expression rightHandExp = node.getRightHandSide();
-		pushNode(rightHandExp, "RighttHandExp:" + rightHandExp.getClass().getSimpleName() + ":" + rightHandExp.toString());
-		visitSubExpression(rightHandExp);
-		popNode();
+		if (!visitSubExpression(rightHandExp)) {
+			pushNode(rightHandExp, "RighttHandExp:" + rightHandExp.getClass().getSimpleName() + ":" + rightHandExp.toString());
+			popNode();
+		}
+		
 		return false;
 	}
 
@@ -426,14 +436,15 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		}
 		
 		Type type = node.getType();
-		pushNode(type, "ClassName:" + type.getClass().getSimpleName() + ":" + type.toString());
+		pushNode(type, "Name:" + type.getClass().getSimpleName() + ":" + type.toString());
 		
 		List<?> arguments = node.arguments();
 		for (Object obj : arguments) {
 			Expression argu = (Expression) obj;
-			pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
-			visitSubExpression(argu);
-			popNode();
+			if (!visitSubExpression(argu)) {
+				pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
+				popNode();
+			}
 		}
     	popNode();
 		return false;
@@ -451,30 +462,37 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
 	@Override
 	public boolean visit(InfixExpression node) {
-		InfixExpression.Operator infixOperator = node.getOperator();
 		Expression leftExp = node.getLeftOperand();
-		List<?> extendedOperands = node.extendedOperands();
-		Expression rightExp;
-		if (extendedOperands != null && extendedOperands.size() > 0) {
-			String nodeStr = node.toString();
-			nodeStr = nodeStr.substring(leftExp.toString().length()).trim();
-			nodeStr = nodeStr.substring(infixOperator.toString().length()).trim();
-			ExpressionRebuilder expRebuilder = new ExpressionRebuilder();
-			rightExp = expRebuilder.createExpression(nodeStr);
-		} else {
-			rightExp = node.getRightOperand();
-		}
-		pushNode(leftExp, "LeftExp:" + leftExp.getClass().getSimpleName() + ":" + leftExp.toString());
-		visitSubExpression(leftExp);
-		popNode();
+		leftExp.accept(this);
 		
-		String op = infixOperator.toString();
+		String op = node.getOperator().toString();
 		push(0, "", "InfixOperator:" + op, leftExp.getStartPosition() + leftExp.getLength() + 1, op.length());
 		popNode();
 		
-		pushNode(rightExp, "RightExp:" + rightExp.getClass().getSimpleName() + ":" + rightExp.toString());
-		visitSubExpression(leftExp);
-		popNode();
+		List<?> extendedOperands = node.extendedOperands();
+		Expression rightExp = node.getRightOperand();
+		
+		while (extendedOperands != null && extendedOperands.size() > 0) {
+			String nodeStr = node.toString();
+			nodeStr = nodeStr.substring(leftExp.toString().length()).trim();
+			nodeStr = nodeStr.substring(op.length()).trim();
+			ExpressionRebuilder expRebuilder = new ExpressionRebuilder();
+			rightExp = expRebuilder.createExpression(nodeStr);
+			
+			InfixExpression infixExp = (InfixExpression) rightExp;
+			Expression leftExp_ = infixExp.getLeftOperand();
+			leftExp_.accept(this);
+			
+			String op_ = infixExp.getOperator().toString();
+			push(0, "", "InfixOperator:" + op_, leftExp_.getStartPosition() + leftExp_.getLength() + 1, op_.length());
+			popNode();
+			
+			extendedOperands = infixExp.extendedOperands();
+			rightExp = infixExp.getRightOperand();
+		}
+
+		rightExp.accept(this);
+		
 		return false;
 	}
 
@@ -503,7 +521,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 				methods.add(0, method);
 				exp = method.getExpression();
 			} else {
-				pushNode(exp, "ClassName:" + exp.toString());
+				pushNode(exp, "Name:" + exp.toString());
 				popNode();
 				exp = null;
 			}
@@ -513,9 +531,10 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			List<?> argumentsList = method.arguments();
 			for (Object obj : argumentsList) {
 				Expression argu = (Expression) obj;
-				pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
-				visitSubExpression(argu);
-				popNode();
+				if (!visitSubExpression(argu)) {
+					pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
+					popNode();
+				}
 			}
 			popNode();
 		}
@@ -524,13 +543,14 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
 			popNode();
 		}
-		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
 		
+		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
 		for (Object obj : arguments) {
 			Expression argu = (Expression) obj;
-			pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
-			visitSubExpression(argu);
-			popNode();
+			if (!visitSubExpression(argu)) {
+				pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
+				popNode();
+			}
 		}
     	popNode();
 		return false;
@@ -602,9 +622,10 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 	@Override
 	public boolean visit(PostfixExpression node) {
 		Expression exp = node.getOperand();
-		pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
-		visitSubExpression(exp);
-		popNode();
+		if (!visitSubExpression(exp)) {
+			pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
+			popNode();
+		}
 		String op = node.getOperator().toString();
 		push(0, "", "Operator:" + op, exp.getStartPosition() + exp.getLength() + 1, op.length());
 		popNode();
@@ -617,9 +638,10 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		push(0, "", "Operator:" + op, node.getStartPosition(), op.length());
 		popNode();
 		Expression exp = node.getOperand();
-		pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
-		visitSubExpression(exp);
-		popNode();
+		if (!visitSubExpression(exp)) {
+			pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
+			popNode();
+		}
 		return false;
 	}
 
@@ -654,9 +676,10 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		List<?> arguments = node.arguments();
 		for (Object obj : arguments) {
 			Expression argu = (Expression) obj;
-			pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
-			visitSubExpression(argu);
-			popNode();
+			if (!visitSubExpression(argu)) {
+				pushNode(argu, "Argument:" + argu.getClass().getSimpleName() + ":" + argu.toString());
+				popNode();
+			}
 		}
     	popNode();
 		return false;
