@@ -37,7 +37,10 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 				List<?> exceptionTypes = method.thrownExceptionTypes();
 				String methodLabel = "";
 				for (Object obj : modifiers) {
-					methodLabel += obj.toString() + ", ";
+					IExtendedModifier modifier = (IExtendedModifier) obj;
+					if (modifier.isModifier()) {
+						methodLabel += obj.toString() + ", ";
+					}
 				}
 				for (Object obj : typeParameters) {
 					methodLabel += obj.toString() + ", ";
@@ -63,9 +66,20 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			} else if (n instanceof AnnotationTypeMemberDeclaration) {
 			} else if (n instanceof EnumConstantDeclaration) {
 			} else if (n instanceof FieldDeclaration) {
+				String nodeStr = "";
 				FieldDeclaration node = (FieldDeclaration) n;
-				String nodeStr = node.toString();
-		    	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
+				List<?> modifiers = node.modifiers();
+		    	for (Object obj : modifiers) {
+		    		IExtendedModifier modifier = (IExtendedModifier) obj;
+		    		if (modifier.isModifier()) {
+		    			nodeStr += "Modifier:" + modifier.toString();
+		    		}
+		    	}
+		    	
+		    	Type type = node.getType();
+		    	nodeStr += type.toString();
+		    	List<?> fragments = node.fragments();
+		    	nodeStr += fragments.toString();
 		    	return "FieldDeclaration:" + nodeStr;
 			} else { // Initializer
 			} 
@@ -435,7 +449,8 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		
 		Type type = node.getType();
 		pushNode(type, "Name:" + type.getClass().getSimpleName() + ":" + type.toString());
-		
+    	popNode();
+    	
 		List<?> arguments = node.arguments();
 		for (Object obj : arguments) {
 			Expression argu = (Expression) obj;
@@ -444,7 +459,6 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 				popNode();
 			}
 		}
-    	popNode();
 		return false;
 	}
 
@@ -506,8 +520,9 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			}
 		}
 		for (MethodInvocation method : methods) {
-			pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName());
 			List<?> argumentsList = method.arguments();
+			pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName());
+			popNode();
 			for (Object obj : argumentsList) {
 				Expression argu = (Expression) obj;
 				if (!visitSubExpression(argu)) {
@@ -515,7 +530,6 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 					popNode();
 				}
 			}
-			popNode();
 		}
 		for (Object obj : typeArguments) {
 			Expression typeArgu = (Expression) obj;
@@ -524,6 +538,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		}
 		
 		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
+    	popNode();
 		for (Object obj : arguments) {
 			Expression argu = (Expression) obj;
 			if (!visitSubExpression(argu)) {
@@ -531,7 +546,6 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 				popNode();
 			}
 		}
-    	popNode();
 		return false;
 	}
 
@@ -762,11 +776,24 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     		pushNode(returnType, returnType.getClass().getSimpleName() + ":" + returnType.toString());
         	popNode();
     	}
-//		List<?> typeParameters = node.typeParameters();
-//		SimpleName methodName = node.getName();
-//		List<?> parameters = node.parameters();
-//		List<?> exceptionTypes = node.thrownExceptionTypes();
-//		
+		List<?> typeParameters = node.typeParameters();
+		for (Object obj : typeParameters) {
+			TypeParameter typeParameter = (TypeParameter) obj;
+			pushNode(typeParameter, "TypeParameter:" + typeParameter.getClass().getSimpleName() + ":" + typeParameter.toString());
+        	popNode();
+		}
+		SimpleName methodName = node.getName();
+		pushNode(methodName, "MethodName:" + methodName.toString());
+    	popNode();
+		List<?> parameters = node.parameters();
+		visitList(parameters);
+		List<?> exceptionTypes = node.thrownExceptionTypes();
+		for (Object obj : exceptionTypes) {
+			Type exceptionType = (Type) obj;
+			pushNode(exceptionType, "Exception:" + exceptionType.toString());
+        	popNode();
+		}
+		
 		// The body can be null when the method declaration is from a interface
 		if (node.getBody() != null) {
 			node.getBody().accept(this);
@@ -949,6 +976,23 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
     @Override
     public boolean visit(VariableDeclarationStatement node) {
+//    	/**
+//    	 * { ExtendedModifier } Type VariableDeclarationFragment
+// *        { <b>,</b> VariableDeclarationFragment } <b>;</b>
+//    	 */
+//    	List<?> modifiers = node.modifiers();
+//    	for (Object obj : modifiers) {
+//    		IExtendedModifier modifier = (IExtendedModifier) obj;
+//    		if (modifier.isModifier()) {
+//    			pushNode((Modifier) modifier, "Modifier:" + modifier.toString());
+//    			popNode();
+//    		}
+//    	}
+//    	
+//    	Type type = node.getType();
+//    	type.accept(this);
+//		List<?> fragments = node.fragments();
+//		visitList(fragments);
         return true;
     }
 
