@@ -10,6 +10,8 @@ import org.eclipse.jdt.core.dom.ASTParser;
 
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.actions.model.Addition;
+import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.gen.jdt.cd.CdJdtTreeGenerator;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.matchers.Matchers;
@@ -18,7 +20,8 @@ import com.github.gumtreediff.tree.TreeContext;
 
 import edu.lu.uni.serval.gen.jdt.exp.ExpJdtTreeGenerator;
 import edu.lu.uni.serval.gen.jdt.rowToken.RowTokenJdtTreeGenerator;
-import edu.lu.uni.serval.gumtree.regroup.ActionSet;
+import edu.lu.uni.serval.gumtree.regroup.HierarchicalActionSet;
+import edu.lu.uni.serval.gumtree.regroup.HierarchicalRegouper;
 
 public class Test {
 
@@ -27,7 +30,6 @@ public class Test {
 		String b = "File sr = new File(home);if (!isTrue(a)){} int a = 1;";//"{if (isTrue(a)){}}";
 
 		ArrayList<String> ret = compareTwoFilesWithGumTree(a, b);
-		System.out.println(ret + "\n");
 		
 		/**
 		 * Position of actions:
@@ -45,7 +47,7 @@ public class Test {
 	public static ArrayList<String> compareTwoFilesWithGumTree(String fileA, String fileB) {
 		
 		ArrayList<String> ret = new ArrayList<String>();
-		List<ActionSet> actionSets = new ArrayList<>();
+		List<HierarchicalActionSet> actionSets = new ArrayList<>();
 		
 		try {
 			TreeContext tc1 = null;
@@ -71,21 +73,9 @@ public class Test {
 			ActionGenerator ag = new ActionGenerator(t1, t2, m.getMappings());
 			ag.generate();
 			List<Action> actions = ag.getActions();
-			ListSorter<Action> sorter = new ListSorter<>(actions);
-			actions = sorter.sortAscending();
 			
-			ActionSet actionSet = null;
+			actionSets = HierarchicalRegouper.regroupGumTreeResults(actions);
 			for(Action act : actions){
-				Action parentAct = findParentAction(act, actions);
-				if (parentAct == null) {
-					actionSet = new ActionSet();
-					actionSet.setAction(act);
-					actionSets.add(actionSet);
-				} else {
-					if (!addToAactionSet(act, parentAct, actionSet)) {
-						System.err.println("Didn't find the parent action of Action: " + act.toString());
-					}
-				}
 				String s = parseAction(act.toString());
 				ret.add(s);
 			}
@@ -94,50 +84,13 @@ public class Test {
 			e.printStackTrace();
 		}
 		
-		System.out.println();
-		for (ActionSet actionSet : actionSets) {
+		for (HierarchicalActionSet actionSet : actionSets) {
 			System.out.println(actionSet.toString());
 		}
 
 		return ret;
 	}
 	
-	private static boolean addToAactionSet(Action act, Action parentAct, ActionSet actionSet) {
-		ITree parentTree = parentAct.getNode();
-		ITree tree = actionSet.getAction().getNode();
-		if (tree.equals(parentTree)) {
-			ActionSet actSet = new ActionSet();
-			actSet.setAction(act);
-			actionSet.getSubActions().add(actSet);
-			return true;
-		} else {
-			List<ActionSet> subActionSets = actionSet.getSubActions();
-			if (subActionSets.size() > 0) {
-				boolean isAdded = false;
-				for (ActionSet subActionSet : subActionSets) {
-					isAdded = addToAactionSet(act, parentAct, subActionSet);
-					if (isAdded) {
-						break;
-					}
-				}
-				return isAdded;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	private static Action findParentAction(Action action, List<Action> actions) {
-		ITree node = action.getNode();
-		ITree parent = node.getParent();
-		for (Action act : actions) {
-			if (act.getNode().equals(parent)) {
-				return act;
-			}
-		}
-		return null;
-	}
-
 	private static String parseAction(String actStr) {
 		// UPD 25@@!a from !a to isTrue(a) at 69
 		String[] actStrArrays = actStr.split("@@");

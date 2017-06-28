@@ -7,11 +7,18 @@ import java.util.Map;
 
 import com.github.gumtreediff.actions.model.Action;
 
-public class ActionSet {
+/**
+ * Hierarchical-level results of GumTree results
+ * 
+ * @author kui.liu
+ *
+ */
+public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> {
 	
 	private String astNodeType;
 	private Action action;
-	private List<ActionSet>	subActions = new ArrayList<>();
+	private Action parentAction;
+	private List<HierarchicalActionSet>	subActions = new ArrayList<>();
 
 	public String getAstNodeType() {
 		return astNodeType;
@@ -29,12 +36,25 @@ public class ActionSet {
 		this.action = action;
 	}
 
-	public List<ActionSet> getSubActions() {
+	public Action getParentAction() {
+		return parentAction;
+	}
+
+	public void setParentAction(Action parentAction) {
+		this.parentAction = parentAction;
+	}
+
+	public List<HierarchicalActionSet> getSubActions() {
 		return subActions;
 	}
 
-	public void setSubActions(List<ActionSet> subActions) {
+	public void setSubActions(List<HierarchicalActionSet> subActions) {
 		this.subActions = subActions;
+	}
+
+	@Override
+	public int compareTo(HierarchicalActionSet o) {
+		return this.action.compareTo(o.action);
 	}
 	
 	private List<String> strList = new ArrayList<>();
@@ -43,7 +63,7 @@ public class ActionSet {
 	public String toString() {
 		String str = parseAction(action.toString());
 		strList.add(str);
-		for (ActionSet actionSet : subActions) {
+		for (HierarchicalActionSet actionSet : subActions) {
 			actionSet.toString();
 			List<String> strList1 = actionSet.strList;
 			for (String str1 : strList1) {
