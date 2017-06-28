@@ -108,15 +108,10 @@ public class HierarchicalRegouper {
 		if (action instanceof Addition) {
 			parent = ((Addition) action).getParent();
 		}
-		String label = parent.getLabel();
 		for (Action act : actions) {
 			ITree actNode = act.getNode();
 			if (actNode.equals(parent)) {
 				return act;
-			} else {
-				if (label.equals(actNode.getLabel())) {
-					return act;
-				}
 			}
 		}
 		return null;
