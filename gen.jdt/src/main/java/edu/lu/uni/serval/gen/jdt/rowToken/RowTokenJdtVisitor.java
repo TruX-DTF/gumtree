@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.*;
 
-import edu.lu.uni.serval.gen.jdt.exp.ExpressionRebuilder;
-
 /**
  * RowTokenJdtVisitor is used to visit the row tokens of source code and label trees' nodes with ASTNode types.
  * 
@@ -469,30 +467,11 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		push(0, "", "InfixOperator:" + op, leftExp.getStartPosition() + leftExp.getLength() + 1, op.length());
 		popNode();
 		
-		List<?> extendedOperands = node.extendedOperands();
 		Expression rightExp = node.getRightOperand();
-		
-		while (extendedOperands != null && extendedOperands.size() > 0) {
-			String nodeStr = node.toString();
-			nodeStr = nodeStr.substring(leftExp.toString().length()).trim();
-			nodeStr = nodeStr.substring(op.length()).trim();
-			ExpressionRebuilder expRebuilder = new ExpressionRebuilder();
-			rightExp = expRebuilder.createExpression(nodeStr);
-			
-			InfixExpression infixExp = (InfixExpression) rightExp;
-			Expression leftExp_ = infixExp.getLeftOperand();
-			leftExp_.accept(this);
-			
-			String op_ = infixExp.getOperator().toString();
-			push(0, "", "InfixOperator:" + op_, leftExp_.getStartPosition() + leftExp_.getLength() + 1, op_.length());
-			popNode();
-			
-			extendedOperands = infixExp.extendedOperands();
-			rightExp = infixExp.getRightOperand();
-		}
-
 		rightExp.accept(this);
 		
+		List<?> extendedOperands = node.extendedOperands();
+		visitList(extendedOperands);
 		return false;
 	}
 
