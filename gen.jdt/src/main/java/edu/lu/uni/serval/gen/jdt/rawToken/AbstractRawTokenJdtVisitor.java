@@ -18,18 +18,29 @@
  * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
  */
 
-package edu.lu.uni.serval.gen.jdt.rowToken;
+package edu.lu.uni.serval.gen.jdt.rawToken;
 
 
-import com.github.gumtreediff.gen.Register;
-import com.github.gumtreediff.gen.Registry;
+import com.github.gumtreediff.gen.jdt.AbstractJdtVisitor;
+import org.eclipse.jdt.core.dom.ASTNode;
 
-@Register(id = "java-jdt", accept = "\\.java$", priority = Registry.Priority.MAXIMUM)
-public class RowTokenJdtTreeGenerator extends AbstractRowTokenJdtTreeGenerator {
+/**
+ * Create AbstractRowTokenJdtVisitor by extending AbstractJdtVisitor and overriding pushNode method.
+ * 
+ * Remove the ASTNode type in trees.
+ * 
+ * @author kui.liu
+ *
+ */
+public abstract class AbstractRawTokenJdtVisitor extends AbstractJdtVisitor {
+
+    public AbstractRawTokenJdtVisitor() {
+        super();
+    }
 
     @Override
-    protected AbstractRowTokenJdtVisitor createVisitor() {
-        return new RowTokenJdtVisitor();
+    protected void pushNode(ASTNode n, String label) {
+        push(0, "", label, n.getStartPosition(), n.getLength());
     }
 
 }

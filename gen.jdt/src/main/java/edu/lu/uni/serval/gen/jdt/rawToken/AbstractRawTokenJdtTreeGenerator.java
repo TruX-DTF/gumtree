@@ -18,7 +18,7 @@
  * Copyright 2011-2015 Floréal Morandat <florealm@gmail.com>
  */
 
-package edu.lu.uni.serval.gen.jdt.rowToken;
+package edu.lu.uni.serval.gen.jdt.rawToken;
 
 import com.github.gumtreediff.gen.TreeGenerator;
 import com.github.gumtreediff.tree.TreeContext;
@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 
-public abstract class AbstractRowTokenJdtTreeGenerator extends TreeGenerator {
+public abstract class AbstractRawTokenJdtTreeGenerator extends TreeGenerator {
 
     private static char[] readerToCharArray(Reader r) throws IOException {
         StringBuilder fileData = new StringBuilder();
@@ -63,10 +63,10 @@ public abstract class AbstractRowTokenJdtTreeGenerator extends TreeGenerator {
         pOptions.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
         parser.setCompilerOptions(pOptions);
         parser.setSource(readerToCharArray(r));
-        AbstractRowTokenJdtVisitor v = createVisitor();
+        AbstractRawTokenJdtVisitor v = createVisitor();
         parser.createAST(null).accept(v);
         return v.getTreeContext();
     }
 
-    protected abstract AbstractRowTokenJdtVisitor createVisitor();
+    protected abstract AbstractRawTokenJdtVisitor createVisitor();
 }

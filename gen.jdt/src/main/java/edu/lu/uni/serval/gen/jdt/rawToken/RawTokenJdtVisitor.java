@@ -1,4 +1,4 @@
-package edu.lu.uni.serval.gen.jdt.rowToken;
+package edu.lu.uni.serval.gen.jdt.rawToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,8 @@ import org.eclipse.jdt.core.dom.*;
  * @author kui.liu
  *
  */
-public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
-    public RowTokenJdtVisitor() {
+public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
+    public RawTokenJdtVisitor() {
         super();
     }
 
