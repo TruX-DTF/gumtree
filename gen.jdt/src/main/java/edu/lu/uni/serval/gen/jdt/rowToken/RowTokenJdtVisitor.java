@@ -18,7 +18,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
     @Override
     public void preVisit(ASTNode n) {
-    	if (! (n instanceof Comment || n instanceof TagElement || n instanceof TextElement)) {
+    	if (! (n instanceof Comment || n instanceof TagElement || n instanceof TextElement || n instanceof Block)) {
     		pushNode(n, getLabel(n));
     	}
     }
@@ -72,7 +72,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		    	for (Object obj : modifiers) {
 		    		IExtendedModifier modifier = (IExtendedModifier) obj;
 		    		if (modifier.isModifier()) {
-		    			nodeStr += "Modifier:" + modifier.toString();
+		    			nodeStr += modifier.toString() + ", ";
 		    		}
 		    	}
 		    	
@@ -257,11 +257,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			} else if (n instanceof TryStatement) {
 				TryStatement node = (TryStatement) n;
 				List<?> resources = node.resources();
-		    	if (resources != null) {
-		    		return "TryStatement:"+resources.toString();
-		    	} else {
-		    		return "TryStatement: ";
-		    	}
+				return "TryStatement:"+resources.toString();
 			} else if (n instanceof TypeDeclarationStatement) {
 				// TypeDeclaration, EnumDeclaration
 			} else if (n instanceof VariableDeclarationStatement) {
@@ -343,6 +339,15 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
         }
     }
     
+    private void visitBody(Statement body) {
+		if (body instanceof Block) {
+			List<?> statements = ((Block) body).statements();
+			visitList(statements);
+		} else {
+			body.accept(this);
+		}
+	}
+    
     ////---------------Expressions---------------
 	//  ----------------Annotation---------------
 	@Override
@@ -367,19 +372,20 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     @Override
 	public boolean visit(ArrayAccess node) {
     	Expression arrayExp = node.getArray();
-    	if (!(arrayExp instanceof Name || !isSimplestMethodInvocation(arrayExp))) {
-    		arrayExp.accept(this);
-    	} else {
+    	if (arrayExp instanceof Name || !isSimplestMethodInvocation(arrayExp)) {
     		pushNode(arrayExp, "ArrayName:" + arrayExp.getClass().getSimpleName() + ":" + arrayExp.toString()); //"ArrayName-" + 
     		popNode();
+    	} else {
+    		arrayExp.accept(this);
     	}
     	
 		Expression indexExpression = node.getIndex();
-		if (!(indexExpression instanceof NumberLiteral || indexExpression instanceof SimpleName || !isSimplestMethodInvocation(arrayExp))) {
-			indexExpression.accept(this);
-		} else {
+		if (indexExpression instanceof NumberLiteral || indexExpression instanceof SimpleName 
+				|| !isSimplestMethodInvocation(arrayExp) || indexExpression instanceof NullLiteral) {
 			pushNode(indexExpression, "ArrayIndex:" + indexExpression.getClass().getSimpleName() + ":" + indexExpression.toString()); //"ArrayIndex-" + 
 			popNode();
+		} else {
+			indexExpression.accept(this);
 		}
     	
 		return false;
@@ -398,11 +404,11 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 	@Override
 	public boolean visit(Assignment node) {
 		Expression leftHandExp = node.getLeftHandSide();
-		if (!(leftHandExp instanceof SimpleName)) {
-			leftHandExp.accept(this);
-		} else {
+		if (leftHandExp instanceof SimpleName) {
 			pushNode(leftHandExp, "LeftHandExp:" + leftHandExp.getClass().getSimpleName() + ":" + leftHandExp.toString());
 			popNode();
+		} else {
+			leftHandExp.accept(this);
 		}
 		
 		String op = node.getOperator().toString();
@@ -437,7 +443,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 	public boolean visit(ClassInstanceCreation node) {
 		Expression exp = node.getExpression();
 		if (exp != null) {
-			pushNode(exp, "" + exp.getClass().getSimpleName() + ":" + exp.toString());
+			pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
 			popNode();
 		}
 		List<?> typeArguments = node.typeArguments();
@@ -496,7 +502,15 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
 	@Override
 	public boolean visit(LambdaExpression node) {
-		return true;
+		List<?> parameters = node.parameters();
+		visitList(parameters);
+		ASTNode body = node.getBody();
+		if (body instanceof Block) {
+			visitBody((Block) body);
+		} else  {
+			body.accept(this);
+		}
+		return false;
 	}
 
 	@Override
@@ -532,7 +546,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 			}
 		}
 		for (Object obj : typeArguments) {
-			Expression typeArgu = (Expression) obj;
+			Type typeArgu = (Type) obj;
 			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
 			popNode();
 		}
@@ -615,10 +629,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 	@Override
 	public boolean visit(PostfixExpression node) {
 		Expression exp = node.getOperand();
-		if (!visitSubExpression(exp)) {
-			pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
-			popNode();
-		}
+		exp.accept(this);
 		String op = node.getOperator().toString();
 		push(0, "", "Operator:" + op, exp.getStartPosition() + exp.getLength() + 1, op.length());
 		popNode();
@@ -631,10 +642,7 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 		push(0, "", "Operator:" + op, node.getStartPosition(), op.length());
 		popNode();
 		Expression exp = node.getOperand();
-		if (!visitSubExpression(exp)) {
-			pushNode(exp, exp.getClass().getSimpleName() + ":" + exp.toString());
-			popNode();
-		}
+		exp.accept(this);
 		return false;
 	}
 
@@ -762,6 +770,11 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     
 	@Override
 	public boolean visit(MethodDeclaration node) {
+		/*
+		 *  The visiting of the below elements (except modifiers and body) can be removed, 
+		 *  because there is no any fix pattern can be mined from these elements.
+		 *  Even though some fix patterns can be mined, they are not what we want.
+		 */
 		List<?> modifiers = node.modifiers();
     	for (Object obj : modifiers) {
     		IExtendedModifier modifier = (IExtendedModifier) obj;
@@ -771,28 +784,28 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     		}
     	}
     	
-    	Type returnType = node.isConstructor() ? null : node.getReturnType2();
-    	if (returnType != null) {
-    		pushNode(returnType, returnType.getClass().getSimpleName() + ":" + returnType.toString());
-        	popNode();
-    	}
-		List<?> typeParameters = node.typeParameters();
-		for (Object obj : typeParameters) {
-			TypeParameter typeParameter = (TypeParameter) obj;
-			pushNode(typeParameter, "TypeParameter:" + typeParameter.getClass().getSimpleName() + ":" + typeParameter.toString());
-        	popNode();
-		}
-		SimpleName methodName = node.getName();
-		pushNode(methodName, "MethodName:" + methodName.toString());
-    	popNode();
-		List<?> parameters = node.parameters();
-		visitList(parameters);
-		List<?> exceptionTypes = node.thrownExceptionTypes();
-		for (Object obj : exceptionTypes) {
-			Type exceptionType = (Type) obj;
-			pushNode(exceptionType, "Exception:" + exceptionType.toString());
-        	popNode();
-		}
+//    	Type returnType = node.isConstructor() ? null : node.getReturnType2();
+//    	if (returnType != null) {
+//    		pushNode(returnType, returnType.getClass().getSimpleName() + ":" + returnType.toString());
+//        	popNode();
+//    	}
+//		List<?> typeParameters = node.typeParameters();
+//		for (Object obj : typeParameters) {
+//			TypeParameter typeParameter = (TypeParameter) obj;
+//			pushNode(typeParameter, "TypeParameter:" + typeParameter.getClass().getSimpleName() + ":" + typeParameter.toString());
+//        	popNode();
+//		}
+//		SimpleName methodName = node.getName();
+//		pushNode(methodName, "MethodName:" + methodName.toString());
+//    	popNode();
+//		List<?> parameters = node.parameters();
+//		visitList(parameters);
+//		List<?> exceptionTypes = node.thrownExceptionTypes();
+//		for (Object obj : exceptionTypes) {
+//			Type exceptionType = (Type) obj;
+//			pushNode(exceptionType, "Exception:" + exceptionType.toString());
+//        	popNode();
+//		}
 		
 		// The body can be null when the method declaration is from a interface
 		if (node.getBody() != null) {
@@ -833,10 +846,9 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
         return false;
     }
 
-
     @Override
     public boolean visit(WildcardType node) {
-        return true;
+        return false;
     }
     //-----------------Types-----------------
 
@@ -858,13 +870,20 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     ////***************Statements*************************
     @Override
     public boolean visit(CatchClause node) {
-        return true;
+    	visitBody(node.getBody());
+        return false;
     }
 
     ////-------------------Statements-------------------
     @Override
     public boolean visit(Block node) {
+    	pushNode(node, "Block");
         return true;
+    }
+    
+    @Override
+    public void endVisit(Block node) {
+    	popNode();
     }
 
     @Override
@@ -889,7 +908,10 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
     @Override
     public boolean visit(DoStatement node) {
-        return true;
+    	Expression exp = node.getExpression();
+        exp.accept(this);
+        visitBody(node.getBody());
+        return false;
     }
 
     @Override
@@ -899,7 +921,12 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
     @Override
     public boolean visit(EnhancedForStatement node) {
-        return true;
+    	SingleVariableDeclaration parameter = node.getParameter();
+    	Expression exp = node.getExpression();
+        parameter.accept(this);
+        exp.accept(this);
+        visitBody(node.getBody());
+        return false;
     }
 
     @Override
@@ -909,17 +936,45 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
     @Override
     public boolean visit(ForStatement node) {
-        return true;
+        List<?> init = node.initializers();
+		Expression exp = node.getExpression();
+		List<?> update = node.updaters();
+		visitList(init);
+		if (exp != null) {
+			exp.accept(this);
+		}
+		visitList(update);
+		
+		visitBody(node.getBody());
+        return false;
     }
 
     @Override
     public boolean visit(IfStatement node) {
-        return true;
+    	Expression exp = node.getExpression();
+        exp.accept(this);
+        
+        Statement stmt = node.getThenStatement();
+        if (stmt != null) {
+            pushNode(stmt, "ThenBlock");
+            visitBody(stmt);
+            popNode();
+        }
+
+        stmt = node.getElseStatement();
+        if (stmt != null) {
+            pushNode(stmt, "ElseBlock");
+            visitBody(stmt);
+            popNode();
+        }
+        return false;
     }
 
     @Override
     public boolean visit(LabeledStatement node) {
-        return true;
+    	node.getLabel().accept(this);
+    	visitBody(node.getBody());
+        return false;
     }
 
     @Override
@@ -944,7 +999,10 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
     @Override
     public boolean visit(SynchronizedStatement node) {
-        return true;
+    	Expression exp = node.getExpression();
+        exp.accept(this);
+        visitBody(node.getBody());
+        return false;
     }
 
     @Override
@@ -956,13 +1014,13 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
     public boolean visit(TryStatement node) {
     	List<?> resources = node.resources();
     	visitList(resources);
-    	node.getBody().accept(this);
+    	visitBody(node.getBody());
     	List<?> catchClauses = node.catchClauses(); // CatchClause
     	visitList(catchClauses);
     	Block finallyBlock = node.getFinally();
     	if (finallyBlock != null) {
     		pushNode(finallyBlock, "Finally");
-        	finallyBlock.accept(this);
+    		visitBody(finallyBlock);
         	popNode();
     	}
         return false;
@@ -976,10 +1034,6 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
     @Override
     public boolean visit(VariableDeclarationStatement node) {
-//    	/**
-//    	 * { ExtendedModifier } Type VariableDeclarationFragment
-// *        { <b>,</b> VariableDeclarationFragment } <b>;</b>
-//    	 */
 //    	List<?> modifiers = node.modifiers();
 //    	for (Object obj : modifiers) {
 //    		IExtendedModifier modifier = (IExtendedModifier) obj;
@@ -998,12 +1052,15 @@ public class RowTokenJdtVisitor  extends AbstractRowTokenJdtVisitor {
 
     @Override
     public boolean visit(WhileStatement node) {
-        return true;
+    	Expression exp = node.getExpression();
+        exp.accept(this);
+        visitBody(node.getBody());
+        return false;
     }
 
     @Override
     public void postVisit(ASTNode n) {
-    	if (!(n instanceof Comment || n instanceof TagElement || n instanceof TextElement)) {
+    	if (!(n instanceof Comment || n instanceof TagElement || n instanceof TextElement || n instanceof Block)) {
     		popNode();
     	}
     }

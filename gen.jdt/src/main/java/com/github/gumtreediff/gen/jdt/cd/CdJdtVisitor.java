@@ -628,7 +628,7 @@ public class CdJdtVisitor extends AbstractJdtVisitor {
 
     @Override
     public boolean visit(VariableDeclarationStatement node) {
-//        pushNode(node, node.toString()); //TODO
+        pushNode(node, node.toString());
     	Type type = node.getType();
     	type.accept(this);
     	List<?> fragments = node.fragments();

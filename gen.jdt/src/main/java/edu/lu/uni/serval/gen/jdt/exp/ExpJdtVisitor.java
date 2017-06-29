@@ -1,5 +1,6 @@
 package edu.lu.uni.serval.gen.jdt.exp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.gumtreediff.gen.jdt.cd.CdJdtVisitor;
@@ -83,6 +84,8 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	@Override
 	public boolean visit(ArrayInitializer node) {
 		pushNode(node, node.toString());
+		List<?> expressions = node.expressions();
+		visitList(expressions);
 		return false;
 	}
 
@@ -97,7 +100,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		Expression leftHandExp = node.getLeftHandSide();
 		leftHandExp.accept(this);
 		String op = node.getOperator().toString();
-		push(0, "Operator", op, leftHandExp.getStartPosition() + leftHandExp.getLength(), op.length());
+		push(-1, "Operator", "Operator:" + op, leftHandExp.getStartPosition() + leftHandExp.getLength(), op.length());
 		popNode();
 		Expression rightHandExp = node.getRightHandSide();
 		rightHandExp.accept(this);
@@ -153,6 +156,12 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		if (exp != null) {
 			exp.accept(this);
 		}
+		List<?> typeArguments = node.typeArguments();
+		for (Object obj : typeArguments) {
+			Type typeArgu = (Type) obj;
+			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
+			popNode();
+		}
 		Type type = node.getType();
 		type.accept(this);
 		List<?> arguments = node.arguments();
@@ -199,24 +208,21 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(InfixExpression node) {
-		String op = node.getOperator().toString();
 		pushNode(node, node.toString());
+		
 		Expression leftExp = node.getLeftOperand();
-		List<?> extendedOperands = node.extendedOperands();
-		Expression rightExp;
-		if (extendedOperands != null && extendedOperands.size() > 0) {
-			String nodeStr = node.toString();
-			nodeStr = nodeStr.substring(leftExp.toString().length()).trim();
-			nodeStr = nodeStr.substring(op.toString().length()).trim();
-			ExpressionRebuilder expRebuilder = new ExpressionRebuilder();
-			rightExp = expRebuilder.createExpression(nodeStr);
-		} else {
-			rightExp = node.getRightOperand();
-		}
 		leftExp.accept(this);
-		push(0, "Operator", op, leftExp.getStartPosition() + leftExp.getLength() + 1, op.length());
+		
+		String op = node.getOperator().toString();
+		push(-1, "Operator", "Operator:" + op, leftExp.getStartPosition() + leftExp.getLength() + 1, op.length());
 		popNode();
+		
+		Expression rightExp = node.getRightOperand();
 		rightExp.accept(this);
+		
+		List<?> extendedOperands = node.extendedOperands();
+		visitList(extendedOperands);
+		
 		return false;
 	}
 
@@ -245,6 +251,12 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		pushNode(node, node.toString());
 		List<?> parameters = node.parameters();
 		visitList(parameters);
+		ASTNode body = node.getBody();
+		if (body instanceof Block) {
+			visitBody((Block) body);
+		} else  {
+			body.accept(this);
+		}
 		return false;
 	}
 
@@ -257,10 +269,36 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	public boolean visit(MethodInvocation node) {
 		pushNode(node, node.toString());
 		Expression exp = node.getExpression();
-		if (exp != null) {
-			exp.accept(this);
-		}
+		List<?> typeArguments = node.typeArguments();
+		SimpleName methodName = node.getName();
 		List<?> arguments = node.arguments();
+		String arguStr = arguments.toString();
+		arguStr = arguStr.substring(arguStr.length() - 1);
+		List<MethodInvocation> methods = new ArrayList<>();
+		while (exp != null) {
+			if (exp instanceof MethodInvocation) {
+				MethodInvocation method = (MethodInvocation) exp;
+				methods.add(0, method);
+				exp = method.getExpression();
+			} else {
+				pushNode(exp, "Name:" + exp.toString());
+				popNode();
+				exp = null;
+			}
+		}
+		for (MethodInvocation method : methods) {
+			List<?> argumentsList = method.arguments();
+			pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName());
+			popNode();
+			visitList(argumentsList);
+		}
+		for (Object obj : typeArguments) {
+			Type typeArgu = (Type) obj;
+			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
+			popNode();
+		}
+		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
+    	popNode();
 		visitList(arguments);
 		return false;
 	}
@@ -401,7 +439,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		Expression exp = node.getOperand();
 		exp.accept(this);
 		String op = node.getOperator().toString();
-		push(0, "Operator", op, exp.getStartPosition() + exp.getLength() + 1, op.length());
+		push(-1, "Operator", "Operator:" + op, exp.getStartPosition() + exp.getLength() + 1, op.length());
 		popNode();
 		return false;
 	}
@@ -415,7 +453,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	public boolean visit(PrefixExpression node) {
 		pushNode(node, node.toString());
 		String op = node.getOperator().toString();
-		push(0, "Operator", op, node.getStartPosition(), op.length());
+		push(-1, "Operator", "Operator:" +op, node.getStartPosition(), op.length());
 		popNode();
 		Expression exp = node.getOperand();
 		exp.accept(this);
@@ -463,7 +501,8 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			className.accept(this);
 		}
 		SimpleName methodName = node.getName();
-		methodName.accept(this);
+		pushNode(methodName, "Method:" + methodName.getFullyQualifiedName());
+		popNode();
 		List<?> arguments = node.arguments();
 		visitList(arguments);
 		return false;
@@ -476,11 +515,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(ThisExpression node) {
+		pushNode(node, "this");
 		return false;
 	}
 
 	@Override
 	public void endVisit(ThisExpression node) {
+		popNode();
 	}
 
     @Override
@@ -591,7 +632,8 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	pushNode(node, "Initializer");
 		Block body = node.getBody();
 		if (body != null) {
-			body.accept(this);
+			List<?> statements = body.statements();
+			visitList(statements);
 		}
 		return false;
 	}
@@ -601,7 +643,6 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	popNode();
     }
     
-
 	@Override
 	public boolean visit(MethodDeclaration node) {
 		List<?> modifiers = node.modifiers();
@@ -630,19 +671,26 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			methodLabel += obj.toString() + ", ";
 		}
 		pushNode(node, methodLabel);
+		
+        /*
+		 *  The visiting of the below elements (except modifiers and body) can be removed, 
+		 *  because there is no any fix pattern can be mined from these elements.
+		 *  Even though some fix patterns can be mined, they are not what we want.
+		 */
         for (Object obj : modifiers) {
         	IExtendedModifier modifier = (IExtendedModifier) obj;
         	if (modifier.isModifier()) {
         		((Modifier)modifier).accept(this);
         	}
         }
-		if (returnType != null) {
-			returnType.accept(this);
-		}
-		visitList(typeParameters);
-		node.getName().accept(this);
-		visitList(parameters);
-		visitList(exceptionTypes);
+//		if (returnType != null) {
+//			returnType.accept(this);
+//		}
+//		visitList(typeParameters);
+//		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
+//		popNode();
+//		visitList(parameters);
+//		visitList(exceptionTypes);
 
 		// The body can be null when the method declaration is from a interface
 		if (node.getBody() != null) {
@@ -709,6 +757,8 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     @Override
     public boolean visit(VariableDeclarationFragment node) {
     	pushNode(node, node.toString());
+    	SimpleName variableName = node.getName();
+    	variableName.accept(this);
         Expression exp = node.getInitializer();
         if (exp != null) {
         	exp.accept(this);
@@ -727,6 +777,18 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     
     ////***************BODY VISITOR*************************
     private static final String COLON = ":";
+    
+    @Override
+    public boolean visit(CatchClause node) {
+        pushNode(node, node.getException().toString());
+        visitBody(node.getBody());
+        return false;
+    }
+
+    @Override
+    public void endVisit(CatchClause node) {
+        popNode();
+    }
 
     ////-------------------Statements-------------------
     @Override
@@ -763,7 +825,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
-        node.getBody().accept(this);
+        visitBody(node.getBody());
         return false;
     }
 
@@ -783,7 +845,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         pushNode(node, parameter.toString() + ", " + exp.getClass().getSimpleName() + COLON + exp.toString());
         parameter.accept(this);
         exp.accept(this);
-        node.getBody().accept(this);
+        visitBody(node.getBody());
         return false;
     }
 
@@ -814,7 +876,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		}
 		visitList(update);
 		
-		node.getBody().accept(this);
+		visitBody(node.getBody());
         return false;
     }
 
@@ -827,29 +889,23 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         Statement stmt = node.getThenStatement();
         if (stmt != null) {
             pushNode(stmt, "ThenBlock");
-            if (stmt instanceof Block) {
-            	Block block = (Block) stmt;
-                List<?> stmts = block.statements();
-                visitList(stmts);
-            } else {
-            	stmt.accept(this);
-            }
-            
+            visitBody(stmt);
             popNode();
         }
 
         stmt = node.getElseStatement();
         if (stmt != null) {
             pushNode(stmt, "ElseBlock");
-            if (stmt instanceof Block) {
-            	Block block = (Block) stmt;
-                List<?> stmts = block.statements();
-                visitList(stmts);
-            } else {
-            	stmt.accept(this);
-            }
+            visitBody(stmt);
             popNode();
         }
+        return false;
+    }
+    
+    @Override
+    public boolean visit(LabeledStatement node) {
+        pushNode(node, node.getLabel().getFullyQualifiedName());
+        visitBody(node.getBody());
         return false;
     }
 
@@ -900,7 +956,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
-        node.getBody().accept(this);
+        visitBody(node.getBody());
         return false;
     }
 
@@ -915,21 +971,17 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     @Override
     public boolean visit(TryStatement node) {
     	List<?> resources = node.resources();
-    	if (resources != null) {
-    		pushNode(node, "try:" + resources.toString());
-    		visitList(resources);
-    	} else {
-    		pushNode(node, "try");
-    	}
+    	pushNode(node, "try:" + resources.toString());
+		visitList(resources);
 
-    	node.getBody().accept(this);
+		visitBody(node.getBody());
 
         visitList(node.catchClauses());
 
         Statement stmt = node.getFinally();
         if (stmt != null) {
             pushNode(stmt, "Finally");
-            stmt.accept(this);
+            visitBody(stmt);
             popNode();
         }
         return false;
@@ -952,13 +1004,17 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
-        node.getBody().accept(this);
+        visitBody(node.getBody());
         return false;
     }
 
-    @Override
-    public void endVisit(WhileStatement node) {
-        popNode();
-    }
+	private void visitBody(Statement body) {
+		if (body instanceof Block) {
+			List<?> statements = ((Block) body).statements();
+			visitList(statements);
+		} else {
+			body.accept(this);
+		}
+	}
 
 }
