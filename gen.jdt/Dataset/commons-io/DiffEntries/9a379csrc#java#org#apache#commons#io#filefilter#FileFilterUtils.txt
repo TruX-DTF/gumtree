@@ -1,0 +1,12 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_9a379csrc#java#org#apache#commons#io#filefilter#FileFilterUtils.java
+Revised File: OUTPUT/commons-io/revFiles/9a379csrc#java#org#apache#commons#io#filefilter#FileFilterUtils.java
+DiffEntry: @@ -61,6 +61,6 @@
+  * file filter implementations in this package so you don't have to import
+- * every classes you use.
++ * every class you use.
+  * 
+  * @since Commons IO 1.0
+- * @version $Revision: 1.6 $ $Date: 2003/11/22 20:03:52 $
++ * @version $Revision: 1.7 $ $Date: 2004/02/10 06:00:03 $
+  * 
+

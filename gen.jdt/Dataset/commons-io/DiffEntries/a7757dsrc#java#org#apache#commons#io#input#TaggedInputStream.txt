@@ -1,0 +1,14 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_a7757dsrc#java#org#apache#commons#io#input#TaggedInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/a7757dsrc#java#org#apache#commons#io#input#TaggedInputStream.java
+DiffEntry: @@ -46,3 +46,3 @@
+  * <p>
+- * Alternatively, the {@link #throwIfCauseOf(Exception)} method can be
++ * Alternatively, the {@link #throwIfCauseOf(Throwable)} method can be
+  * used to let higher levels of code handle the exception caused by this
+
+@@ -82,3 +82,3 @@
+      *
+-     * @param throwable an exception
++     * @param exception an exception
+      * @return <code>true</code> if the exception was thrown by this stream,
+

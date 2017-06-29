@@ -1,0 +1,417 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_e47d34src#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/e47d34src#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -2,3 +2,3 @@
+  * Copyright 2001-2004 The Apache Software Foundation.
+- * 
++ *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+
+@@ -6,5 +6,5 @@
+  * You may obtain a copy of the License at
+- * 
++ *
+  *      http://www.apache.org/licenses/LICENSE-2.0
+- * 
++ *
+  * Unless required by applicable law or agreed to in writing, software
+
+@@ -37,3 +37,3 @@
+ /**
+- * This class provides basic facilities for manipulating files. 
++ * This class provides basic facilities for manipulating files.
+  *
+
+@@ -45,4 +45,4 @@
+  * copy a {@link #copyURLToFile URL's contents to a File},
+- * as well as methods to {@link #deleteDirectory(File) delete} and {@link #cleanDirectory(File)
+- * clean} a directory.
++ * as well as methods to {@link #deleteDirectory(File) delete} and
++ * {@link #cleanDirectory(File) clean} a directory.
+  * </p>
+
+@@ -66,3 +66,3 @@
+  * @author <a href="mailto:jeremias@apache.org">Jeremias Maerki</a>
+- * @version $Id: FileUtils.java,v 1.37 2004/08/13 23:51:41 scolebourne Exp $
++ * @version $Id: FileUtils.java,v 1.38 2004/10/24 04:20:06 martinc Exp $
+  */
+
+@@ -89,3 +89,3 @@
+     public static final long ONE_GB = ONE_KB * ONE_MB;
+-    
++
+     /**
+
+@@ -136,5 +136,13 @@
+ 
+-    private static void innerListFiles(Collection files, File directory, IOFileFilter filter) {
+-        File[] found = directory.listFiles((FileFilter)filter);
+-        if (found != null) { 
++    /**
++     * <p>Finds files within a given directory (and optionally its
++     * subdirectories). All files found are filtered by an IOFileFilter.</p>
++     * @param files the collection of files found.
++     * @param directory the directory to search in.
++     * @param filter the filter to apply to files and directories.
++     */
++    private static void innerListFiles(Collection files, File directory,
++            IOFileFilter filter) {
++        File[] found = directory.listFiles((FileFilter) filter);
++        if (found != null) {
+             for (int i = 0; i < found.length; i++) {
+
+@@ -158,3 +166,3 @@
+     public static File[] convertFileCollectionToFileArray(Collection files) {
+-         return (File[])files.toArray(new File[files.size()]);
++         return (File[]) files.toArray(new File[files.size()]);
+     }
+
+@@ -163,8 +171,8 @@
+     /**
+-     * <p>Finds files within a given directory (and optionally its 
++     * <p>Finds files within a given directory (and optionally its
+      * subdirectories). All files found are filtered by an IOFileFilter.
+      * </p>
+-     * <p>If your search should recurse into subdirectories you can pass in 
+-     * an IOFileFilter for directories. You don't need to bind a 
+-     * DirectoryFileFilter (via logical AND) to this filter. This method does 
++     * <p>If your search should recurse into subdirectories you can pass in
++     * an IOFileFilter for directories. You don't need to bind a
++     * DirectoryFileFilter (via logical AND) to this filter. This method does
+      * that for you.
+
+@@ -177,6 +185,6 @@
+      * in <code>FileFilterUtils.makeCVSAware(null)</code>.
+-     * </p>  
++     * </p>
+      * @param directory the directory to search in
+      * @param fileFilter filter to apply when finding files.
+-     * @param dirFilter optional filter to apply when finding subdirectories. 
++     * @param dirFilter optional filter to apply when finding subdirectories.
+      * If this parameter is null, subdirectories will not be included in the
+
+@@ -187,5 +195,7 @@
+      */
+-    public static Collection listFiles(File directory, IOFileFilter fileFilter, IOFileFilter dirFilter) {
++    public static Collection listFiles(File directory, IOFileFilter fileFilter,
++            IOFileFilter dirFilter) {
+         if (!directory.isDirectory()) {
+-            throw new IllegalArgumentException("Parameter 'directory' is not a directory");
++            throw new IllegalArgumentException(
++                    "Parameter 'directory' is not a directory");
+         }
+
+@@ -194,7 +204,7 @@
+         }
+-        
++
+         //Setup effective file filter
+-        IOFileFilter effFileFilter = FileFilterUtils.andFileFilter(fileFilter, 
++        IOFileFilter effFileFilter = FileFilterUtils.andFileFilter(fileFilter,
+             FileFilterUtils.notFileFilter(DirectoryFileFilter.INSTANCE));
+-            
++
+         //Setup effective directory filter
+
+@@ -207,6 +217,6 @@
+         }
+-        
++
+         //Find files
+         Collection files = new java.util.LinkedList();
+-        innerListFiles(files, directory, 
++        innerListFiles(files, directory,
+             FileFilterUtils.orFileFilter(effFileFilter, effDirFilter));
+
+@@ -214,3 +224,3 @@
+     }
+-    
++
+ 
+
+@@ -233,3 +243,3 @@
+      * Finds files within a given directory (and optionally its subdirectories)
+-     * which match an array of extensions. 
++     * which match an array of extensions.
+      * @param directory the directory to search in
+
+@@ -240,3 +250,4 @@
+      */
+-    public static Collection listFiles(File directory, String[] extensions, boolean recursive) {
++    public static Collection listFiles(File directory, String[] extensions,
++            boolean recursive) {
+         IOFileFilter filter;
+
+@@ -248,3 +259,3 @@
+         }
+-        return listFiles(directory, filter, 
++        return listFiles(directory, filter,
+             (recursive ? TrueFileFilter.INSTANCE : FalseFileFilter.INSTANCE));
+
+@@ -254,3 +265,4 @@
+     /**
+-     * <p>Compare the contents of two files to determine if they are equal or not.</p>
++     * <p>Compare the contents of two files to determine if they are equal or
++     * not.</p>
+      * <p>Code origin: Avalon</p>
+
+@@ -259,3 +271,4 @@
+      * @param file2 the second file
+-     * @return true if the content of the files are equal or they both don't exist, false otherwise
++     * @return true if the content of the files are equal or they both don't
++     * exist, false otherwise
+      * @throws IOException in case of an I/O error
+
+@@ -295,3 +308,3 @@
+      * Convert from a <code>URL</code> to a <code>File</code>.
+-     * 
++     *
+      * @param url  the file URL to convert
+
+@@ -301,3 +314,3 @@
+     public static File toFile(URL url) {
+-        if (url.getProtocol().equals("file") == false) {
++        if (!url.getProtocol().equals("file")) {
+             return null;
+
+@@ -315,4 +328,5 @@
+      * If the input is null, an empty array is returned.
+-     * If the input contains null, the output array contains null at the same index.
+-     * 
++     * If the input contains null, the output array contains null at the same
++     * index.
++     *
+      * @param urls  the file URLs to convert, null returns empty array
+
+@@ -320,3 +334,2 @@
+      *  if there was a null at that index in the input array
+-     * @throws IllegalArgumentException if the URL could not be converted to a File
+      */
+
+@@ -331,3 +344,4 @@
+                 if (url.getProtocol().equals("file") == false) {
+-                    throw new IllegalArgumentException("URL could not be converted to a File: " + url);
++                    throw new IllegalArgumentException(
++                            "URL could not be converted to a File: " + url);
+                 }
+
+@@ -360,4 +374,5 @@
+     /**
+-     * Copy file from source to destination. If <code>destinationDirectory</code> does not exist, it
+-     * (and any parent directories) will be created. If a file <code>source</code> in
++     * Copy file from source to destination. If
++     * <code>destinationDirectory</code> does not exist, it (and any parent
++     * directories) will be created. If a file <code>source</code> in
+      * <code>destinationDirectory</code> exists, it will be overwritten.
+
+@@ -369,5 +384,7 @@
+      * @throws FileNotFoundException if <code>source</code> isn't a normal file.
+-     * @throws IllegalArgumentException if <code>destinationDirectory</code> isn't a directory.
++     * @throws IllegalArgumentException if <code>destinationDirectory</code>
++     * isn't a directory.
+      * @throws IOException if <code>source</code> does not exist, the file in
+-     * <code>destinationDirectory</code> cannot be written to, or an IO error occurs during copying.
++     * <code>destinationDirectory</code> cannot be written to, or an IO error
++     * occurs during copying.
+      */
+
+@@ -379,6 +396,8 @@
+             && !destinationDirectory.isDirectory()) {
+-            throw new IllegalArgumentException("Destination is not a directory");
++            throw new IllegalArgumentException(
++                    "Destination is not a directory");
+         }
+ 
+-        copyFile(source, new File(destinationDirectory, source.getName()), true);
++        copyFile(source,
++                new File(destinationDirectory, source.getName()), true);
+     }
+
+@@ -386,4 +405,4 @@
+     /**
+-     * Copy file from source to destination. The directories up to 
+-     * <code>destination</code> will be created if they don't already exist. 
++     * Copy file from source to destination. The directories up to
++     * <code>destination</code> will be created if they don't already exist.
+      * <code>destination</code> will be overwritten if it already exists.
+
+@@ -391,9 +410,10 @@
+      *
+-     * @param source An existing non-directory <code>File</code> to copy 
++     * @param source An existing non-directory <code>File</code> to copy
+      * bytes from.
+-     * @param destination A non-directory <code>File</code> to write bytes to 
++     * @param destination A non-directory <code>File</code> to write bytes to
+      * (possibly overwriting).
+      *
+-     * @throws IOException if <code>source</code> does not exist, <code>destination</code> cannot be
+-     * written to, or an IO error occurs during copying.
++     * @throws IOException if <code>source</code> does not exist,
++     * <code>destination</code> cannot be written to, or an IO error occurs
++     * during copying.
+      *
+
+@@ -406,12 +426,12 @@
+     }
+-                
+-                
++
++
+     /**
+-     * Copy file from source to destination. The directories up to 
+-     * <code>destination</code> will be created if they don't already exist. 
++     * Copy file from source to destination. The directories up to
++     * <code>destination</code> will be created if they don't already exist.
+      * <code>destination</code> will be overwritten if it already exists.
+      *
+-     * @param source An existing non-directory <code>File</code> to copy 
++     * @param source An existing non-directory <code>File</code> to copy
+      * bytes from.
+-     * @param destination A non-directory <code>File</code> to write bytes to 
++     * @param destination A non-directory <code>File</code> to write bytes to
+      * (possibly overwriting).
+
+@@ -420,4 +440,5 @@
+      *
+-     * @throws IOException if <code>source</code> does not exist, <code>destination</code> cannot be
+-     * written to, or an IO error occurs during copying.
++     * @throws IOException if <code>source</code> does not exist,
++     * <code>destination</code> cannot be written to, or an IO error occurs
++     * during copying.
+      *
+
+@@ -426,4 +447,5 @@
+      */
+-    public static void copyFile(File source, File destination, boolean preserveFileDate)
+-                throws IOException {
++    public static void copyFile(File source, File destination,
++            boolean preserveFileDate)
++            throws IOException {
+         //check source exists
+
+@@ -447,3 +469,3 @@
+ 
+-        //makes sure it is not the same file        
++        //makes sure it is not the same file
+         if (source.getCanonicalPath().equals(destination.getCanonicalPath())) {
+
+@@ -474,6 +496,6 @@
+         }
+-        
++
+         if (preserveFileDate) {
+             //file copy should preserve file date
+-            destination.setLastModified(source.lastModified());        
++            destination.setLastModified(source.lastModified());
+         }
+
+@@ -482,9 +504,10 @@
+     /**
+-     * Copies bytes from the URL <code>source</code> to a file <code>destination</code>.
+-     * The directories up to <code>destination</code> will be created if they don't already exist.
+-     * <code>destination</code> will be overwritten if it already exists.
++     * Copies bytes from the URL <code>source</code> to a file
++     * <code>destination</code>. The directories up to <code>destination</code>
++     * will be created if they don't already exist. <code>destination</code>
++     * will be overwritten if it already exists.
+      *
+      * @param source A <code>URL</code> to copy bytes from.
+-     * @param destination A non-directory <code>File</code> to write bytes to (possibly
+-     * overwriting).
++     * @param destination A non-directory <code>File</code> to write bytes to
++     * (possibly overwriting).
+      *
+
+@@ -600,3 +623,5 @@
+                 Thread.sleep(100);
+-            } catch (InterruptedException ignore) {} catch (Exception ex) {
++            } catch (InterruptedException ignore) {
++                ;
++            } catch (Exception ex) {
+                 break;
+
+@@ -669,3 +694,3 @@
+      */
+-    public static void writeStringToFile(File file, 
++    public static void writeStringToFile(File file,
+             String data, String encoding) throws IOException {
+
+@@ -707,3 +732,3 @@
+      * <li>A directory to be deleted does not have to be empty.</li>
+-     * <li>You get exceptions when a file or directory cannot be deleted. 
++     * <li>You get exceptions when a file or directory cannot be deleted.
+      *      (java.io.File methods returns a boolean)</li>
+
+@@ -809,3 +834,3 @@
+         } else {
+-            if (false == directory.mkdirs()) {
++            if (!directory.mkdirs()) {
+                 String message =
+
+@@ -849,12 +874,14 @@
+     }
+-   
++
+      /**
+-      * Tests if the specified <code>File</code> is newer than the reference 
++      * Tests if the specified <code>File</code> is newer than the reference
+       * <code>File</code>.
+       *
+-      * @param file the <code>File</code> of which the modification date must be compared
+-      * @param reference the <code>File</code> of which the modification date is used 
++      * @param file the <code>File</code> of which the modification date must
++      * be compared.
++      * @param reference the <code>File</code> of which the modification date
++      * is used.
+       * like reference
+-      * @return true if the <code>File</code> exists and has been modified more recently
+-      * than the reference <code>File</code>.
++      * @return true if the <code>File</code> exists and has been modified more
++      * recently than the reference <code>File</code>.
+       */
+
+@@ -865,13 +892,15 @@
+          if (!reference.exists()) {
+-             throw new IllegalArgumentException("The reference file '" + file + "' doesn't exist");
++             throw new IllegalArgumentException(
++                    "The reference file '" + file + "' doesn't exist");
+          }
+- 
++
+          return isFileNewer(file, reference.lastModified());
+      }
+- 
++
+      /**
+-      * Tests if the specified <code>File</code> is newer than the specified 
+-      * <code>Date</code>
++      * Tests if the specified <code>File</code> is newer than the specified
++      * <code>Date</code>.
+       *
+-      * @param file the <code>File</code> of which the modification date must be compared
++      * @param file the <code>File</code> of which the modification date must be
++      * compared.
+       * @param date the date reference
+
+@@ -886,9 +915,11 @@
+      }
+- 
++
+      /**
+-      * Tests if the specified <code>File</code> is newer than the specified 
++      * Tests if the specified <code>File</code> is newer than the specified
+       * time reference.
+       *
+-      * @param file the <code>File</code> of which the modification date must be compared.
+-      * @param timeMillis the time reference measured in milliseconds since the epoch 
++      * @param file the <code>File</code> of which the modification date must
++      * be compared.
++      * @param timeMillis the time reference measured in milliseconds since the
++      * epoch
+       * (00:00:00 GMT, January 1, 1970)
+
+@@ -904,3 +935,3 @@
+          }
+- 
++
+          return file.lastModified() > timeMillis;
+

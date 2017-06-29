@@ -9,11 +9,11 @@
 	<packaging>jar</packaging>
 	<name>Gumtree JDT Tree Generator</name>
 	<dependencies>
-		<dependency>
+		<!-- <dependency>
 			<groupId>edu.lu.uni.serval</groupId>
 			<artifactId>CommitParser</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 		<!-- Logger -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

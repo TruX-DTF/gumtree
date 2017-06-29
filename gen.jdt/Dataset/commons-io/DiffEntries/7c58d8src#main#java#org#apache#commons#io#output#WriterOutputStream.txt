@@ -1,0 +1,23 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#output#WriterOutputStream.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#output#WriterOutputStream.java
+DiffEntry: @@ -119,3 +119,4 @@
+      */
+-    public WriterOutputStream(final Writer writer, final CharsetDecoder decoder, final int bufferSize, final boolean writeImmediately) {
++    public WriterOutputStream(final Writer writer, final CharsetDecoder decoder, final int bufferSize,
++                              final boolean writeImmediately) {
+         this.writer = writer;
+
+@@ -138,3 +139,4 @@
+      */
+-    public WriterOutputStream(final Writer writer, final Charset charset, final int bufferSize, final boolean writeImmediately) {
++    public WriterOutputStream(final Writer writer, final Charset charset, final int bufferSize,
++                              final boolean writeImmediately) {
+         this(writer,
+
+@@ -172,3 +174,4 @@
+      */
+-    public WriterOutputStream(final Writer writer, final String charsetName, final int bufferSize, final boolean writeImmediately) {
++    public WriterOutputStream(final Writer writer, final String charsetName, final int bufferSize,
++                              final boolean writeImmediately) {
+         this(writer, Charset.forName(charsetName), bufferSize, writeImmediately);
+

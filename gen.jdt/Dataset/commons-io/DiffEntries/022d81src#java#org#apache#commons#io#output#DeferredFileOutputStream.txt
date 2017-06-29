@@ -1,0 +1,10 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_022d81src#java#org#apache#commons#io#output#DeferredFileOutputStream.java
+Revised File: OUTPUT/commons-io/revFiles/022d81src#java#org#apache#commons#io#output#DeferredFileOutputStream.java
+DiffEntry: @@ -121,5 +121,4 @@
+     {
+-        byte[] data = memoryOutputStream.toByteArray();
+         FileOutputStream fos = new FileOutputStream(outputFile);
+-        fos.write(data);
++        memoryOutputStream.writeTo(fos);
+         diskOutputStream = fos;
+

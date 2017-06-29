@@ -1,0 +1,26 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#output#LockableFileWriter.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#output#LockableFileWriter.java
+DiffEntry: @@ -23,6 +23,4 @@
+ import java.io.OutputStreamWriter;
+-import java.io.UnsupportedEncodingException;
+ import java.io.Writer;
+ import java.nio.charset.Charset;
+-import java.nio.charset.UnsupportedCharsetException;
+ 
+
+@@ -160,4 +158,4 @@
+      * @throws IOException in case of an I/O error
+-     * @throws UnsupportedCharsetException
+-     *             thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
++     * @throws java.nio.charset.UnsupportedCharsetException
++     *             thrown instead of {@link java.io.UnsupportedEncodingException} in version 2.2 if the encoding is not
+      *             supported.
+
+@@ -216,4 +214,4 @@
+      * @throws IOException in case of an I/O error
+-     * @throws UnsupportedCharsetException
+-     *             thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
++     * @throws java.nio.charset.UnsupportedCharsetException
++     *             thrown instead of {@link java.io.UnsupportedEncodingException} in version 2.2 if the encoding is not
+      *             supported.
+

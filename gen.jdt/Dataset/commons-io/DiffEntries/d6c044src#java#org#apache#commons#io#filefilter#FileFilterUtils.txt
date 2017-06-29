@@ -1,0 +1,26 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_d6c044src#java#org#apache#commons#io#filefilter#FileFilterUtils.java
+Revised File: OUTPUT/commons-io/revFiles/d6c044src#java#org#apache#commons#io#filefilter#FileFilterUtils.java
+DiffEntry: @@ -296,3 +296,3 @@
+      * @return the decorated filter, never null
+-     * @since 1.1 (method existed but had bug in 1.0)
++     * @since Commons IO 1.1 (method existed but had bug in 1.0)
+      */
+
+@@ -317,3 +317,3 @@
+      * @return the decorated filter, never null
+-     * @since 1.1
++     * @since Commons IO 1.1
+      */
+
+@@ -337,3 +337,3 @@
+      * @return the decorated filter, never null
+-     * @since 1.3
++     * @since Commons IO 1.3
+      */
+
+@@ -351,3 +351,3 @@
+      * @return the decorated filter, never null
+-     * @since 1.3
++     * @since Commons IO 1.3
+      */
+

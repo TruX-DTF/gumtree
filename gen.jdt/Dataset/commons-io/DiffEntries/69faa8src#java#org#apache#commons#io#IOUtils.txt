@@ -1,0 +1,22 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_69faa8src#java#org#apache#commons#io#IOUtils.java
+Revised File: OUTPUT/commons-io/revFiles/69faa8src#java#org#apache#commons#io#IOUtils.java
+DiffEntry: @@ -511,2 +511,5 @@
+      * Return an Iterator for the lines in a <code>Reader</code>.
++     * Please read the javadoc of {@link LineIterator} to understand
++     * whether you should close the iterator.
++     * The file is closed if an exception is thrown.
+      *
+
+@@ -517,3 +520,3 @@
+      */
+-    public static Iterator lineIterator(Reader reader) {
++    public static LineIterator lineIterator(Reader reader) {
+         return new LineIterator(reader);
+
+@@ -524,2 +527,5 @@
+      * the character encoding specified (or default encoding if null).
++     * Please read the javadoc of {@link LineIterator} to understand
++     * whether you should close the iterator.
++     * The file is closed if an exception is thrown.
+      *
+

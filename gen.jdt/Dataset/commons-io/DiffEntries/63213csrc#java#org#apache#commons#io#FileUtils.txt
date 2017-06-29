@@ -1,0 +1,42 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_63213csrc#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/63213csrc#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -100,2 +100,7 @@
+     /**
++     * The number of bytes in a 50 MB.
++     */
++    private static final long FIFTY_MB = ONE_MB * 50;
++
++    /**
+      * The number of bytes in a gigabyte.
+
+@@ -673,12 +678,23 @@
+ 
+-        FileChannel input = new FileInputStream(srcFile).getChannel();
++        FileInputStream fis = null;
++        FileOutputStream fos = null;
++        FileChannel input = null;
++        FileChannel output = null;
+         try {
+-            FileChannel output = new FileOutputStream(destFile).getChannel();
+-            try {
+-                output.transferFrom(input, 0, input.size());
+-            } finally {
+-                IOUtils.closeQuietly(output);
++            fis = new FileInputStream(srcFile);
++            fos = new FileOutputStream(destFile);
++            input  = fis.getChannel();
++            output = fos.getChannel();
++            long size = input.size();
++            long pos = 0;
++            long count = 0;
++            while (pos < size) {
++                count = (size - pos) > FIFTY_MB ? FIFTY_MB : (size - pos);
++                pos += output.transferFrom(input, pos, count);
+             }
+         } finally {
++            IOUtils.closeQuietly(output);
++            IOUtils.closeQuietly(fos);
+             IOUtils.closeQuietly(input);
++            IOUtils.closeQuietly(fis);
+         }
+

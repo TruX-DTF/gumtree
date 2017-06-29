@@ -1,0 +1,43 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_64b5ecsrc#java#org#apache#commons#io#output#ByteArrayOutputStream.java
+Revised File: OUTPUT/commons-io/revFiles/64b5ecsrc#java#org#apache#commons#io#output#ByteArrayOutputStream.java
+DiffEntry: @@ -1,3 +1,3 @@
+ /*
+- * Copyright 2003,2004 The Apache Software Foundation.
++ * Copyright 2003-2006 The Apache Software Foundation.
+  * 
+
+@@ -66,4 +66,4 @@
+      *
+-     * @param size the initial size.
+-     * @exception IllegalArgumentException if size is negative.
++     * @param size  the initial size
++     * @throws IllegalArgumentException if size is negative
+      */
+
+@@ -77,2 +77,9 @@
+ 
++    /**
++     * Return the appropriate <code>byte[]</code> buffer 
++     * specified by index.
++     *
++     * @param index  the index of the buffer required
++     * @return the buffer
++     */
+     private byte[] getBuffer(int index) {
+
+@@ -81,2 +88,8 @@
+ 
++    /**
++     * Makes a new buffer available either by allocating
++     * a new one or re-cycling an existing one.
++     *
++     * @param newcount  the size of the buffer if one is created
++     */
+     private void needNewBuffer(int newcount) {
+
+@@ -170,3 +183,3 @@
+     }
+-    
++
+     /**
+

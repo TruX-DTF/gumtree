@@ -1,0 +1,34 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_f0bd37src#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/f0bd37src#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -66,3 +66,3 @@
+  * @author <a href="mailto:jeremias@apache.org">Jeremias Maerki</a>
+- * @version $Id: FileUtils.java,v 1.34 2004/07/15 08:21:14 scolebourne Exp $
++ * @version $Id: FileUtils.java,v 1.35 2004/07/15 09:16:17 jeremias Exp $
+  */
+
+@@ -123,4 +123,6 @@
+     public static void touch(File file) throws IOException {
+-        OutputStream out = new FileOutputStream(file, true);
+-        IOUtils.closeQuietly(out);
++        if (!file.exists()) {
++            OutputStream out = new FileOutputStream(file);
++            IOUtils.closeQuietly(out);
++        }
+         file.setLastModified(System.currentTimeMillis());
+
+@@ -131,7 +133,9 @@
+         File[] found = directory.listFiles((FileFilter)filter);
+-        for (int i = 0; i < found.length; i++) {
+-            if (found[i].isDirectory()) {
+-                innerListFiles(files, found[i], filter);
+-            } else {
+-                files.add(found[i]);
++        if (found != null) { 
++            for (int i = 0; i < found.length; i++) {
++                if (found[i].isDirectory()) {
++                    innerListFiles(files, found[i], filter);
++                } else {
++                    files.add(found[i]);
++                }
+             }
+

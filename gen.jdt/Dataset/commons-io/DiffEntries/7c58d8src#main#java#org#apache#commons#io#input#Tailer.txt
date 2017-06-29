@@ -1,0 +1,80 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#input#Tailer.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#input#Tailer.java
+DiffEntry: @@ -209,3 +209,4 @@
+      */
+-    public Tailer(final File file, final TailerListener listener, final long delayMillis, final boolean end, final boolean reOpen) {
++    public Tailer(final File file, final TailerListener listener, final long delayMillis, final boolean end,
++                  final boolean reOpen) {
+         this(file, listener, delayMillis, end, reOpen, DEFAULT_BUFSIZE);
+
+@@ -221,3 +222,4 @@
+      */
+-    public Tailer(final File file, final TailerListener listener, final long delayMillis, final boolean end, final int bufSize) {
++    public Tailer(final File file, final TailerListener listener, final long delayMillis, final boolean end,
++                  final int bufSize) {
+         this(file, listener, delayMillis, end, false, bufSize);
+
+@@ -234,3 +236,4 @@
+      */
+-    public Tailer(final File file, final TailerListener listener, final long delayMillis, final boolean end, final boolean reOpen, final int bufSize) {
++    public Tailer(final File file, final TailerListener listener, final long delayMillis, final boolean end,
++                  final boolean reOpen, final int bufSize) {
+         this(file, DEFAULT_CHARSET, listener, delayMillis, end, reOpen, bufSize);
+
+@@ -248,3 +251,4 @@
+      */
+-    public Tailer(final File file, final Charset cset, final TailerListener listener, final long delayMillis, final boolean end, final boolean reOpen
++    public Tailer(final File file, final Charset cset, final TailerListener listener, final long delayMillis,
++                  final boolean end, final boolean reOpen
+             , final int bufSize) {
+
+@@ -273,3 +277,4 @@
+      */
+-    public static Tailer create(final File file, final TailerListener listener, final long delayMillis, final boolean end, final int bufSize) {
++    public static Tailer create(final File file, final TailerListener listener, final long delayMillis,
++                                final boolean end, final int bufSize) {
+         return create(file, listener, delayMillis, end, false, bufSize);
+
+@@ -288,3 +293,4 @@
+      */
+-    public static Tailer create(final File file, final TailerListener listener, final long delayMillis, final boolean end, final boolean reOpen,
++    public static Tailer create(final File file, final TailerListener listener, final long delayMillis,
++                                final boolean end, final boolean reOpen,
+             final int bufSize) {
+
+@@ -305,3 +311,4 @@
+      */
+-    public static Tailer create(final File file, final Charset charset, final TailerListener listener, final long delayMillis, final boolean end, final boolean reOpen
++    public static Tailer create(final File file, final Charset charset, final TailerListener listener,
++                                final long delayMillis, final boolean end, final boolean reOpen
+             ,final int bufSize) {
+
+@@ -323,3 +330,4 @@
+      */
+-    public static Tailer create(final File file, final TailerListener listener, final long delayMillis, final boolean end) {
++    public static Tailer create(final File file, final TailerListener listener, final long delayMillis,
++                                final boolean end) {
+         return create(file, listener, delayMillis, end, DEFAULT_BUFSIZE);
+
+@@ -337,3 +345,4 @@
+      */
+-    public static Tailer create(final File file, final TailerListener listener, final long delayMillis, final boolean end, final boolean reOpen) {
++    public static Tailer create(final File file, final TailerListener listener, final long delayMillis,
++                                final boolean end, final boolean reOpen) {
+         return create(file, listener, delayMillis, end, reOpen, DEFAULT_BUFSIZE);
+
+@@ -483,2 +492,6 @@
+ 
++    /**
++     * Stops the tailer with an exception
++     * @param e The exception to send to listener
++     */
+     private void stop(final Exception e) {
+
+@@ -538,2 +551,5 @@
+         reader.seek(rePos); // Ensure we can re-read if necessary
++
++        listener.endOfFileReached();
++
+         return rePos;
+

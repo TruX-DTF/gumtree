@@ -1,0 +1,29 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_e3daecsrc#main#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/e3daecsrc#main#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -463,11 +463,9 @@
+ 
+-    private static void validateListFilesParameters(File directory,
+-    		IOFileFilter fileFilter) {
+-    	if (!directory.isDirectory()) {
+-    		throw new IllegalArgumentException(
+-    				"Parameter 'directory' is not a directory");
+-    	}
+-    	if (fileFilter == null) {
+-    		throw new NullPointerException("Parameter 'fileFilter' is null");
+-    	}
++    private static void validateListFilesParameters(File directory, IOFileFilter fileFilter) {
++        if (!directory.isDirectory()) {
++            throw new IllegalArgumentException("Parameter 'directory' is not a directory");
++        }
++        if (fileFilter == null) {
++            throw new NullPointerException("Parameter 'fileFilter' is null");
++        }
+     }
+
+@@ -475,4 +473,3 @@
+     private static IOFileFilter setupEfectiveFileFilter(IOFileFilter fileFilter) {
+-    	return FileFilterUtils.and(fileFilter,
+-    			FileFilterUtils.notFileFilter(DirectoryFileFilter.INSTANCE));
++        return FileFilterUtils.and(fileFilter, FileFilterUtils.notFileFilter(DirectoryFileFilter.INSTANCE));
+     }
+

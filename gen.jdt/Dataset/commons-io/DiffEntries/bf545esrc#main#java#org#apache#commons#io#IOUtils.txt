@@ -1,0 +1,32 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_bf545esrc#main#java#org#apache#commons#io#IOUtils.java
+Revised File: OUTPUT/commons-io/revFiles/bf545esrc#main#java#org#apache#commons#io#IOUtils.java
+DiffEntry: @@ -2779,3 +2779,3 @@
+      * @param offset initial offset into buffer
+-     * @param length length to read, must be >= 0
++     * @param length length to read, must be &gt;= 0
+      * @return actual length read; may be less than requested if EOF was reached
+
+@@ -2825,3 +2825,3 @@
+      * @param offset initial offset into buffer
+-     * @param length length to read, must be >= 0
++     * @param length length to read, must be &gt;= 0
+      * @return actual length read; may be less than requested if EOF was reached
+
+@@ -2895,3 +2895,3 @@
+      * @param offset initial offset into buffer
+-     * @param length length to read, must be >= 0
++     * @param length length to read, must be &gt;= 0
+      *
+
+@@ -2936,3 +2936,3 @@
+      * @param offset initial offset into buffer
+-     * @param length length to read, must be >= 0
++     * @param length length to read, must be &gt;= 0
+      *
+
+@@ -2975,3 +2975,3 @@
+      * @param input where to read input from
+-     * @param length length to read, must be >= 0
++     * @param length length to read, must be &gt;= 0
+      *
+

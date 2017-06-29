@@ -1,0 +1,89 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_0875f4src#java#org#apache#commons#io#FileSystemUtils.java
+Revised File: OUTPUT/commons-io/revFiles/0875f4src#java#org#apache#commons#io#FileSystemUtils.java
+DiffEntry: @@ -1,3 +1,3 @@
+ /*
+- * Copyright 2005 The Apache Software Foundation.
++ * Copyright 2005-2006 The Apache Software Foundation.
+  *
+
+@@ -99,3 +99,8 @@
+     /**
+-     * Returns the free space on a drive or volume in a cross-platform manner.
++     * Returns the free space on a drive or volume by invoking
++     * the command line.
++     * This method does not normalize the result, and typically returns
++     * bytes on Windows and Kilobytes on Unix.
++     * See also {@link #freeSpaceKb(String)}.
++     * <p>
+      * Note that some OS's are NOT currently supported, including OS/390.
+
+@@ -115,5 +120,29 @@
+     public static long freeSpace(String path) throws IOException {
+-        return INSTANCE.freeSpaceOS(path, OS);
++        return INSTANCE.freeSpaceOS(path, OS, false);
+     }
+ 
++    //-----------------------------------------------------------------------
++    /**
++     * Returns the free space on a drive or volume in kilobytes by invoking
++     * the command line.
++     * Note that some OS's are NOT currently supported, including OS/390.
++     * <pre>
++     * FileSystemUtils.freeSpace("C:");  // Windows
++     * FileSystemUtils.freeSpace("/volume");  // *nix
++     * </pre>
++     * The free space is calculated via the command line.
++     * It uses 'dir /-c' on Windows and 'df -k' on *nix.
++     *
++     * @param path  the path to get free space for, not null, not empty on Unix
++     * @return the amount of free drive space on the drive or volume in kilobytes
++     * @throws IllegalArgumentException if the path is invalid
++     * @throws IllegalStateException if an error occurred in initialisation
++     * @throws IOException if an error occurs when finding the free space
++     * @since Commons IO 1.2
++     */
++    public static long freeSpaceKb(String path) throws IOException {
++        return INSTANCE.freeSpaceOS(path, OS, true);
++    }
++
++    //-----------------------------------------------------------------------
+     /**
+
+@@ -130,2 +159,3 @@
+      * @param os  the operating system code
++     * @param kb  whether to normalize to kilobytes
+      * @return the amount of free drive space on the drive or volume
+
+@@ -135,3 +165,3 @@
+      */
+-    long freeSpaceOS(String path, int os) throws IOException {
++    long freeSpaceOS(String path, int os, boolean kb) throws IOException {
+         if (path == null) {
+
+@@ -141,5 +171,5 @@
+             case WINDOWS:
+-                return freeSpaceWindows(path);
++                return (kb ? freeSpaceWindows(path) / 1024 : freeSpaceWindows(path));
+             case UNIX:
+-                return freeSpaceUnix(path);
++                return freeSpaceUnix(path, kb);
+             case OTHER:
+
+@@ -247,2 +277,3 @@
+      * @param path  the path to get free space for
++     * @param kb  whether to normalize to kilobytes
+      * @return the amount of free drive space on the volume
+
+@@ -250,3 +281,3 @@
+      */
+-    long freeSpaceUnix(String path) throws IOException {
++    long freeSpaceUnix(String path, boolean kb) throws IOException {
+         if (path.length() == 0) {
+
+@@ -257,3 +288,4 @@
+         // build and run the 'dir' command
+-        String[] cmdAttribs = new String[] {"df", path};
++        String[] cmdAttribs = 
++            (kb ? new String[] {"df", "-k", path} : new String[] {"df", path});
+ 
+

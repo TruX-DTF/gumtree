@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_bdc067src#main#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/bdc067src#main#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -1143,3 +1143,3 @@
+         File[] files = filter == null ? srcDir.listFiles() : srcDir.listFiles(filter);
+-        if (files == null) {  // null if security restricted
++        if (files == null) {  // null if abstract pathname does not denote a directory, or if an I/O error occurs
+             throw new IOException("Failed to list contents of " + srcDir);
+

@@ -1,0 +1,10 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7233bfsrc#main#java#org#apache#commons#io#comparator#CompositeFileComparator.java
+Revised File: OUTPUT/commons-io/revFiles/7233bfsrc#main#java#org#apache#commons#io#comparator#CompositeFileComparator.java
+DiffEntry: @@ -35,4 +35,4 @@
+  *                       new CompositeFileComparator(
+- *                                   DirectoryFileComparator.DIRECTORY_COMPARATOR,
+- *                                   NameFileComparator.NAME_COMPARATOR);
++ *                                 (AbstractFileComparator) DirectoryFileComparator.DIRECTORY_COMPARATOR,
++ *                                 (AbstractFileComparator) NameFileComparator.NAME_COMPARATOR);
+  *       List&lt;File&gt; list = ...
+

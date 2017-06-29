@@ -1,0 +1,9 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_79c97asrc#java#org#apache#commons#io#filefilter#WildcardFilter.java
+Revised File: OUTPUT/commons-io/revFiles/79c97asrc#java#org#apache#commons#io#filefilter#WildcardFilter.java
+DiffEntry: @@ -81,3 +81,4 @@
+         }
+-        this.wildcards = wildcards;
++        this.wildcards = new String[wildcards.length];
++        System.arraycopy(wildcards, 0, this.wildcards, 0, wildcards.length);
+     }
+

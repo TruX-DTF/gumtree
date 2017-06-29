@@ -1,0 +1,406 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_b39bacsrc#main#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/b39bacsrc#main#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -56,3 +56,3 @@
+  * General file manipulation utilities.
+- * <p/>
++ * <p>
+  * Facilities are provided in the following areas:
+
+@@ -70,3 +70,3 @@
+  * </ul>
+- * <p/>
++ * <p>
+  * Origin of code: Excalibur, Alexandria, Commons-Utils
+
+@@ -269,6 +269,6 @@
+      * error messages than simply calling <code>new FileInputStream(file)</code>.
+-     * <p/>
++     * <p>
+      * At the end of the method either the stream will be successfully opened,
+      * or an exception will have been thrown.
+-     * <p/>
++     * <p>
+      * An exception is thrown if the file does not exist.
+
+@@ -302,6 +302,6 @@
+      * creating the parent directory if it does not exist.
+-     * <p/>
++     * <p>
+      * At the end of the method either the stream will be successfully opened,
+      * or an exception will have been thrown.
+-     * <p/>
++     * <p>
+      * The parent directory will be created if it does not exist.
+
+@@ -326,6 +326,6 @@
+      * creating the parent directory if it does not exist.
+-     * <p/>
++     * <p>
+      * At the end of the method either the stream will be successfully opened,
+      * or an exception will have been thrown.
+-     * <p/>
++     * <p>
+      * The parent directory will be created if it does not exist.
+
+@@ -426,3 +426,3 @@
+      * closed without modifying it, but updating the file date and time.
+-     * <p/>
++     * <p>
+      * NOTE: As from v1.3, this method throws an IOException if the last
+
+@@ -489,3 +489,3 @@
+      * subdirectories). All files found are filtered by an IOFileFilter.
+-     * <p/>
++     * <p>
+      * If your search should recurse into subdirectories you can pass in
+
+@@ -494,6 +494,6 @@
+      * that for you.
+-     * <p/>
++     * <p>
+      * An example: If you want to search through all directories called
+      * "temp" you pass in <code>FileFilterUtils.NameFileFilter("temp")</code>
+-     * <p/>
++     * <p>
+      * Another common usage of this method is find files in a directory
+
+@@ -568,6 +568,6 @@
+      * subdirectories). All files found are filtered by an IOFileFilter.
+-     * <p/>
++     * <p>
+      * The resulting collection includes the starting directory and
+      * any subdirectories that match the directory filter.
+-     * <p/>
++     * <p>
+      *
+
+@@ -604,3 +604,3 @@
+      * its subdirectories).
+-     * <p/>
++     * <p>
+      * All files found are filtered by an IOFileFilter. This method is
+
+@@ -608,3 +608,3 @@
+      * which supports Iterable ('foreach' loop).
+-     * <p/>
++     * <p>
+      * @param directory  the directory to search in
+
+@@ -627,3 +627,3 @@
+      * its subdirectories).
+-     * <p/>
++     * <p>
+      * All files found are filtered by an IOFileFilter. This method is
+
+@@ -631,3 +631,3 @@
+      * which supports Iterable ('foreach' loop).
+-     * <p/>
++     * <p>
+      * The resulting iterator includes the subdirectories themselves.
+
+@@ -709,3 +709,3 @@
+      * Compares the contents of two files to determine if they are equal or not.
+-     * <p/>
++     * <p>
+      * This method checks to see if the two files are different lengths
+
+@@ -713,3 +713,3 @@
+      * comparison of the contents.
+-     * <p/>
++     * <p>
+      * Code origin: Avalon
+
+@@ -764,6 +764,6 @@
+      * Compares the contents of two files to determine if they are equal or not.
+-     * <p/>
++     * <p>
+      * This method checks to see if the two files point to the same file,
+      * before resorting to line-by-line comparison of the contents.
+-     * <p/>
++     * <p>
+      *
+
+@@ -822,3 +822,3 @@
+      * Convert from a <code>URL</code> to a <code>File</code>.
+-     * <p/>
++     * <p>
+      * From version 1.1 this method will decode the URL.
+
+@@ -894,3 +894,3 @@
+      * Converts each of an array of <code>URL</code> to a <code>File</code>.
+-     * <p/>
++     * <p>
+      * Returns an array of the same size as the input.
+
+@@ -899,3 +899,3 @@
+      * index.
+-     * <p/>
++     * <p>
+      * This method will decode the URL.
+
+@@ -931,3 +931,3 @@
+      * Converts each of an array of <code>File</code> to a <code>URL</code>.
+-     * <p/>
++     * <p>
+      * Returns an array of the same size as the input.
+
+@@ -952,3 +952,3 @@
+      * Copies a file to a directory preserving the file date.
+-     * <p/>
++     * <p>
+      * This method copies the contents of the specified source file
+
+@@ -957,3 +957,3 @@
+      * If the destination file exists, then this method will overwrite it.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> This method tries to preserve the file's last
+
+@@ -977,3 +977,3 @@
+      * Copies a file to a directory optionally preserving the file date.
+-     * <p/>
++     * <p>
+      * This method copies the contents of the specified source file
+
+@@ -982,3 +982,3 @@
+      * If the destination file exists, then this method will overwrite it.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> Setting <code>preserveFileDate</code> to
+
+@@ -1014,3 +1014,3 @@
+      * Copies a file to a new location preserving the file date.
+-     * <p/>
++     * <p>
+      * This method copies the contents of the specified source file to the
+
+@@ -1019,3 +1019,3 @@
+      * method will overwrite it.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> This method tries to preserve the file's last
+
+@@ -1041,3 +1041,3 @@
+      * Copies a file to a new location.
+-     * <p/>
++     * <p>
+      * This method copies the contents of the specified source file
+
+@@ -1046,3 +1046,3 @@
+      * If the destination file exists, then this method will overwrite it.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> Setting <code>preserveFileDate</code> to
+
+@@ -1167,6 +1167,6 @@
+      * Copies a directory to within another directory preserving the file dates.
+-     * <p/>
++     * <p>
+      * This method copies the source directory and all its contents to a
+      * directory of the same name in the specified destination directory.
+-     * <p/>
++     * <p>
+      * The destination directory is created if it does not exist.
+
+@@ -1174,3 +1174,3 @@
+      * the source with the destination, with the source taking precedence.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> This method tries to preserve the files' last
+
+@@ -1206,3 +1206,3 @@
+      * Copies a whole directory to a new location preserving the file dates.
+-     * <p/>
++     * <p>
+      * This method copies the specified directory and all its child
+
+@@ -1210,3 +1210,3 @@
+      * The destination is the new location and name of the directory.
+-     * <p/>
++     * <p>
+      * The destination directory is created if it does not exist.
+
+@@ -1214,3 +1214,3 @@
+      * the source with the destination, with the source taking precedence.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> This method tries to preserve the files' last
+
+@@ -1234,6 +1234,6 @@
+      * Copies a whole directory to a new location.
+-     * <p/>
++     * <p>
+      * This method copies the contents of the specified source directory
+      * to within the specified destination directory.
+-     * <p/>
++     * <p>
+      * The destination directory is created if it does not exist.
+
+@@ -1241,3 +1241,3 @@
+      * the source with the destination, with the source taking precedence.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> Setting <code>preserveFileDate</code> to
+
+@@ -1265,6 +1265,6 @@
+      * Copies a filtered directory to a new location preserving the file dates.
+-     * <p/>
++     * <p>
+      * This method copies the contents of the specified source directory
+      * to within the specified destination directory.
+-     * <p/>
++     * <p>
+      * The destination directory is created if it does not exist.
+
+@@ -1272,3 +1272,3 @@
+      * the source with the destination, with the source taking precedence.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> This method tries to preserve the files' last
+
+@@ -1277,3 +1277,3 @@
+      * If the modification operation fails, no indication is provided.
+-     * <p/>
++     * <p>
+      * <h3>Example: Copy directories only</h3>
+
+@@ -1314,6 +1314,6 @@
+      * Copies a filtered directory to a new location.
+-     * <p/>
++     * <p>
+      * This method copies the contents of the specified source directory
+      * to within the specified destination directory.
+-     * <p/>
++     * <p>
+      * The destination directory is created if it does not exist.
+
+@@ -1321,3 +1321,3 @@
+      * the source with the destination, with the source taking precedence.
+-     * <p/>
++     * <p>
+      * <strong>Note:</strong> Setting <code>preserveFileDate</code> to
+
+@@ -1327,3 +1327,3 @@
+      * If the modification operation fails, no indication is provided.
+-     * <p/>
++     * <p>
+      * <h3>Example: Copy directories only</h3>
+
+@@ -1448,3 +1448,3 @@
+      * will be overwritten if it already exists.
+-     * <p/>
++     * <p>
+      * Warning: this method does not set a connection or read timeout and thus
+
+@@ -1572,3 +1572,3 @@
+      * Deletes a file, never throwing an exception. If file is a directory, delete it and all sub-directories.
+-     * <p/>
++     * <p>
+      * The difference between File.delete() and this method are:
+
+@@ -1696,3 +1696,3 @@
+      * Waits for NFS to propagate a file creation, imposing a timeout.
+-     * <p/>
++     * <p>
+      * This method repeatedly tests {@link File#exists()} until it returns
+
+@@ -1856,3 +1856,3 @@
+      * Returns an Iterator for the lines in a <code>File</code>.
+-     * <p/>
++     * <p>
+      * This method opens an <code>InputStream</code> for the file.
+
+@@ -1862,3 +1862,3 @@
+      * {@link LineIterator#closeQuietly(LineIterator)} method.
+-     * <p/>
++     * <p>
+      * The recommended usage pattern is:
+
+@@ -1875,3 +1875,3 @@
+      * </pre>
+-     * <p/>
++     * <p>
+      * If an exception occurs during the creation of the iterator, the
+
+@@ -1916,3 +1916,3 @@
+      * Writes a String to a file creating the file if it does not exist.
+-     * <p/>
++     * <p>
+      * NOTE: As from v1.3, the parent directories of the file will be created
+
+@@ -1933,3 +1933,3 @@
+      * Writes a String to a file creating the file if it does not exist.
+-     * <p/>
++     * <p>
+      * NOTE: As from v1.3, the parent directories of the file will be created
+
+@@ -2107,3 +2107,3 @@
+      * Writes a byte array to a file creating the file if it does not exist.
+-     * <p/>
++     * <p>
+      * NOTE: As from v1.3, the parent directories of the file will be created
+
+@@ -2179,3 +2179,3 @@
+      * The specified character encoding and the default line ending will be used.
+-     * <p/>
++     * <p>
+      * NOTE: As from v1.3, the parent directories of the file will be created
+
+@@ -2246,3 +2246,3 @@
+      * The specified character encoding and the line ending will be used.
+-     * <p/>
++     * <p>
+      * NOTE: As from v1.3, the parent directories of the file will be created
+
+@@ -2328,3 +2328,3 @@
+      * Deletes a file. If file is a directory, delete it and all sub-directories.
+-     * <p/>
++     * <p>
+      * The difference between File.delete() and this method are:
+
+@@ -2473,3 +2473,3 @@
+      * restricted, its size will not be included.
+-     * <p/>
++     * <p>
+      * Note that overflow is not detected, and the return value may be negative if
+
+@@ -2539,3 +2539,3 @@
+      * Counts the size of a directory recursively (sum of the length of all files).
+-     * <p/>
++     * <p>
+      * Note that overflow is not detected, and the return value may be negative if
+
+@@ -2829,3 +2829,3 @@
+      * Moves a directory.
+-     * <p/>
++     * <p>
+      * When the destination directory is on another file system, do a "copy and delete".
+
+@@ -2906,3 +2906,3 @@
+      * Moves a file.
+-     * <p/>
++     * <p>
+      * When the destination file is on another file system, do a "copy and delete".
+
+@@ -2982,3 +2982,3 @@
+      * Moves a file or directory to the destination directory.
+-     * <p/>
++     * <p>
+      * When the destination is on another file system, do a "copy and delete".
+
+@@ -3014,6 +3014,6 @@
+      * Determines whether the specified file is a Symbolic Link rather than an actual file.
+-     * <p/>
++     * <p>
+      * Will not return true if there is a Symbolic Link anywhere in the path,
+      * only if the specific file is.
+-     * <p/>
++     * <p>
+      * When using jdk1.7, this method delegates to {@code boolean java.nio.file.Files.isSymbolicLink(Path path)}
+
+@@ -3022,3 +3022,3 @@
+      * jkd1.6 and the system is detected as Windows using {@link FilenameUtils#isSystemWindows()}
+-     * <p/>
++     * <p>
+      * For code that runs on Java 1.7 or later, use the following method instead:
+

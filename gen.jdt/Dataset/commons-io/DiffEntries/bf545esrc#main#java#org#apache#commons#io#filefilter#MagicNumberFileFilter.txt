@@ -1,0 +1,66 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_bf545esrc#main#java#org#apache#commons#io#filefilter#MagicNumberFileFilter.java
+Revised File: OUTPUT/commons-io/revFiles/bf545esrc#main#java#org#apache#commons#io#filefilter#MagicNumberFileFilter.java
+DiffEntry: @@ -35,3 +35,3 @@
+  *
+- * <code><pre>
++ * <pre>
+  * File dir = new File(".");
+
+@@ -44,3 +44,3 @@
+  * }
+- * </pre></code>
++ * </pre>
+  *
+
+@@ -52,3 +52,3 @@
+  *
+- * <code><pre>
++ * <pre>
+  * File dir = new File(".");
+
+@@ -60,3 +60,4 @@
+  * }
+- * </pre></code>
++ * </pre>
++ *
+  * @since 2.0
+
+@@ -100,3 +101,3 @@
+      *
+-     * <code><pre>
++     * <pre>
+      * MagicNumberFileFilter javaClassFileFilter =
+
+@@ -104,3 +105,3 @@
+      *       (byte) 0xBA, (byte) 0xBE});
+-     * </pre></code>
++     * </pre>
+      *
+
+@@ -147,6 +148,6 @@
+      *
+-     * <code><pre>
++     * <pre>
+      * MagicNumberFileFilter tarFileFilter =
+      *     MagicNumberFileFilter("ustar", 257);
+-     * </pre></code>
++     * </pre>
+      *
+
+@@ -182,11 +183,11 @@
+      *
+-     * <code><pre>
++     * <pre>
+      * MagicNumberFileFilter tarFileFilter =
+      *     MagicNumberFileFilter(new byte[] {0x75, 0x73, 0x74, 0x61, 0x72}, 257);
+-     * </pre></code>
++     * </pre>
+      *
+-     * <code><pre>
++     * <pre>
+      * MagicNumberFileFilter javaClassFileFilter =
+      *     MagicNumberFileFilter(new byte[] {0xCA, 0xFE, 0xBA, 0xBE}, 0);
+-     * </pre></code>
++     * </pre>
+      *
+

@@ -1,0 +1,30 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#output#FileWriterWithEncoding.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#output#FileWriterWithEncoding.java
+DiffEntry: @@ -77,3 +77,4 @@
+      */
+-    public FileWriterWithEncoding(final String filename, final String encoding, final boolean append) throws IOException {
++    public FileWriterWithEncoding(final String filename, final String encoding, final boolean append)
++            throws IOException {
+         this(new File(filename), encoding, append);
+
+@@ -102,3 +103,4 @@
+      */
+-    public FileWriterWithEncoding(final String filename, final Charset encoding, final boolean append) throws IOException {
++    public FileWriterWithEncoding(final String filename, final Charset encoding, final boolean append)
++            throws IOException {
+         this(new File(filename), encoding, append);
+
+@@ -127,3 +129,4 @@
+      */
+-    public FileWriterWithEncoding(final String filename, final CharsetEncoder encoding, final boolean append) throws IOException {
++    public FileWriterWithEncoding(final String filename, final CharsetEncoder encoding, final boolean append)
++            throws IOException {
+         this(new File(filename), encoding, append);
+
+@@ -204,3 +207,4 @@
+      */
+-    public FileWriterWithEncoding(final File file, final CharsetEncoder encoding, final boolean append) throws IOException {
++    public FileWriterWithEncoding(final File file, final CharsetEncoder encoding, final boolean append)
++            throws IOException {
+         super();
+

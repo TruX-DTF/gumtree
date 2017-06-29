@@ -1,0 +1,42 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7bfef4src#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/7bfef4src#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -981,3 +981,6 @@
+ 
+-        cleanDirectory(directory);
++        if (!isSymlink(directory)) {
++            cleanDirectory(directory);
++        }
++
+         if (!directory.delete()) {
+
+@@ -1923,2 +1926,29 @@
+ 
++    /**
++     * Determines whether the specified file is a link rather than an actual file.
++     * Will not return true if there is a symlink anywhere in the path, only if the specific file is.
++     *
++     * @param file the file to check
++     * @return true iff the file is a symlink
++     * @throws IOException if an IO error occurs while checking the file
++     * @since 2.0
++     */
++    public static boolean isSymlink(File file) throws IOException {
++        if (file == null) {
++            throw new NullPointerException("File must not be null");
++        }
++        File fileInCanonicalDir = null;
++        if (file.getParent() == null) {
++            fileInCanonicalDir = file;
++        } else {
++            File canonicalDir = file.getParentFile().getCanonicalFile();
++            fileInCanonicalDir = new File(canonicalDir, file.getName());
++        }
++        
++        if (fileInCanonicalDir.getCanonicalFile().equals(fileInCanonicalDir.getAbsoluteFile())) {
++            return false;
++        } else {
++            return true;
++        }
++    }
+ }
+

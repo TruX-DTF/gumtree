@@ -1,0 +1,14 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7233bfsrc#main#java#org#apache#commons#io#comparator#DirectoryFileComparator.java
+Revised File: OUTPUT/commons-io/revFiles/7233bfsrc#main#java#org#apache#commons#io#comparator#DirectoryFileComparator.java
+DiffEntry: @@ -31,3 +31,3 @@
+  *       List&lt;File&gt; list = ...
+- *       DirectoryFileComparator.DIRECTORY_COMPARATOR.sort(list);
++ *       ((AbstractFileComparator) DirectoryFileComparator.DIRECTORY_COMPARATOR).sort(list);
+  * </pre>
+
+@@ -38,3 +38,3 @@
+  *       File[] array = ...
+- *       DirectoryFileComparator.DIRECTORY_REVERSE.sort(array);
++ *       ((AbstractFileComparator) DirectoryFileComparator.DIRECTORY_REVERSE).sort(array);
+  * </pre>
+

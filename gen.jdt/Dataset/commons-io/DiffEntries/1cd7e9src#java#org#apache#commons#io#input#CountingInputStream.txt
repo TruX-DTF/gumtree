@@ -1,0 +1,66 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_1cd7e9src#java#org#apache#commons#io#input#CountingInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/1cd7e9src#java#org#apache#commons#io#input#CountingInputStream.java
+DiffEntry: @@ -32,3 +32,3 @@
+     /** The count of bytes that have passed. */
+-    private int count;
++    private long count;
+ 
+
+@@ -88,6 +88,39 @@
+      * The number of bytes that have passed through this stream.
++     * <p>
++     * <strong>WARNING</strong> This method will return an
++     * incorrect count for files over 2GB - use
++     * <code>getByteCount()</code> instead.
+      *
+      * @return the number of bytes accumulated
++     * @deprecated use <code>getByteCount()</code> - see issue IO-84
+      */
+     public int getCount() {
++        return (int)getByteCount();
++    }
++
++    /** 
++     * Set the count back to 0. 
++     * <p>
++     * <strong>WARNING</strong> This method will return an
++     * incorrect count for files over 2GB - use
++     * <code>resetByteCount()</code> instead.
++     *
++     * @return the count previous to resetting.
++     * @deprecated use <code>resetByteCount()</code> - see issue IO-84
++     */
++    public synchronized int resetCount() {
++        return (int)resetByteCount();
++    }
++
++    /**
++     * The number of bytes that have passed through this stream.
++     * <p>
++     * <strong>N.B.</strong> This method was introduced as an
++     * alternative for the <code>getCount()</code> method
++     * because that method returns an integer which will result
++     * in incorrect count for files over 2GB being returned.
++     * 
++     * @return the number of bytes accumulated
++     */
++    public long getByteCount() {
+         return this.count;
+
+@@ -97,2 +130,7 @@
+      * Set the count back to 0. 
++     * <p>
++     * <strong>N.B.</strong> This method was introduced as an
++     * alternative for the <code>resetCount()</code> method
++     * because that method returns an integer which will result
++     * in incorrect count for files over 2GB being returned.
+      *
+
+@@ -100,4 +138,4 @@
+      */
+-    public synchronized int resetCount() {
+-        int tmp = this.count;
++    public synchronized long resetByteCount() {
++        long tmp = this.count;
+         this.count = 0;
+

@@ -1,0 +1,49 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_0c09b3src#java#org#apache#commons#io#filefilter#AndFileFilter.java
+Revised File: OUTPUT/commons-io/revFiles/0c09b3src#java#org#apache#commons#io#filefilter#AndFileFilter.java
+DiffEntry: @@ -1,3 +1,3 @@
+ /*
+- * Copyright 2002-2004 The Apache Software Foundation.
++ * Copyright 2002-2005 The Apache Software Foundation.
+  *
+
+@@ -24,3 +24,3 @@
+ /**
+- * A {@link FileFilter} providing conditional AND logic across a list of
++ * A {@link java.io.FileFilter} providing conditional AND logic across a list of
+  * file filters. This filter returns <code>true</code> if all filters in the
+
+@@ -53,2 +53,3 @@
+      * with the specified list of filters.
++     * @param fileFilters a List of IOFileFilter instances
+      * @since Commons IO 1.1
+
+@@ -76,3 +77,3 @@
+     /**
+-     * @{inheritDoc}
++     * {@inheritDoc}
+      */
+
+@@ -83,3 +84,3 @@
+     /**
+-     * @{inheritDoc}
++     * {@inheritDoc}
+      */
+
+@@ -90,3 +91,3 @@
+     /**
+-     * @{inheritDoc}
++     * {@inheritDoc}
+      */
+
+@@ -104,3 +105,3 @@
+     /**
+-     * @{inheritDoc}
++     * {@inheritDoc}
+      */
+
+@@ -120,3 +121,3 @@
+     /**
+-     * @{inheritDoc}
++     * {@inheritDoc}
+      */
+

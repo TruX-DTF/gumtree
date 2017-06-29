@@ -1,0 +1,13 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_41a3e9src#main#java#org#apache#commons#io#IOUtils.java
+Revised File: OUTPUT/commons-io/revFiles/41a3e9src#main#java#org#apache#commons#io#IOUtils.java
+DiffEntry: @@ -820,6 +820,6 @@
+         int offset = 0;
+-        int readed;
++        int read;
+ 
+-        while (offset < size && (readed = input.read(data, offset, size - offset)) != EOF) {
+-            offset += readed;
++        while (offset < size && (read = input.read(data, offset, size - offset)) != EOF) {
++            offset += read;
+         }
+

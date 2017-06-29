@@ -1,0 +1,12 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_00d13csrc#java#org#apache#commons#io#FileSystemUtils.java
+Revised File: OUTPUT/commons-io/revFiles/00d13csrc#java#org#apache#commons#io#FileSystemUtils.java
+DiffEntry: @@ -128,2 +128,3 @@
+      * @param path  the path to get free space for, not null, not empty on Unix
++     * @param os  the operating system code
+      * @return the amount of free drive space on the drive or volume
+
+@@ -317,2 +318,3 @@
+      * @return a reader
++     * @throws IOException if an error occurs
+      */
+

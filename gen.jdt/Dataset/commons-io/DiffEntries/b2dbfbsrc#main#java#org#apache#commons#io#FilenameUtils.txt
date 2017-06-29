@@ -1,0 +1,21 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_b2dbfbsrc#main#java#org#apache#commons#io#FilenameUtils.java
+Revised File: OUTPUT/commons-io/revFiles/b2dbfbsrc#main#java#org#apache#commons#io#FilenameUtils.java
+DiffEntry: @@ -605,2 +605,3 @@
+      * \\server\a\b\c.txt  --> "\\server\" --> UNC
++     * \\\a\b\c.txt        -->  error, length = -1
+      *
+
+@@ -613,2 +614,4 @@
+      * ~user               --> "~user/"    --> named user (slash added)
++     * //server/a/b/c.txt  --> "//server/"
++     * ///a/b/c.txt        --> error, length = -1
+      * </pre>
+
+@@ -618,2 +621,6 @@
+      *
++     * Note that a leading // (or \\) is used to indicate a UNC name on Windows.
++     * These must be followed by a server name, so double-slashes are not collapsed
++     * to a single slash at the start of the filename.
++     *
+      * @param filename  the filename to find the prefix in, null returns -1
+

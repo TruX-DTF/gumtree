@@ -1,0 +1,16 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_2d69b9src#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/2d69b9src#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -66,3 +66,3 @@
+  * @author <a href="mailto:jeremias@apache.org">Jeremias Maerki</a>
+- * @version $Id: FileUtils.java,v 1.32 2004/06/13 04:58:07 bayard Exp $
++ * @version $Id: FileUtils.java,v 1.33 2004/07/03 11:20:45 jeremias Exp $
+  */
+
+@@ -123,4 +123,5 @@
+     public static void touch(File file) throws IOException {
+-        OutputStream out = new java.io.FileOutputStream(file);
++        OutputStream out = new java.io.FileOutputStream(file, true);
+         IOUtils.closeQuietly(out);
++        file.setLastModified(System.currentTimeMillis());
+     }
+

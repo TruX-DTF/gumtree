@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_5a23a7src#main#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/5a23a7src#main#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -1518,3 +1518,3 @@
+      *
+-     * @param source  the <code>InputStream</code> to copy bytes from, must not be {@code null}, will be closed
++     * @param source  the <code>InputStream</code> to copy bytes from, must not be {@code null}
+      * @param destination  the non-directory <code>File</code> to write bytes to
+

@@ -1,0 +1,68 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_eaa8e0src#java#org#apache#commons#io#FileSystemUtils.java
+Revised File: OUTPUT/commons-io/revFiles/eaa8e0src#java#org#apache#commons#io#FileSystemUtils.java
+DiffEntry: @@ -37,2 +37,4 @@
+  * @author Thomas Ledoux
++ * @author James Urie
++ * @author Magnus Grimsell
+  * @version $Id$
+
+@@ -53,2 +55,4 @@
+     private static final int UNIX = 2;
++    /** Operating system state flag for Posix flavour Unix. */
++    private static final int POSIX_UNIX = 3;
+ 
+
+@@ -72,4 +76,2 @@
+                 osName.indexOf("mpe/ix") != -1 ||
+-                osName.indexOf("hp-ux") != -1 ||
+-                osName.indexOf("aix") != -1 ||
+                 osName.indexOf("freebsd") != -1 ||
+
+@@ -80,2 +82,5 @@
+                 os = UNIX;
++            } else if (osName.indexOf("hp-ux") != -1 ||
++                osName.indexOf("aix") != -1) {
++                os = POSIX_UNIX;
+             } else {
+
+@@ -135,3 +140,3 @@
+      * The free space is calculated via the command line.
+-     * It uses 'dir /-c' on Windows and 'df -k' on *nix.
++     * It uses 'dir /-c' on Windows, 'df -kP' on AIX/HP-UX and 'df -k' on other Unix.
+      *
+
+@@ -175,3 +180,5 @@
+             case UNIX:
+-                return freeSpaceUnix(path, kb);
++                return freeSpaceUnix(path, kb, false);
++            case POSIX_UNIX:
++                return freeSpaceUnix(path, kb, true);
+             case OTHER:
+
+@@ -280,2 +287,3 @@
+      * @param kb  whether to normalize to kilobytes
++     * @param posix  whether to use the posix standard format flag
+      * @return the amount of free drive space on the volume
+
+@@ -283,3 +291,3 @@
+      */
+-    long freeSpaceUnix(String path, boolean kb) throws IOException {
++    long freeSpaceUnix(String path, boolean kb, boolean posix) throws IOException {
+         if (path.length() == 0) {
+
+@@ -290,5 +298,12 @@
+         // build and run the 'dir' command
++        String flags = "-";
++        if (kb) {
++            flags += "k";
++        }
++        if (posix) {
++            flags += "P";
++        }
+         String[] cmdAttribs = 
+-            (kb ? new String[] {"df", "-k", path} : new String[] {"df", path});
+-
++            (flags.length() > 1 ? new String[] {"df", flags, path} : new String[] {"df", path});
++        
+         // read the output from the command until we come to the second line
+

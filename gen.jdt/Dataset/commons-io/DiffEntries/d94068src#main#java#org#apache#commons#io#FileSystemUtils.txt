@@ -1,0 +1,23 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_d94068src#main#java#org#apache#commons#io#FileSystemUtils.java
+Revised File: OUTPUT/commons-io/revFiles/d94068src#main#java#org#apache#commons#io#FileSystemUtils.java
+DiffEntry: @@ -512,2 +512,19 @@
+             }
++
++            inr.close();
++            inr = null;
++
++            in.close();
++            in = null;
++
++            if (out != null) {
++                out.close();
++                out = null;
++            }
++
++            if (err != null) {
++                err.close();
++                err = null;
++            }
++
+             return lines;
+

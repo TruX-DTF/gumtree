@@ -1,0 +1,41 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_d357d9src#main#java#org#apache#commons#io#input#MessageDigestCalculatingInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/d357d9src#main#java#org#apache#commons#io#input#MessageDigestCalculatingInputStream.java
+DiffEntry: @@ -33,2 +33,5 @@
+ 
++    /**
++     * Maintains the message digest.
++     */
+     public static class MessageDigestMaintainingObserver extends Observer {
+
+@@ -36,2 +39,6 @@
+ 
++        /**
++         * Creates an MessageDigestMaintainingObserver for the given MessageDigest. 
++         * @param pMd the message digest to use
++         */
+         public MessageDigestMaintainingObserver(MessageDigest pMd) {
+
+@@ -55,2 +62,4 @@
+      * using the given {@link MessageDigest}.
++     * @param pStream the stream to calculate the message digest for
++     * @param pDigest the message digest to use
+      */
+
+@@ -64,2 +73,5 @@
+      * using a {@link MessageDigest} with the given algorithm.
++     * @param pStream the stream to calculate the message digest for
++     * @param pAlgorithm the name of the algorithm to use
++     * @throws NoSuchAlgorithmException if no Provider supports a MessageDigestSpi implementation for the specified algorithm.
+      */
+
+@@ -71,2 +83,4 @@
+      * using a {@link MessageDigest} with the "MD5" algorithm.
++     * @param pStream the stream to calculate the message digest for
++     * @throws NoSuchAlgorithmException if no Provider supports a MessageDigestSpi implementation for the specified algorithm.
+      */
+
+@@ -82,2 +96,3 @@
+      * {@link #consume()}.
++     * @return the message digest used
+      */
+

@@ -1,0 +1,33 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_4aebb1src#main#java#org#apache#commons#io#input#MessageDigestCalculatingInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/4aebb1src#main#java#org#apache#commons#io#input#MessageDigestCalculatingInputStream.java
+DiffEntry: @@ -26,5 +26,5 @@
+  * This class is an example for using an {@link ObservableInputStream}. It
+- * creates its own {@link Observer}, which calculates a checksum using a
+- * MessageDigest, for example an MD5 sum.
+- * {@em Note}: Neither {@link ObservableInputStream}, nor {@link MessageDigest},
++ * creates its own {@link org.apache.commons.io.input.ObservableInputStream.Observer},
++ * which calculates a checksum using a MessageDigest, for example an MD5 sum.
++ * <em>Note</em>: Neither {@link ObservableInputStream}, nor {@link MessageDigest},
+  * are thread safe. So is {@link MessageDigestCalculatingInputStream}.
+
+@@ -32,2 +32,3 @@
+ public class MessageDigestCalculatingInputStream extends ObservableInputStream {
++
+     public static class MessageDigestMaintainingObserver extends Observer {
+
+@@ -60,2 +61,3 @@
+     }
++
+     /** Creates a new instance, which calculates a signature on the given stream,
+
+@@ -66,2 +68,3 @@
+     }
++
+     /** Creates a new instance, which calculates a signature on the given stream,
+
+@@ -75,3 +78,3 @@
+      * checksum.
+-     * {@em Note}: The checksum will only reflect the data, which has been read so far.
++     * <em>Note</em>: The checksum will only reflect the data, which has been read so far.
+      * This is probably not, what you expect. Make sure, that the complete data has been
+

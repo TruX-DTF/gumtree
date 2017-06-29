@@ -1,0 +1,216 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_e47d34src#java#org#apache#commons#io#FilenameUtils.java
+Revised File: OUTPUT/commons-io/revFiles/e47d34src#java#org#apache#commons#io#FilenameUtils.java
+DiffEntry: @@ -2,3 +2,3 @@
+  * Copyright 2001-2004 The Apache Software Foundation.
+- * 
++ *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+
+@@ -6,5 +6,5 @@
+  * You may obtain a copy of the License at
+- * 
++ *
+  *      http://www.apache.org/licenses/LICENSE-2.0
+- * 
++ *
+  * Unless required by applicable law or agreed to in writing, software
+
+@@ -18,3 +18,2 @@
+ import java.io.File;
+-import java.io.FileNotFoundException;
+ import java.io.IOException;
+
+@@ -22,3 +21,3 @@
+ /**
+- * Common {@link java.io.File} manipulation routines through 
++ * Common {@link java.io.File} manipulation routines through
+  * use of a filename/path.
+
+@@ -27,12 +26,15 @@
+  *
+- * <p>Methods exist to retrieve the components of a typical file path. For example
+- * <code>/www/hosted/mysite/index.html</code>, can be broken into:
++ * <p>Methods exist to retrieve the components of a typical file path. For
++ * example <code>/www/hosted/mysite/index.html</code>, can be broken into:
+  * <ul>
+- *   <li><code>/www/hosted/mysite/</code> -- retrievable through {@link #getPath}</li>
++ *   <li><code>/www/hosted/mysite/</code> -- retrievable through
++ *       {@link #getPath}</li>
+  *   <li><code>index.html</code> -- retrievable through {@link #removePath}</li>
+- *   <li><code>/www/hosted/mysite/index</code> -- retrievable through {@link #removeExtension}</li>
++ *   <li><code>/www/hosted/mysite/index</code> -- retrievable through
++ *       {@link #removeExtension}</li>
+  *   <li><code>html</code> -- retrievable through {@link #getExtension}</li>
+  * </ul>
+- * There are also methods to {@link #catPath concatenate two paths}, {@link #resolveFile resolve a
+- * path relative to a File} and {@link #normalize} a path.
++ * There are also methods to {@link #catPath concatenate two paths},
++ * {@link #resolveFile resolve a path relative to a File} and
++ * {@link #normalize} a path.
+  * </p>
+
+@@ -54,3 +56,3 @@
+  * @author <a href="mailto:jeremias@apache.org">Jeremias Maerki</a>
+- * @version $Id: FilenameUtils.java,v 1.11 2004/06/13 05:17:11 bayard Exp $
++ * @version $Id: FilenameUtils.java,v 1.12 2004/10/24 04:20:07 martinc Exp $
+  */
+
+@@ -111,6 +113,6 @@
+      */
+-    public static String removeExtension( final String filename) {
++    public static String removeExtension(final String filename) {
+         String ext = getExtension(filename);
+         int index = ext.length();
+-        if(index > 0) {
++        if (index > 0) {
+             // include the . in the count
+
+@@ -142,3 +144,3 @@
+         int lastDirSeparator = filename.lastIndexOf(File.separatorChar);
+-        if(lastDirSeparator > 0){
++        if (lastDirSeparator > 0) {
+             shortFilename = filename.substring(lastDirSeparator + 1);
+
+@@ -156,3 +158,4 @@
+     /**
+-     * Remove path from filename. Equivalent to the unix command <code>basename</code>
++     * Remove path from filename. Equivalent to the unix command
++     * <code>basename</code>.
+      * ie.
+
+@@ -166,3 +169,3 @@
+      */
+-    public static String removePath( String filepath) {
++    public static String removePath(String filepath) {
+         return removePath(filepath, File.separatorChar);
+
+@@ -195,3 +198,4 @@
+     /**
+-     * Get path from filename. Roughly equivalent to the unix command <code>dirname</code>.
++     * Get path from filename. Roughly equivalent to the unix command
++     * <code>dirname</code>.
+      * ie.
+
+@@ -205,3 +209,3 @@
+      */
+-    public static String getPath( String filepath) {
++    public static String getPath(String filepath) {
+         return getPath(filepath, File.separatorChar);
+
+@@ -236,4 +240,4 @@
+      * Normalize a path.
+-     * Eliminates "/../" and "/./" in a string. Returns <code>null</code> if the ..'s went past the
+-     * root.
++     * Eliminates "/../" and "/./" in a string. Returns <code>null</code> if
++     * the ..'s went past the root.
+      * Eg:
+
+@@ -252,3 +256,3 @@
+      */
+-    public static String normalize( String path) {
++    public static String normalize(String path) {
+         String normalized = path;
+
+@@ -257,4 +261,5 @@
+             int index = normalized.indexOf("//");
+-            if (index < 0)
++            if (index < 0) {
+                 break;
++            }
+             normalized =
+
+@@ -267,4 +272,5 @@
+             int index = normalized.indexOf("/./");
+-            if (index < 0)
++            if (index < 0) {
+                 break;
++            }
+             normalized =
+
+@@ -277,6 +283,8 @@
+             int index = normalized.indexOf("/../");
+-            if (index < 0)
++            if (index < 0) {
+                 break;
+-            if (index == 0)
++            }
++            if (index == 0) {
+                 return null; // Trying to go outside our context
++            }
+             int index2 = normalized.lastIndexOf('/', index - 1);
+
+@@ -293,3 +301,3 @@
+      * Will concatenate 2 paths. Paths with <code>..</code> will be
+-     * properly handled. The path separator between the 2 paths is the 
++     * properly handled. The path separator between the 2 paths is the
+      * system default path separator.
+
+@@ -313,3 +321,3 @@
+      */
+-    public static String catPath( String lookupPath, String path) {
++    public static String catPath(String lookupPath, String path) {
+         // Cut off the last slash and everything beyond
+
+@@ -332,9 +340,11 @@
+ 
+-        return new StringBuffer(lookup).append(File.separator).append(pth).toString();
++        return new StringBuffer(lookup).
++                append(File.separator).append(pth).toString();
+     }
+-    
++
+     /**
+-     * Return the index of the last 'path separator' character. The 'path separator'
+-     * character is '/' for UNIX systems and '\' for Microsoft Windows systems.
+-     * 
++     * Return the index of the last 'path separator' character. The 'path
++     * separator' character is '/' for UNIX systems and '\' for Microsoft
++     * Windows systems.
++     *
+      * @param path The path to find the last path separator in
+
+@@ -350,8 +360,9 @@
+     /**
+-     * Resolve a file <code>filename</code> to it's canonical form. If <code>filename</code> is
+-     * relative (doesn't start with <code>/</code>), it will be resolved relative to
+-     * <code>baseFile</code>, otherwise it is treated as a normal root-relative path.
++     * Resolve a file <code>filename</code> to it's canonical form. If
++     * <code>filename</code> is relative (doesn't start with <code>/</code>),
++     * it will be resolved relative to <code>baseFile</code>, otherwise it is
++     * treated as a normal root-relative path.
+      *
+-     * @param baseFile Where to resolve <code>filename</code> from, if <code>filename</code> is
+-     * relative.
++     * @param baseFile Where to resolve <code>filename</code> from, if
++     * <code>filename</code> is relative.
+      * @param filename Absolute or relative file path to resolve.
+
+@@ -359,3 +370,3 @@
+      */
+-    public static File resolveFile( File baseFile, String filename) {
++    public static File resolveFile(File baseFile, String filename) {
+         String filenm = filename;
+
+@@ -375,3 +386,5 @@
+                 file = file.getCanonicalFile();
+-            } catch ( IOException ioe) {}
++            } catch (IOException ioe) {
++                // ignore
++            }
+ 
+
+@@ -379,3 +392,4 @@
+         }
+-        // FIXME: I'm almost certain this // removal is unnecessary, as getAbsoluteFile() strips
++        // FIXME: I'm almost certain this // removal is unnecessary, as
++        // getAbsoluteFile() strips
+         // them. However, I'm not sure about this UNC stuff. (JT)
+
+@@ -410,3 +424,5 @@
+             file = file.getCanonicalFile();
+-        } catch ( IOException ioe) {}
++        } catch ( IOException ioe) {
++            ;
++        }
+ 
+

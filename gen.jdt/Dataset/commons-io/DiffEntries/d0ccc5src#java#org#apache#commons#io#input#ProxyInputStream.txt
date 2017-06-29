@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_d0ccc5src#java#org#apache#commons#io#input#ProxyInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/d0ccc5src#java#org#apache#commons#io#input#ProxyInputStream.java
+DiffEntry: @@ -110,3 +110,3 @@
+      * @param ln the number of bytes to skip
+-     * @return the number of bytes to skipped or -1 if the end of stream
++     * @return the actual number of bytes skipped
+      * @throws IOException if an I/O error occurs
+

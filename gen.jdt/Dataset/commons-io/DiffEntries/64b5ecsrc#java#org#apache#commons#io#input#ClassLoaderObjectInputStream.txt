@@ -1,0 +1,22 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_64b5ecsrc#java#org#apache#commons#io#input#ClassLoaderObjectInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/64b5ecsrc#java#org#apache#commons#io#input#ClassLoaderObjectInputStream.java
+DiffEntry: @@ -1,3 +1,3 @@
+ /*
+- * Copyright 2001-2005 The Apache Software Foundation.
++ * Copyright 2001-2006 The Apache Software Foundation.
+  * 
+
+@@ -53,3 +53,11 @@
+ 
+-    /** @inheritDoc */
++    /**
++     * Resolve a class specified by the descriptor using the
++     * specified ClassLoader or the super ClassLoader.
++     *
++     * @param objectStreamClass  descriptor of the class
++     * @return the Class object described by the ObjectStreamClass
++     * @throws IOException in case of an I/O error
++     * @throws ClassNotFoundException if the Class cannot be found
++     */
+     protected Class resolveClass(ObjectStreamClass objectStreamClass)
+

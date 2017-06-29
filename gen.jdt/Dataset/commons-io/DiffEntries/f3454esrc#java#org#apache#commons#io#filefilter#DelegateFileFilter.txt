@@ -1,0 +1,20 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_f3454esrc#java#org#apache#commons#io#filefilter#DelegateFileFilter.java
+Revised File: OUTPUT/commons-io/revFiles/f3454esrc#java#org#apache#commons#io#filefilter#DelegateFileFilter.java
+DiffEntry: @@ -19,7 +19,7 @@
+  * 3. The end-user documentation included with the redistribution, if
+- *    any, must include the following acknowlegement:
++ *    any, must include the following acknowledgement:
+  *       "This product includes software developed by the
+  *        Apache Software Foundation (http://www.apache.org/)."
+- *    Alternately, this acknowlegement may appear in the software itself,
+- *    if and wherever such third-party acknowlegements normally appear.
++ *    Alternately, this acknowledgement may appear in the software itself,
++ *    if and wherever such third-party acknowledgements normally appear.
+  *
+
+@@ -63,3 +63,3 @@
+  * @since Commons IO 1.0
+- * @version $Revision: 1.6 $ $Date: 2003/07/27 17:11:38 $
++ * @version $Revision: 1.7 $ $Date: 2003/10/13 07:03:50 $
+  * 
+

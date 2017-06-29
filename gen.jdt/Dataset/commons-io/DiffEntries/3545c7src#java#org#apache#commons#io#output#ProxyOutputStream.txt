@@ -1,0 +1,12 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_3545c7src#java#org#apache#commons#io#output#ProxyOutputStream.java
+Revised File: OUTPUT/commons-io/revFiles/3545c7src#java#org#apache#commons#io#output#ProxyOutputStream.java
+DiffEntry: @@ -70,5 +70,6 @@
+         try {
+-            beforeWrite(bts != null ? bts.length : 0);
++            int len = bts != null ? bts.length : 0;
++            beforeWrite(len);
+             out.write(bts);
+-            afterWrite(bts.length);
++            afterWrite(len);
+         } catch (IOException e) {
+

@@ -1,0 +1,122 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_6a1bb4src#java#org#apache#commons#io#IOUtils.java
+Revised File: OUTPUT/commons-io/revFiles/6a1bb4src#java#org#apache#commons#io#IOUtils.java
+DiffEntry: @@ -137,5 +137,5 @@
+  *
+- * <p>Note that only the first two methods shuffle bytes; the rest use these 
+- * two, or (if possible) copy using native Java copy methods. As there are 
+- * method variants to specify buffer size and encoding, each row may 
++ * <p>Note that only the first two methods shuffle bytes; the rest use these
++ * two, or (if possible) copy using native Java copy methods. As there are
++ * method variants to specify buffer size and encoding, each row may
+  * correspond to up to 4 methods.</p>
+
+@@ -146,3 +146,3 @@
+  * @author <a href="mailto:jefft@apache.org">Jeff Turner</a>
+- * @version CVS $Revision: 1.4 $ $Date: 2003/07/29 13:07:39 $
++ * @version CVS $Revision: 1.5 $ $Date: 2003/08/21 18:40:48 $
+  */
+
+@@ -151,2 +151,7 @@
+     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
++
++    /**
++     * Instances should NOT be constructed in standard programming.
++     */
++    public IOUtils() {}
+ 
+
+@@ -248,2 +253,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(InputStream, OutputStream)}
+      */
+
+@@ -262,2 +268,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(InputStream, OutputStream, int)}
+      */
+
+@@ -285,2 +292,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(Reader, Writer)}
+      */
+
+@@ -299,2 +307,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(Reader, Writer, int)}
+      */
+
+@@ -330,2 +339,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(InputStream, Writer)}
+      */
+
+@@ -345,2 +355,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(InputStream, Writer, int)}
+      */
+
+@@ -362,2 +373,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(InputStream, Writer, String)}
+      */
+
+@@ -380,2 +392,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(InputStream, Writer, String, int)}
+      */
+
+@@ -503,2 +516,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(Reader, OutputStream)}
+      */
+
+@@ -517,2 +531,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(Reader, OutputStream, int)}
+      */
+
+@@ -603,2 +618,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(String, OutputStream)}
+      */
+
+@@ -617,2 +633,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(String, OutputStream, int)}
+      */
+
+@@ -639,2 +656,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(String, Writer)}
+      */
+
+@@ -693,2 +711,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(byte[], Writer)}
+      */
+
+@@ -708,2 +727,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(byte[], Writer, int)}
+      */
+
+@@ -725,2 +745,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(byte[], Writer, String)}
+      */
+
+@@ -743,2 +764,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(byte[], Writer, String, int)}
+      */
+
+@@ -831,2 +853,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(byte[], OutputStream)}
+      */
+
+@@ -844,2 +867,3 @@
+      * @throws IOException In case of an I/O problem
++     * @deprecated Replaced by {@link CopyUtils#copy(byte[], OutputStream, int)}
+      */
+

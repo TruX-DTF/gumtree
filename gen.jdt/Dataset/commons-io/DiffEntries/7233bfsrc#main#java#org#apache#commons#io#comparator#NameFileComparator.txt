@@ -1,0 +1,14 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7233bfsrc#main#java#org#apache#commons#io#comparator#NameFileComparator.java
+Revised File: OUTPUT/commons-io/revFiles/7233bfsrc#main#java#org#apache#commons#io#comparator#NameFileComparator.java
+DiffEntry: @@ -37,3 +37,3 @@
+  *       List&lt;File&gt; list = ...
+- *       NameFileComparator.NAME_COMPARATOR.sort(list);
++ *       ((AbstractFileComparator) NameFileComparator.NAME_COMPARATOR).sort(list);
+  * </pre>
+
+@@ -44,3 +44,3 @@
+  *       File[] array = ...
+- *       NameFileComparator.NAME_INSENSITIVE_REVERSE.sort(array);
++ *       ((AbstractFileComparator) NameFileComparator.NAME_INSENSITIVE_REVERSE).sort(array);
+  * </pre>
+

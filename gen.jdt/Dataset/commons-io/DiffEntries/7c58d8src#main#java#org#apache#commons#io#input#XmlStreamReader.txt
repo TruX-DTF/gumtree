@@ -1,0 +1,9 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#input#XmlStreamReader.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#input#XmlStreamReader.java
+DiffEntry: @@ -214,3 +214,4 @@
+      */
+-    public XmlStreamReader(final InputStream is, final boolean lenient, final String defaultEncoding) throws IOException {
++    public XmlStreamReader(final InputStream is, final boolean lenient, final String defaultEncoding)
++            throws IOException {
+         this.defaultEncoding = defaultEncoding;
+

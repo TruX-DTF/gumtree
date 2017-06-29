@@ -1,0 +1,11 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#input#TailerListenerAdapter.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#input#TailerListenerAdapter.java
+DiffEntry: @@ -63,2 +63,7 @@
+ 
++    /**
++     * Called each time the Tailer reaches the end of the file.
++     */
++    public void endOfFileReached() {
++    }
+ }
+

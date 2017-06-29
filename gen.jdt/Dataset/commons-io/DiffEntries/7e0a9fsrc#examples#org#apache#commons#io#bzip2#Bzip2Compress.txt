@@ -1,0 +1,13 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7e0a9fsrc#examples#org#apache#commons#io#bzip2#Bzip2Compress.java
+Revised File: OUTPUT/commons-io/revFiles/7e0a9fsrc#examples#org#apache#commons#io#bzip2#Bzip2Compress.java
+DiffEntry: @@ -16,3 +16,2 @@
+ import java.io.OutputStream;
+-import org.apache.excalibur.bzip2.CBZip2OutputStream;
+ 
+
+@@ -22,3 +21,3 @@
+  * @author <a href="mailto:peter@apache.org">Peter Donald</a>
+- * @version $Revision: 1.1 $ $Date: 2002/07/08 22:13:43 $
++ * @version $Revision: 1.2 $ $Date: 2002/07/09 14:55:32 $
+  */
+

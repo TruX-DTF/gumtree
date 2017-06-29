@@ -1,5 +1,6 @@
 package edu.lu.uni.serval.gumtree;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Addition;
 import com.github.gumtreediff.actions.model.Insert;
+import com.github.gumtreediff.gen.jdt.JdtTreeGenerator;
 import com.github.gumtreediff.gen.jdt.cd.CdJdtTreeGenerator;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.matchers.Matchers;
@@ -19,52 +21,79 @@ import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 
 import edu.lu.uni.serval.gen.jdt.exp.ExpJdtTreeGenerator;
-import edu.lu.uni.serval.gen.jdt.rowToken.RowTokenJdtTreeGenerator;
+import edu.lu.uni.serval.gen.jdt.rawToken.RawTokenJdtTreeGenerator;
 import edu.lu.uni.serval.gumtree.regroup.HierarchicalActionSet;
 import edu.lu.uni.serval.gumtree.regroup.HierarchicalRegouper;
 
+@SuppressWarnings("unused")
 public class Test {
 
 	public static void main(String[] args) {
-		String a = "File sr = FileUtil.newFile(home); int a = 1; if (!a){}"; //"{if (!a){}}";
-		String b = "File sr = new File(home);if (!isTrue(a)){} int a = 1;";//"{if (isTrue(a)){}}";
-
-		ArrayList<String> ret = compareTwoFilesWithGumTree(a, b);
+//		String a = "int a = 0;if (!isSymlink(file)) {size.add(BigInteger.valueOf(sizeOf(file)));}";
+//		String b = "int a = 1;if (!isSymlink(file)) { size = size.add(BigInteger.valueOf(sizeOf(file)));}";
+//		List<HierarchicalActionSet> gumTreeResults = compareTwoFilesWithGumTree(a, b);
+//		
+//		/**
+//		 * Position of actions:
+//		 * DEL, UPD, MOV: the positions of changed source code are the positions of these source code in previous java file.
+//		 * INS: the positions of changed source code is the position of the source code in revised java file.
+//		 */
+//		for (HierarchicalActionSet str : gumTreeResults) {
+//			System.out.println(str);
+//		}
 		
-		/**
-		 * Position of actions:
-		 * DEL, UPD, MOV: the positions of changed source code are the positions of these source code in previous java file.
-		 * INS: the positions of changed source code is the position of the source code in revised java file.
-		 */
-		for (String str : ret) {
-			System.out.println(str);
+		String testDataPath = "Dataset/commons-io/";
+		File revisedFileFolder = new File(testDataPath + "revFiles/");
+		File[] revisedFiles = revisedFileFolder.listFiles();
+		
+		System.out.println(revisedFiles.length);
+		for (File revisedFile : revisedFiles) {
+			if (revisedFile.toString().endsWith(".java")) {
+				String revisedFileName = revisedFile.getName();
+				File previousFile = new File(testDataPath + "prevFiles/prev_" + revisedFileName);
+				
+				if ("072051src#java#org#apache#commons#io#IOUtils.java".equals(revisedFileName)) {
+					System.out.println();
+				}
+				List<HierarchicalActionSet> gumTreeResults = compareTwoFilesWithGumTree(previousFile, revisedFile);
+				
+				/**
+				 * Position of actions:
+				 * DEL, UPD, MOV: the positions of changed source code are the positions of these source code in previous java file.
+				 * INS: the positions of changed source code is the position of the source code in revised java file.
+				 */
+//				for (HierarchicalActionSet str : gumTreeResults) {
+//					System.out.println(str);
+//				}
+				if (gumTreeResults.size() > 0) {
+					File diffentryFile = new File(testDataPath + "DiffEntries/" + revisedFileName.replace(".java", ".txt"));
+		            StringBuilder builder = new StringBuilder();
+		            builder.append(FileHelper.readFile(diffentryFile) + "\n");
+		            for (HierarchicalActionSet gumTreeResult : gumTreeResults) {
+		            	builder.append(gumTreeResult + "\n");
+		            }
+		            FileHelper.outputToFile("OUTPUT/GumTreeResults_Exp/" + revisedFileName.replace(".java", ".txt"), builder, false);
+				}
+			}
 		}
-		
+
 		// Regroup GumTree Results.
-		
+
 	}
 	
-	public static ArrayList<String> compareTwoFilesWithGumTree(String fileA, String fileB) {
-		
+	private static List<HierarchicalActionSet> compareTwoFilesWithGumTree(String a, String b) {
 		ArrayList<String> ret = new ArrayList<String>();
 		List<HierarchicalActionSet> actionSets = new ArrayList<>();
 		
 		try {
 			TreeContext tc1 = null;
 			TreeContext tc2 = null;
-//			Run.initGenerators();
-//			tc1 = Generators.getInstance().getTree(fileA);
-//			tc2 = Generators.getInstance().getTree(fileB);
-			tc1 = new RowTokenJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
-			tc2 = new RowTokenJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
-//			tc1 = new JdtTreeGenerator3().generateFromString(fileA, ASTParser.K_STATEMENTS);
-//			tc2 = new JdtTreeGenerator3().generateFromString(fileB, ASTParser.K_STATEMENTS);
-//			tc1 = new CdJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
-//			tc2 = new CdJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
-//			tc1 = new ExpJdtTreeGenerator().generateFromString(fileA, ASTParser.K_STATEMENTS);
-//			tc2 = new ExpJdtTreeGenerator().generateFromString(fileB, ASTParser.K_STATEMENTS);
+			tc1 = new RawTokenJdtTreeGenerator().generateFromString(a, ASTParser.K_STATEMENTS);
+			tc2 = new RawTokenJdtTreeGenerator().generateFromString(b, ASTParser.K_STATEMENTS);
+//			tc1 = new ExpJdtTreeGenerator().generateFromString(a, ASTParser.K_STATEMENTS);
+//			tc2 = new ExpJdtTreeGenerator().generateFromString(b, ASTParser.K_STATEMENTS);
 			System.out.println(tc1);
-			System.out.println(tc2);
+//			System.out.println(tc2);
 			ITree t1 = tc1.getRoot();
 			ITree t2 = tc2.getRoot();
 			Matcher m = Matchers.getInstance().getMatcher(t1, t2);
@@ -75,20 +104,50 @@ public class Test {
 			List<Action> actions = ag.getActions();
 			
 			actionSets = HierarchicalRegouper.regroupGumTreeResults(actions);
-			for(Action act : actions){
-				String s = parseAction(act.toString());
-				ret.add(s);
-			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		for (HierarchicalActionSet actionSet : actionSets) {
-			System.out.println(actionSet.toString());
-		}
+//		for (HierarchicalActionSet actionSet : actionSets) {
+//			System.out.println(actionSet.toString());
+//		}
 
-		return ret;
+		return actionSets;
+	}
+
+	public static List<HierarchicalActionSet> compareTwoFilesWithGumTree(File prevFile, File revFile) {
+		
+		List<HierarchicalActionSet> actionSets = new ArrayList<>();
+		
+		try {
+			TreeContext tc1 = null;
+			TreeContext tc2 = null;
+//			Run.initGenerators();
+//			tc1 = new RawTokenJdtTreeGenerator().generateFromFile(prevFile);
+//			tc2 = new RawTokenJdtTreeGenerator().generateFromFile(revFile);
+			tc1 = new ExpJdtTreeGenerator().generateFromFile(prevFile);
+			tc2 = new ExpJdtTreeGenerator().generateFromFile(revFile);
+//			System.out.println(tc1);
+//			System.out.println(tc2);
+			ITree t1 = tc1.getRoot();
+			ITree t2 = tc2.getRoot();
+			Matcher m = Matchers.getInstance().getMatcher(t1, t2);
+			m.match();
+			
+			ActionGenerator ag = new ActionGenerator(t1, t2, m.getMappings());
+			ag.generate();
+			List<Action> actions = ag.getActions();
+			
+			actionSets = HierarchicalRegouper.regroupGumTreeResults(actions);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+//		for (HierarchicalActionSet actionSet : actionSets) {
+//			System.out.println(actionSet.toString());
+//		}
+
+		return actionSets;
 	}
 	
 	private static String parseAction(String actStr) {

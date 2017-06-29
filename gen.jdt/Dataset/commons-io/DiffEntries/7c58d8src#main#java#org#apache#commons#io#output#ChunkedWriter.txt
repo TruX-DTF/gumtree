@@ -1,0 +1,11 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#output#ChunkedWriter.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#output#ChunkedWriter.java
+DiffEntry: @@ -66,2 +66,7 @@
+      * writes the data buffer in chunks to the underlying writer
++     * @param data The data
++     * @param srcOffset the offset
++     * @param length the number of bytes to write
++     *
++     * @throws IOException upon error
+      */
+

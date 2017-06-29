@@ -1,0 +1,50 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_e0f5d6src#main#java#org#apache#commons#io#IOUtils.java
+Revised File: OUTPUT/commons-io/revFiles/e0f5d6src#main#java#org#apache#commons#io#IOUtils.java
+DiffEntry: @@ -333,4 +333,12 @@
+      * <p>
+-     * Equivalent to {@link Closeable#close()}, except any exceptions will be ignored. This is typically used in
+-     * finally blocks.
++     * Equivalent to {@link Closeable#close()}, except any exceptions will be ignored.
++     * <p>
++     * This is typically used in finally blocks to ensure that the closeable is closed
++     * even if an Exception was thrown before the normal close statement was reached.
++     * <br>
++     * <b>It should not be used to replace the close statement(s)
++     * which should be present for the non-exceptional case.</b>
++     * <br>
++     * It is only intended to simplify tidying up where normal processing has already failed
++     * and reporting close failure as well is not necessary or useful.
+      * <p>
+
+@@ -342,4 +350,4 @@
+      *     closeable = new FileReader(&quot;foo.txt&quot;);
+-     *     // process closeable
+-     *     closeable.close();
++     *     // processing using the closeable; may throw an Exception
++     *     closeable.close(); // Normal close - exceptions not ignored
+      * } catch (Exception e) {
+
+@@ -347,3 +355,3 @@
+      * } finally {
+-     *     IOUtils.closeQuietly(closeable);
++     *     <b>IOUtils.closeQuietly(closeable); // In case normal close was skipped due to Exception</b>
+      * }
+
+@@ -352,3 +360,3 @@
+      * Closing all streams:
+-     * 
++     * <br>TODO - fix this example, it is wrong; ought not to ignore Exceptions here
+      * <pre>
+
+@@ -357,4 +365,3 @@
+      * } finally {
+-     *     IOUtils.closeQuietly(inputStream);
+-     *     IOUtils.closeQuietly(outputStream);
++     *     IOUtils.closeQuietly(inputStream, outputStream);
+      * }
+
+@@ -365,2 +372,3 @@
+      * @since 2.5
++     * @see #closeQuietly(Closeable)
+      */
+

@@ -1,0 +1,14 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_8b9fe1src#main#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/8b9fe1src#main#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -2564,3 +2564,3 @@
+      * @param file the file to check
+-     * @return the size of the fil
++     * @return the size of the file
+      */
+
+@@ -2618,3 +2618,3 @@
+     /**
+-     * Returns the sid of a file
++     * Returns the size of a file
+      * @param fileOrDir The file
+

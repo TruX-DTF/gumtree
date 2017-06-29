@@ -1,0 +1,26 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_18a393src#main#java#org#apache#commons#io#IOUtils.java
+Revised File: OUTPUT/commons-io/revFiles/18a393src#main#java#org#apache#commons#io#IOUtils.java
+DiffEntry: @@ -2051,3 +2051,3 @@
+      * This allows for the possibility that {@link Reader#read(char[], int, int)} may
+-     * not skip as many characters as requested (most likely because of reaching EOF).
++     * not read as many characters as requested (most likely because of reaching EOF).
+      * 
+
+@@ -2074,3 +2074,3 @@
+      * This allows for the possibility that {@link Reader#read(char[], int, int)} may
+-     * not skip as many characters as requested (most likely because of reaching EOF).
++     * not read as many characters as requested (most likely because of reaching EOF).
+      * 
+
+@@ -2092,3 +2092,3 @@
+      * This allows for the possibility that {@link InputStream#read(byte[], int, int)} may
+-     * not skip as many bytes as requested (most likely because of reaching EOF).
++     * not read as many bytes as requested (most likely because of reaching EOF).
+      * 
+
+@@ -2115,3 +2115,3 @@
+      * This allows for the possibility that {@link InputStream#read(byte[], int, int)} may
+-     * not skip as many bytes as requested (most likely because of reaching EOF).
++     * not read as many bytes as requested (most likely because of reaching EOF).
+      * 
+

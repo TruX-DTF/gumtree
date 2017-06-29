@@ -1,0 +1,11 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_8b9fe1src#main#java#org#apache#commons#io#filefilter#DelegateFileFilter.java
+Revised File: OUTPUT/commons-io/revFiles/8b9fe1src#main#java#org#apache#commons#io#filefilter#DelegateFileFilter.java
+DiffEntry: @@ -98,5 +98,5 @@
+     /**
+-     * Provide a String representaion of this file filter.
++     * Provide a String representation of this file filter.
+      *
+-     * @return a String representaion
++     * @return a String representation
+      */
+

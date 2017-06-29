@@ -1,0 +1,14 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_740afbsrc#java#org#apache#commons#io#EndianUtils.java
+Revised File: OUTPUT/commons-io/revFiles/740afbsrc#java#org#apache#commons#io#EndianUtils.java
+DiffEntry: @@ -220,3 +220,3 @@
+             ( ( data[ offset + 2 ] & 0xff ) << 16 ) +
+-            ( ( data[ offset + 3 ] & 0xff ) << 24 );
++            ( ( (long) ( data[ offset + 3 ] & 0xff ) ) << 24 );
+         long high = 
+
+@@ -225,3 +225,3 @@
+             ( ( data[ offset + 6 ] & 0xff ) << 16 ) +
+-            ( ( data[ offset + 7 ] & 0xff ) << 24 );
++            ( ( (long) ( data[ offset + 7 ] & 0xff ) ) << 24 );
+         return low + (high << 32);
+

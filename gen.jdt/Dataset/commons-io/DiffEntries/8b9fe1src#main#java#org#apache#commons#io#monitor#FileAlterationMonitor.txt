@@ -1,0 +1,14 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_8b9fe1src#main#java#org#apache#commons#io#monitor#FileAlterationMonitor.java
+Revised File: OUTPUT/commons-io/revFiles/8b9fe1src#main#java#org#apache#commons#io#monitor#FileAlterationMonitor.java
+DiffEntry: @@ -48,3 +48,3 @@
+      *
+-     * @param interval The amount of time in miliseconds to wait between
++     * @param interval The amount of time in milliseconds to wait between
+      * checks of the file system
+
+@@ -58,3 +58,3 @@
+      *
+-     * @param interval The amount of time in miliseconds to wait between
++     * @param interval The amount of time in milliseconds to wait between
+      * checks of the file system
+

@@ -1,0 +1,14 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7233bfsrc#main#java#org#apache#commons#io#comparator#ExtensionFileComparator.java
+Revised File: OUTPUT/commons-io/revFiles/7233bfsrc#main#java#org#apache#commons#io#comparator#ExtensionFileComparator.java
+DiffEntry: @@ -39,3 +39,3 @@
+  *       List&lt;File&gt; list = ...
+- *       ExtensionFileComparator.EXTENSION_COMPARATOR.sort(list);
++ *       ((AbstractFileComparator) ExtensionFileComparator.EXTENSION_COMPARATOR).sort(list);
+  * </pre>
+
+@@ -46,3 +46,3 @@
+  *       File[] array = ...
+- *       ExtensionFileComparator.EXTENSION_INSENSITIVE_REVERSE.sort(array);
++ *       ((AbstractFileComparator) ExtensionFileComparator.EXTENSION_INSENSITIVE_REVERSE).sort(array);
+  * </pre>
+

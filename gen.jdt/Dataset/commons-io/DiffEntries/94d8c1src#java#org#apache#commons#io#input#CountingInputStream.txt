@@ -1,0 +1,26 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_94d8c1src#java#org#apache#commons#io#input#CountingInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/94d8c1src#java#org#apache#commons#io#input#CountingInputStream.java
+DiffEntry: @@ -57,3 +57,3 @@
+     @Override
+-    public long skip(final long length) throws IOException {
++    public synchronized long skip(final long length) throws IOException {
+         final long skip = super.skip(length);
+
+@@ -70,3 +70,3 @@
+     @Override
+-    protected void afterRead(int n) {
++    protected synchronized void afterRead(int n) {
+         if (n != -1) {
+
+@@ -87,3 +87,3 @@
+      */
+-    public synchronized int getCount() {
++    public int getCount() {
+         long result = getByteCount();
+
+@@ -105,3 +105,3 @@
+      */
+-    public synchronized int resetCount() {
++    public int resetCount() {
+         long result = resetByteCount();
+

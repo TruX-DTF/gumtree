@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_6ca93esrc#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/6ca93esrc#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -1081,3 +1081,3 @@
+      * @since Commons IO 1.3
+-     * @see lineIterator(File, String)
++     * @see #lineIterator(File, String)
+      */
+

@@ -1,0 +1,16 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_b46f34src#java#org#apache#commons#io#FileSystemUtils.java
+Revised File: OUTPUT/commons-io/revFiles/b46f34src#java#org#apache#commons#io#FileSystemUtils.java
+DiffEntry: @@ -107,3 +107,3 @@
+      * <pre>
+-     * FileSystemUtils.freeSpace("C:");  // Windows
++     * FileSystemUtils.freeSpace("C:");       // Windows
+      * FileSystemUtils.freeSpace("/volume");  // *nix
+
+@@ -129,4 +129,4 @@
+      * <pre>
+-     * FileSystemUtils.freeSpace("C:");  // Windows
+-     * FileSystemUtils.freeSpace("/volume");  // *nix
++     * FileSystemUtils.freeSpaceKb("C:");       // Windows
++     * FileSystemUtils.freeSpaceKb("/volume");  // *nix
+      * </pre>
+

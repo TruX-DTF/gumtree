@@ -1,0 +1,12 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#output#ChunkedOutputStream.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#output#ChunkedOutputStream.java
+DiffEntry: @@ -67,2 +67,8 @@
+      * Writes the data buffer in chunks to the underlying stream
++     *
++     * @param data the data to write
++     * @param srcOffset the offset
++     * @param length the length of data to write
++     *
++     * @throws IOException if an I/O error occurs.
+      */
+

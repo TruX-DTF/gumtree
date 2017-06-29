@@ -1,0 +1,26 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_bf545esrc#main#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/bf545esrc#main#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -1294,3 +1294,3 @@
+      *
+-     * <h4>Example: Copy directories only</h4>
++     * <h3>Example: Copy directories only</h3>
+      *  <pre>
+
+@@ -1300,3 +1300,3 @@
+      *
+-     * <h4>Example: Copy directories and txt files</h4>
++     * <h3>Example: Copy directories and txt files</h3>
+      *  <pre>
+
+@@ -1344,3 +1344,3 @@
+      *
+-     * <h4>Example: Copy directories only</h4>
++     * <h3>Example: Copy directories only</h3>
+      *  <pre>
+
+@@ -1350,3 +1350,3 @@
+      *
+-     * <h4>Example: Copy directories and txt files</h4>
++     * <h3>Example: Copy directories and txt files</h3>
+      *  <pre>
+

@@ -1,0 +1,20 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_94d8c1src#java#org#apache#commons#io#output#CountingOutputStream.java
+Revised File: OUTPUT/commons-io/revFiles/94d8c1src#java#org#apache#commons#io#output#CountingOutputStream.java
+DiffEntry: @@ -52,3 +52,3 @@
+     @Override
+-    protected void beforeWrite(int n) {
++    protected synchronized void beforeWrite(int n) {
+         count += n;
+
+@@ -67,3 +67,3 @@
+      */
+-    public synchronized int getCount() {
++    public int getCount() {
+         long result = getByteCount();
+
+@@ -85,3 +85,3 @@
+      */
+-    public synchronized int resetCount() {
++    public int resetCount() {
+         long result = resetByteCount();
+

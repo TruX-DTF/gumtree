@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_09a6cbsrc#java#org#apache#commons#io#FilenameUtils.java
+Revised File: OUTPUT/commons-io/revFiles/09a6cbsrc#java#org#apache#commons#io#FilenameUtils.java
+DiffEntry: @@ -1245,3 +1245,3 @@
+ 
+-        return (String[]) list.toArray(new String[0]);
++        return (String[]) list.toArray( new String[ list.size() ] );
+     }
+

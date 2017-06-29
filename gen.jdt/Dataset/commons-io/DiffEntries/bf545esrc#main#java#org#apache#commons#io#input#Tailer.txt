@@ -1,0 +1,20 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_bf545esrc#main#java#org#apache#commons#io#input#Tailer.java
+Revised File: OUTPUT/commons-io/revFiles/bf545esrc#main#java#org#apache#commons#io#input#Tailer.java
+DiffEntry: @@ -31,3 +31,3 @@
+  * <p>
+- * <h2>1. Create a TailerListener implementation</h3>
++ * <h2>1. Create a TailerListener implementation</h2>
+  * <p>
+
+@@ -94,3 +94,3 @@
+  *
+- * <h2>3. Stopping a Tailer</h3>
++ * <h2>3. Stopping a Tailer</h2>
+  * <p>Remember to stop the tailer when you have done with it:</p>
+
+@@ -100,3 +100,3 @@
+  *
+- * <h2>4. Interrupting a Tailer</h3>
++ * <h2>4. Interrupting a Tailer</h2>
+  * <p>You can interrupt the thread a tailer is running on by calling {@link Thread#interrupt()}.</p>
+

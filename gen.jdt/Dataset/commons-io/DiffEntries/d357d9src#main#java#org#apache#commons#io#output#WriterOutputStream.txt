@@ -1,0 +1,11 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_d357d9src#main#java#org#apache#commons#io#output#WriterOutputStream.java
+Revised File: OUTPUT/commons-io/revFiles/d357d9src#main#java#org#apache#commons#io#output#WriterOutputStream.java
+DiffEntry: @@ -312,2 +312,7 @@
+ 
++    /**
++     * Check if the JDK in use properly supports the given charset.
++     * 
++     * @param charset the charset to check the support for
++     */
+     private static void checkIbmJdkWithBrokenUTF16(Charset charset){
+

@@ -1,0 +1,34 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_8ff60csrc#main#java#org#apache#commons#io#input#ClassLoaderObjectInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/8ff60csrc#main#java#org#apache#commons#io#input#ClassLoaderObjectInputStream.java
+DiffEntry: @@ -23,2 +23,3 @@
+ import java.io.StreamCorruptedException;
++import java.lang.reflect.Proxy;
+ 
+
+@@ -77,2 +78,25 @@
+     }
++
++    /**
++     * Create a proxy class that implements the specified interfaces using
++     * the specified ClassLoader or the super ClassLoader.
++     *
++     * @param interfaces the interfaces to implemnt
++     * @return the class
++     * @see java.io.ObjectInputStream#resolveProxyClass(java.lang.String[])
++     */
++    @Override
++    protected Class<?> resolveProxyClass(String[] interfaces) throws IOException,
++            ClassNotFoundException {
++        Class<?>[] interfaceClasses = new Class[interfaces.length];
++        for (int i = 0; i < interfaces.length; i++) {
++            interfaceClasses[i] = Class.forName(interfaces[i], false, classLoader);
++        }
++        try {
++            return Proxy.getProxyClass(classLoader, interfaceClasses);
++        } catch (IllegalArgumentException e) {
++            return super.resolveProxyClass(interfaces);
++        }
++    }
++    
+ }
+

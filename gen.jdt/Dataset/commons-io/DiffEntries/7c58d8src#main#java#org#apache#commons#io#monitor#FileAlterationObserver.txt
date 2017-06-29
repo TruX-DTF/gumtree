@@ -1,0 +1,26 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#monitor#FileAlterationObserver.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#monitor#FileAlterationObserver.java
+DiffEntry: @@ -156,3 +156,4 @@
+      */
+-    public FileAlterationObserver(final String directoryName, final FileFilter fileFilter, final IOCase caseSensitivity) {
++    public FileAlterationObserver(final String directoryName, final FileFilter fileFilter,
++                                  final IOCase caseSensitivity) {
+         this(new File(directoryName), fileFilter, caseSensitivity);
+
+@@ -199,3 +200,4 @@
+      */
+-    protected FileAlterationObserver(final FileEntry rootEntry, final FileFilter fileFilter, final IOCase caseSensitivity) {
++    protected FileAlterationObserver(final FileEntry rootEntry, final FileFilter fileFilter,
++                                     final IOCase caseSensitivity) {
+         if (rootEntry == null) {
+
+@@ -361,2 +363,8 @@
+ 
++    /**
++     * List the files
++     * @param file The file to list files for
++     * @param entry the parent entry
++     * @return The child files
++     */
+     private FileEntry[] doListFiles(File file, FileEntry entry) {
+

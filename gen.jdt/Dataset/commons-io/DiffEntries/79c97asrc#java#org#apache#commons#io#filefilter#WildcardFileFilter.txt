@@ -1,0 +1,9 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_79c97asrc#java#org#apache#commons#io#filefilter#WildcardFileFilter.java
+Revised File: OUTPUT/commons-io/revFiles/79c97asrc#java#org#apache#commons#io#filefilter#WildcardFileFilter.java
+DiffEntry: @@ -110,3 +110,4 @@
+         }
+-        this.wildcards = wildcards;
++        this.wildcards = new String[wildcards.length];
++        System.arraycopy(wildcards, 0, this.wildcards, 0, wildcards.length);
+         this.caseSensitivity = (caseSensitivity == null ? IOCase.SENSITIVE : caseSensitivity);
+

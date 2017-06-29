@@ -1,0 +1,43 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_64b5ecsrc#java#org#apache#commons#io#HexDump.java
+Revised File: OUTPUT/commons-io/revFiles/64b5ecsrc#java#org#apache#commons#io#HexDump.java
+DiffEntry: @@ -1,3 +1,3 @@
+ /*
+- * Copyright 2002,2004-2005 The Apache Software Foundation.
++ * Copyright 2002,2004-2006 The Apache Software Foundation.
+  *
+
+@@ -44,5 +44,5 @@
+      *
+-     * @param data the byte array to be dumped
+-     * @param offset its offset, whatever that might mean
+-     * @param stream the OutputStream to which the data is to be
++     * @param data  the byte array to be dumped
++     * @param offset  its offset, whatever that might mean
++     * @param stream  the OutputStream to which the data is to be
+      *               written
+
+@@ -120,2 +120,8 @@
+ 
++    /**
++     * Dump a long value into a StringBuffer.
++     *
++     * @param value  the long value to be dumped
++     * @return StringBuffer containing the dumped value.
++     */
+     private static StringBuffer dump(long value) {
+
+@@ -129,2 +135,8 @@
+ 
++    /**
++     * Dump a byte value into a StringBuffer.
++     *
++     * @param value  the byte value to be dumped
++     * @return StringBuffer containing the dumped value.
++     */
+     private static StringBuffer dump(byte value) {
+
+@@ -136,2 +148,3 @@
+     }
++
+ }
+

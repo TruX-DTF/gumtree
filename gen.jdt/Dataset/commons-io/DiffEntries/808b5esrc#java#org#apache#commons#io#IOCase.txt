@@ -1,0 +1,16 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_808b5esrc#java#org#apache#commons#io#IOCase.java
+Revised File: OUTPUT/commons-io/revFiles/808b5esrc#java#org#apache#commons#io#IOCase.java
+DiffEntry: @@ -148,3 +148,3 @@
+      * <p>
+-     * This method mimics {@link String#startsWith} but takes case-sensitivity
++     * This method mimics {@link String#startsWith(String)} but takes case-sensitivity
+      * into account.
+
+@@ -179,4 +179,4 @@
+      * <p>
+-     * This method mimics parts of {@link String#regionMatches} but takes case-sensitivity
+-     * into account.
++     * This method mimics parts of {@link String#regionMatches(boolean, int, String, int, int)} 
++     * but takes case-sensitivity into account.
+      * 
+

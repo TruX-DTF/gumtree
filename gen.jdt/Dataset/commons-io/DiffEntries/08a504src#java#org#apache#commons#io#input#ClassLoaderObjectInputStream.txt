@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_08a504src#java#org#apache#commons#io#input#ClassLoaderObjectInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/08a504src#java#org#apache#commons#io#input#ClassLoaderObjectInputStream.java
+DiffEntry: @@ -66,3 +66,3 @@
+         
+-        Class clazz = Class.forName(objectStreamClass.getName(), false, classLoader);
++        Class<?> clazz = Class.forName(objectStreamClass.getName(), false, classLoader);
+ 
+

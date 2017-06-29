@@ -1,0 +1,24 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_b6aa5asrc#main#java#org#apache#commons#io#Charsets.java
+Revised File: OUTPUT/commons-io/revFiles/b6aa5asrc#main#java#org#apache#commons#io#Charsets.java
+DiffEntry: @@ -24,4 +24,4 @@
+  * 
+- * From the Java documentation <a href="http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Standard
+- * charsets</a>:
++ * From the Java documentation <a href="http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">
++ * Standard charsets</a>:
+  * <p>
+
+@@ -54,4 +54,4 @@
+     //
+-    // This class should only contain Charset instances for required encodings. This guarantees that it will load correctly and
+-    // without delay on all Java platforms.
++    // This class should only contain Charset instances for required encodings. This guarantees that it will load
++    // correctly and without delay on all Java platforms.
+     //
+
+@@ -59,3 +59,3 @@
+     /**
+-     * Returns the given Charset or the default Charset if the given Charset is null. 
++     * Returns the given Charset or the default Charset if the given Charset is null.
+      * 
+

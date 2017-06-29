@@ -1,0 +1,14 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_abb0fcsrc#main#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/abb0fcsrc#main#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -1284,3 +1284,3 @@
+      * If the modification operation fails, no indication is provided.
+-     * <p>
++     * </p>
+      * <h3>Example: Copy directories only</h3>
+
+@@ -1334,3 +1334,3 @@
+      * If the modification operation fails, no indication is provided.
+-     * <p>
++     * </p>
+      * <h3>Example: Copy directories only</h3>
+

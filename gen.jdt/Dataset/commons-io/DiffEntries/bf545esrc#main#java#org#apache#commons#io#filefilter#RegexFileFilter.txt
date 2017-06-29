@@ -1,0 +1,20 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_bf545esrc#main#java#org#apache#commons#io#filefilter#RegexFileFilter.java
+Revised File: OUTPUT/commons-io/revFiles/bf545esrc#main#java#org#apache#commons#io#filefilter#RegexFileFilter.java
+DiffEntry: @@ -26,7 +26,7 @@
+  * Filters files using supplied regular expression(s).
+- * <p/>
++ * <p>
+  * See java.util.regex.Pattern for regex matching rules
+- * <p/>
++ * </p>
+  *
+- * <p/>
++ * <p>
+  * e.g.
+
+@@ -36,3 +36,3 @@
+  * File[] files = dir.listFiles(fileFilter);
+- * for (int i = 0; i < files.length; i++) {
++ * for (int i = 0; i &lt; files.length; i++) {
+  *   System.out.println(files[i]);
+

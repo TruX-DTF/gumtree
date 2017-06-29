@@ -1,0 +1,36 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_d43262src#java#org#apache#commons#io#input#BOMInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/d43262src#java#org#apache#commons#io#input#BOMInputStream.java
+DiffEntry: @@ -158,15 +158,2 @@
+     public ByteOrderMark getBOM() throws IOException {
+-        readFirstBytes();
+-        return byteOrderMark;
+-    }
+-
+-    /**
+-     * This method reads and either preserves or skips the first bytes in the
+-     * stream. It behaves like the single-byte <code>read()</code> method,
+-     * either returning a valid byte or -1 to indicate that the initial bytes
+-     * have been processed already.
+-     * @return the byte read (excluding BOM) or -1 if the end of stream
+-     * @throws IOException if an I/O error occurs
+-     */
+-    private int readFirstBytes() throws IOException {
+         if (firstBytes == null) {
+
+@@ -193,3 +180,15 @@
+         }
++        return byteOrderMark;
++    }
+ 
++    /**
++     * This method reads and either preserves or skips the first bytes in the
++     * stream. It behaves like the single-byte <code>read()</code> method,
++     * either returning a valid byte or -1 to indicate that the initial bytes
++     * have been processed already.
++     * @return the byte read (excluding BOM) or -1 if the end of stream
++     * @throws IOException if an I/O error occurs
++     */
++    private int readFirstBytes() throws IOException {
++        getBOM();
+         return (fbIndex < fbLength) ? firstBytes[fbIndex++] : -1;
+

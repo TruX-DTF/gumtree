@@ -1,0 +1,31 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#input#WindowsLineEndingInputStream.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#input#WindowsLineEndingInputStream.java
+DiffEntry: @@ -23,2 +23,4 @@
+  * A filtering input stream that ensures the content will have windows line endings, CRLF.
++ *
++ * @since 2.5
+  */
+
+@@ -49,2 +51,7 @@
+ 
++    /**
++     * Reads the next item from the target, updating internal flags in the process
++     * @return the next int read from the target stream
++     * @throws IOException upon error
++     */
+     private int readWithUpdate() throws IOException {
+
+@@ -87,2 +94,7 @@
+ 
++    /**
++     * Handles the eof-handling at the end of the stream
++     * @return The next char to output to the stream
++     */
++
+     private int eofGame() {
+
+@@ -106,2 +118,3 @@
+      * Closes the stream. Also closes the underlying stream.
++     * @throws IOException upon error
+      */
+

@@ -1,0 +1,96 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_d92244src#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/d92244src#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -59,7 +59,8 @@
+ import java.io.FileOutputStream;
+-import java.io.InputStream;
+ import java.io.IOException;
++import java.io.InputStream;
+ import java.net.URL;
++import java.util.ArrayList;
++import java.util.Collection;
+ import java.util.Date;
+-import java.util.Vector;
+ 
+
+@@ -108,3 +109,3 @@
+  * @author Matthew Hawthorne
+- * @version $Id: FileUtils.java,v 1.15 2003/10/13 07:04:52 rdonkin Exp $
++ * @version $Id: FileUtils.java,v 1.16 2003/10/17 20:15:46 matth Exp $
+  */
+
+@@ -243,12 +244,2 @@
+     /**
+-     * Creates a file handle.
+-     *
+-     * @param fileName The name of the file.
+-     * @return A <code>File</code> instance.
+-     */
+-    public static File getFile(String fileName) {
+-        return new File(fileName);
+-    }
+-
+-    /**
+      * Given a directory and an array of extensions... return an array of
+
+@@ -266,5 +257,5 @@
+ 
+-        Vector files = new Vector();
++        Collection files = new ArrayList();
+ 
+-        java.io.File currentDir = new java.io.File(directory);
++        File currentDir = new File(directory);
+ 
+
+@@ -281,3 +272,3 @@
+                     + unknownFiles[i];
+-            java.io.File currentFile = new java.io.File(currentFileName);
++            File currentFile = new java.io.File(currentFileName);
+ 
+
+@@ -295,3 +286,3 @@
+                     getFilesFromExtension(currentFileName, extensions);
+-                files = blendFilesToVector(files, fetchFiles);
++                files = blendFiles(files, fetchFiles);
+ 
+
+@@ -302,3 +293,3 @@
+                 if (isValidFile(add, extensions)) {
+-                    files.addElement(add);
++                    files.add(add);
+ 
+
+@@ -312,3 +303,3 @@
+         String[] foundFiles = new String[files.size()];
+-        files.copyInto(foundFiles);
++        files.toArray(foundFiles);
+ 
+
+@@ -321,9 +312,9 @@
+      */
+-    private static Vector blendFilesToVector(Vector v, String[] files) {
++    private static Collection blendFiles(Collection c, String[] files) {
+ 
+         for (int i = 0; i < files.length; ++i) {
+-            v.addElement(files[i]);
++            c.add(files[i]);
+         }
+ 
+-        return v;
++        return c;
+     }
+
+@@ -1274,2 +1265,13 @@
+ 
++    /**
++     * Creates a file handle.
++     *
++     * @param fileName The name of the file.
++     * @return A <code>File</code> instance.
++     * @deprecated Use {@link java.io.File#Constructor(String)}
++     */
++    public static File getFile(String fileName) {
++        return new File(fileName);
++    }
++
+ }
+

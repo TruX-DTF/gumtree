@@ -1,0 +1,9 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_7c58d8src#main#java#org#apache#commons#io#FileSystemUtils.java
+Revised File: OUTPUT/commons-io/revFiles/7c58d8src#main#java#org#apache#commons#io#FileSystemUtils.java
+DiffEntry: @@ -379,3 +379,4 @@
+      */
+-    long freeSpaceUnix(final String path, final boolean kb, final boolean posix, final long timeout) throws IOException {
++    long freeSpaceUnix(final String path, final boolean kb, final boolean posix, final long timeout)
++            throws IOException {
+         if (path.isEmpty()) {
+

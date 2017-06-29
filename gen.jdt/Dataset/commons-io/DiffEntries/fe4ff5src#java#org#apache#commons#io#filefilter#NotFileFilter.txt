@@ -1,0 +1,20 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_fe4ff5src#java#org#apache#commons#io#filefilter#NotFileFilter.java
+Revised File: OUTPUT/commons-io/revFiles/fe4ff5src#java#org#apache#commons#io#filefilter#NotFileFilter.java
+DiffEntry: @@ -35,3 +35,3 @@
+     /**
+-     * Constructs a new file filter that NOTs the result of another filters.
++     * Constructs a new file filter that NOTs the result of another filter.
+      * 
+
+@@ -48,3 +48,3 @@
+     /**
+-     * Checks to see if both filters are true.
++     * Returns the logical NOT of the underlying filter's return value for the same File.
+      * 
+
+@@ -59,3 +59,3 @@
+     /**
+-     * Checks to see if both filters are true.
++     * Returns the logical NOT of the underlying filter's return value for the same arguments.
+      * 
+

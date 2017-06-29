@@ -1,0 +1,157 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_afe78asrc#main#java#org#apache#commons#io#FilenameUtils.java
+Revised File: OUTPUT/commons-io/revFiles/afe78asrc#main#java#org#apache#commons#io#FilenameUtils.java
+DiffEntry: @@ -192,3 +192,3 @@
+      * @param filename  the filename to normalize, null returns null
+-     * @return the normalized filename, or null if invalid
++     * @return the normalized filename, or null if invalid. Null bytes inside string will be removed
+      */
+
+@@ -238,3 +238,3 @@
+      * be used or {@code false} if a windows separator should be used.
+-     * @return the normalized filename, or null if invalid
++     * @return the normalized filename, or null if invalid. Null bytes inside string will be removed
+      * @since 2.0
+
+@@ -286,3 +286,3 @@
+      * @param filename  the filename to normalize, null returns null
+-     * @return the normalized filename, or null if invalid
++     * @return the normalized filename, or null if invalid. Null bytes inside string will be removed
+      */
+
+@@ -332,3 +332,3 @@
+      * be used or {@code false} if a windows separtor should be used.
+-     * @return the normalized filename, or null if invalid
++     * @return the normalized filename, or null if invalid. Null bytes inside string will be removed
+      * @since 2.0
+
+@@ -346,3 +346,3 @@
+      * @param keepSeparator  true to keep the final separator
+-     * @return the normalized filename
++     * @return the normalized filename. Null bytes inside string will be removed.
+      */
+
+@@ -352,7 +352,10 @@
+         }
+-        int size = filename.length();
++
++        String cleanFileName = filterNullBytes(filename);
++
++        int size = cleanFileName.length();
+         if (size == 0) {
+-            return filename;
++            return cleanFileName;
+         }
+-        final int prefix = getPrefixLength(filename);
++        final int prefix = getPrefixLength(cleanFileName);
+         if (prefix < 0) {
+
+@@ -362,3 +365,3 @@
+         final char[] array = new char[size + 2];  // +1 for possible extra slash, +2 for arraycopy
+-        filename.getChars(0, filename.length(), array, 0);
++        cleanFileName.getChars(0, cleanFileName.length(), array, 0);
+ 
+
+@@ -480,3 +483,3 @@
+      * @param fullFilenameToAdd  the filename (or path) to attach to the base
+-     * @return the concatenated path, or null if invalid
++     * @return the concatenated path, or null if invalid.  Null bytes inside string will be removed
+      */
+
+@@ -955,3 +958,4 @@
+      * @param filename  the filename to query, null returns null
+-     * @return the name of the file without the path, or an empty string if none exists
++     * @return the name of the file without the path, or an empty string if none exists.
++     * Null bytes inside string will be removed
+      */
+
+@@ -961,4 +965,33 @@
+         }
+-        final int index = indexOfLastSeparator(filename);
+-        return filename.substring(index + 1);
++        String cleanFileName = filterNullBytes(filename);
++        final int index = indexOfLastSeparator(cleanFileName);
++        return cleanFileName.substring(index + 1);
++    }
++
++    /**
++     * Check the input for null bytes, a sign of unsanitized data being passed to to file level functions.
++     *
++     * This may be used for poison byte attacks.
++     * @param path the path to check
++     */
++    private static void failIfNullBytePresent(String path) {
++        int len = path.length();
++        for (int i = 0; i < len; i++) {
++            if (path.charAt(i) == 0) {
++                throw new IllegalArgumentException("Null byte present in file/path name. There are no " +
++                        "known legitimate use cases for such data, but several injection attacks may use it");
++            }
++        }
++    }
++
++    /**
++     * Filters the supplied path for null byte characters. Can be used for normalizations to avoid poison byte attacks.
++     *
++     * This mimicks behaviour of 1.7u40+. Once minimum java requirement is above this version, this code can be removed.
++     *
++     * @param path the path
++     * @return the supplied string without any embedded null characters
++     */
++    private static String filterNullBytes(String path) {
++        return path.contains("\u0000") ? path.replace("\u0000", "") : path;
+     }
+
+@@ -980,3 +1013,4 @@
+      * @param filename  the filename to query, null returns null
+-     * @return the name of the file without the path, or an empty string if none exists
++     * @return the name of the file without the path, or an empty string if none exists. Null bytes inside string
++     * will be removed
+      */
+
+@@ -1038,7 +1072,9 @@
+         }
+-        final int index = indexOfExtension(filename);
++        String cleanFileName = filterNullBytes(filename);
++
++        final int index = indexOfExtension(cleanFileName);
+         if (index == NOT_FOUND) {
+-            return filename;
++            return cleanFileName;
+         } else {
+-            return filename.substring(0, index);
++            return cleanFileName.substring(0, index);
+         }
+
+@@ -1153,2 +1189,3 @@
+      * @return true if the filename has the specified extension
++     * @throws java.lang.IllegalArgumentException if the supplied filename contains null bytes
+      */
+
+@@ -1158,2 +1195,4 @@
+         }
++        failIfNullBytePresent(filename);
++
+         if (extension == null || extension.isEmpty()) {
+
+@@ -1175,2 +1214,3 @@
+      * @return true if the filename is one of the extensions
++     * @throws java.lang.IllegalArgumentException if the supplied filename contains null bytes
+      */
+
+@@ -1180,2 +1220,4 @@
+         }
++        failIfNullBytePresent(filename);
++
+         if (extensions == null || extensions.length == 0) {
+
+@@ -1202,2 +1244,3 @@
+      * @return true if the filename is one of the extensions
++     * @throws java.lang.IllegalArgumentException if the supplied filename contains null bytes
+      */
+
+@@ -1207,2 +1250,4 @@
+         }
++        failIfNullBytePresent(filename);
++
+         if (extensions == null || extensions.isEmpty()) {
+

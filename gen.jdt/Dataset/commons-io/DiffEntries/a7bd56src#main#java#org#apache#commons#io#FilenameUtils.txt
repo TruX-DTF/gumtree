@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_a7bd56src#main#java#org#apache#commons#io#FilenameUtils.java
+Revised File: OUTPUT/commons-io/revFiles/a7bd56src#main#java#org#apache#commons#io#FilenameUtils.java
+DiffEntry: @@ -669,2 +669,4 @@
+                     return 3;
++                } else if (ch0 == UNIX_SEPARATOR) {
++                    return 1;
+                 }
+

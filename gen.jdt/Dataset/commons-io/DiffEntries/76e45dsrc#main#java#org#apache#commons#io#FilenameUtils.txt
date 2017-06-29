@@ -1,0 +1,43 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_76e45dsrc#main#java#org#apache#commons#io#FilenameUtils.java
+Revised File: OUTPUT/commons-io/revFiles/76e45dsrc#main#java#org#apache#commons#io#FilenameUtils.java
+DiffEntry: @@ -759,3 +759,3 @@
+      * @param filename  the filename to query, null returns null
+-     * @return the prefix of the file, null if invalid
++     * @return the prefix of the file, null if invalid. Null bytes inside string will be removed
+      */
+
+@@ -770,5 +770,5 @@
+         if (len > filename.length()) {
+-            return filename + UNIX_SEPARATOR;  // we know this only happens for unix
++            return filterNullBytes(filename + UNIX_SEPARATOR);  // we know this only happens for unix
+         }
+-        return filename.substring(0, len);
++        return filterNullBytes(filename.substring(0, len));
+     }
+
+@@ -795,3 +795,4 @@
+      * @param filename  the filename to query, null returns null
+-     * @return the path of the file, an empty string if none exists, null if invalid
++     * @return the path of the file, an empty string if none exists, null if invalid.
++     * Null bytes inside string will be removed
+      */
+
+@@ -822,3 +823,4 @@
+      * @param filename  the filename to query, null returns null
+-     * @return the path of the file, an empty string if none exists, null if invalid
++     * @return the path of the file, an empty string if none exists, null if invalid.
++     * Null bytes inside string will be removed
+      */
+
+@@ -833,3 +835,3 @@
+      * @param separatorAdd  0 to omit the end separator, 1 to return it
+-     * @return the path
++     * @return the path. Null bytes inside string will be removed
+      */
+
+@@ -848,3 +850,3 @@
+         }
+-        return filename.substring(prefix, endIndex);
++        return filterNullBytes(filename.substring(prefix, endIndex));
+     }
+

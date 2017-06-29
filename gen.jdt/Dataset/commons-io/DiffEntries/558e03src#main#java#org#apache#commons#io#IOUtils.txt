@@ -1,0 +1,26 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_558e03src#main#java#org#apache#commons#io#IOUtils.java
+Revised File: OUTPUT/commons-io/revFiles/558e03src#main#java#org#apache#commons#io#IOUtils.java
+DiffEntry: @@ -2394,3 +2394,3 @@
+      * @param buffer destination
+-     * @param offset inital offset into buffer
++     * @param offset initial offset into buffer
+      * @param length length to read, must be >= 0
+
+@@ -2440,3 +2440,3 @@
+      * @param buffer destination
+-     * @param offset inital offset into buffer
++     * @param offset initial offset into buffer
+      * @param length length to read, must be >= 0
+
+@@ -2486,3 +2486,3 @@
+      * @param buffer destination
+-     * @param offset inital offset into buffer
++     * @param offset initial offset into buffer
+      * @param length length to read, must be >= 0
+
+@@ -2527,3 +2527,3 @@
+      * @param buffer destination
+-     * @param offset inital offset into buffer
++     * @param offset initial offset into buffer
+      * @param length length to read, must be >= 0
+

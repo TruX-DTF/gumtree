@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_79c97asrc#java#org#apache#commons#io#FilenameUtils.java
+Revised File: OUTPUT/commons-io/revFiles/79c97asrc#java#org#apache#commons#io#FilenameUtils.java
+DiffEntry: @@ -1083,3 +1083,3 @@
+         if (filename1 == null || filename2 == null) {
+-            return filename1 == filename2;
++            return (filename1 == null && filename2 == null);
+         }
+

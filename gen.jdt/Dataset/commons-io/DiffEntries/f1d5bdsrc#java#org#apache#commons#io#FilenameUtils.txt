@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_f1d5bdsrc#java#org#apache#commons#io#FilenameUtils.java
+Revised File: OUTPUT/commons-io/revFiles/f1d5bdsrc#java#org#apache#commons#io#FilenameUtils.java
+DiffEntry: @@ -299,3 +299,3 @@
+         char ch = basePath.charAt(len - 1);
+-        if (isSeparator(basePath.charAt(len - 1))) {
++        if (isSeparator(ch)) {
+             return normalize(basePath + fullFilenameToAdd);
+

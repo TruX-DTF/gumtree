@@ -1,0 +1,19 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_4127f8src#java#org#apache#commons#io#FileUtils.java
+Revised File: OUTPUT/commons-io/revFiles/4127f8src#java#org#apache#commons#io#FileUtils.java
+DiffEntry: @@ -80,3 +80,3 @@
+  * @author <a href="mailto:jeremias@apache.org">Jeremias Maerki</a>
+- * @version $Id: FileUtils.java,v 1.29 2004/03/12 22:21:38 jeremias Exp $
++ * @version $Id: FileUtils.java,v 1.30 2004/04/23 22:47:39 jeremias Exp $
+  */
+
+@@ -418,2 +418,9 @@
+ 
++        //makes sure it is not the same file        
++        if (source.getCanonicalPath().equals(destination.getCanonicalPath())) {
++            String message =
++                "Unable to write file " + source + " on itself.";
++            throw new IOException(message);
++        }
++
+         FileInputStream input = new FileInputStream(source);
+

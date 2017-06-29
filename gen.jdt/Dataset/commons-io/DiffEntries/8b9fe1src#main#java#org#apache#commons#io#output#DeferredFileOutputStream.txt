@@ -1,0 +1,8 @@
+Previous File: OUTPUT/commons-io/prevFiles/prev_8b9fe1src#main#java#org#apache#commons#io#output#DeferredFileOutputStream.java
+Revised File: OUTPUT/commons-io/revFiles/8b9fe1src#main#java#org#apache#commons#io#output#DeferredFileOutputStream.java
+DiffEntry: @@ -47,3 +47,3 @@
+     /**
+-     * The output stream to which data will be written prior to the theshold
++     * The output stream to which data will be written prior to the threshold
+      * being reached.
+
