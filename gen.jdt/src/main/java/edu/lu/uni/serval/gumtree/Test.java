@@ -29,7 +29,7 @@ import edu.lu.uni.serval.gumtree.regroup.HierarchicalRegouper;
 public class Test {
 
 	public static void main(String[] args) {
-//		String a = "int a = 0;if (!isSymlink(file)) {size.add(BigInteger.valueOf(sizeOf(file)));}";
+//		String a = "int a = 0;if (!isSymlink(file)) { size = size.add(BigInteger.valueOf(sizeOf(file)));}";
 //		String b = "int a = 1;if (!isSymlink(file)) { size = size.add(BigInteger.valueOf(sizeOf(file)));}";
 //		List<HierarchicalActionSet> gumTreeResults = compareTwoFilesWithGumTree(a, b);
 //		
@@ -69,10 +69,18 @@ public class Test {
 					File diffentryFile = new File(testDataPath + "DiffEntries/" + revisedFileName.replace(".java", ".txt"));
 		            StringBuilder builder = new StringBuilder();
 		            builder.append(FileHelper.readFile(diffentryFile) + "\n");
+		            StringBuilder astNodeBuilder = new StringBuilder();
+		            astNodeBuilder.append(FileHelper.readFile(diffentryFile) + "\n");
+		            StringBuilder rawCodeBuilder = new StringBuilder();
+		            rawCodeBuilder.append(FileHelper.readFile(diffentryFile) + "\n");
 		            for (HierarchicalActionSet gumTreeResult : gumTreeResults) {
 		            	builder.append(gumTreeResult + "\n");
+		            	astNodeBuilder.append(gumTreeResult.toASTNodeLevelAction() + "\n");
+		            	rawCodeBuilder.append(gumTreeResult.toRawCodeLevelAction() + "\n");
 		            }
 		            FileHelper.outputToFile("OUTPUT/GumTreeResults_Exp/" + revisedFileName.replace(".java", ".txt"), builder, false);
+		            FileHelper.outputToFile("OUTPUT/GumTreeResults_Exp_ASTNode/" + revisedFileName.replace(".java", ".txt"), astNodeBuilder, false);
+		            FileHelper.outputToFile("OUTPUT/GumTreeResults_Exp_RawCode/" + revisedFileName.replace(".java", ".txt"), rawCodeBuilder, false);
 				}
 			}
 		}
@@ -88,14 +96,22 @@ public class Test {
 		try {
 			TreeContext tc1 = null;
 			TreeContext tc2 = null;
-			tc1 = new RawTokenJdtTreeGenerator().generateFromString(a, ASTParser.K_STATEMENTS);
-			tc2 = new RawTokenJdtTreeGenerator().generateFromString(b, ASTParser.K_STATEMENTS);
-//			tc1 = new ExpJdtTreeGenerator().generateFromString(a, ASTParser.K_STATEMENTS);
-//			tc2 = new ExpJdtTreeGenerator().generateFromString(b, ASTParser.K_STATEMENTS);
-			System.out.println(tc1);
+//			tc1 = new RawTokenJdtTreeGenerator().generateFromString(a, ASTParser.K_STATEMENTS);
+//			tc2 = new RawTokenJdtTreeGenerator().generateFromString(b, ASTParser.K_STATEMENTS);
+			tc1 = new ExpJdtTreeGenerator().generateFromString(a, ASTParser.K_STATEMENTS);
+			tc2 = new ExpJdtTreeGenerator().generateFromString(b, ASTParser.K_STATEMENTS);
+			System.out.println(tc1.toString());
 //			System.out.println(tc2);
 			ITree t1 = tc1.getRoot();
 			ITree t2 = tc2.getRoot();
+			if (t1.isIsomorphicTo(t2)) {
+				System.out.println(true);
+			}
+
+			SimpleTree simpleTree = travelTreeDeepFirst(t1, null);
+			System.out.println(simpleTree);
+			System.out.println();
+			travelTreeBreadthFirst(t1);
 			Matcher m = Matchers.getInstance().getMatcher(t1, t2);
 			m.match();
 			
@@ -113,6 +129,45 @@ public class Test {
 //		}
 
 		return actionSets;
+	}
+
+	private static void travelTreeBreadthFirst(ITree root) {
+		if (root == null) {
+			System.out.println("Null tree.");
+		}
+		
+		List<ITree> treeList = new ArrayList<>();
+		treeList.add(root);
+		while (!treeList.isEmpty()) {
+			List<ITree> childrenTreeList = new ArrayList<>();
+			for (ITree tree : treeList) {
+				System.out.println(tree.getLabel());//
+//				if (tree.breadthFirst())
+				childrenTreeList.addAll(tree.getChildren());
+			}
+			
+			treeList.clear();
+			treeList.addAll(childrenTreeList);
+		}
+	}
+	
+	private static SimpleTree travelTreeDeepFirst(ITree root, SimpleTree parent) {
+		if (root == null) {
+			System.out.println("Null tree!");
+		}
+		SimpleTree simpleTree = new SimpleTree();
+		simpleTree.setLabel(root.toShortString());
+		simpleTree.setParent(parent);
+		List<SimpleTree> children = new ArrayList<>();
+		
+		List<ITree> childrenTreeList = root.getChildren();
+		if (childrenTreeList != null && childrenTreeList.size() > 0) {
+			for (ITree childTree : childrenTreeList) {
+				children.add(travelTreeDeepFirst(childTree, simpleTree));
+			}
+		}
+		simpleTree.setChildren(children);
+		return simpleTree;
 	}
 
 	public static List<HierarchicalActionSet> compareTwoFilesWithGumTree(File prevFile, File revFile) {
