@@ -16,6 +16,7 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	private String astNodeType;
 	private Action action;
 	private Action parentAction;
+	private String actionString;
 	private List<HierarchicalActionSet>	subActions = new ArrayList<>();
 
 	public String getAstNodeType() {
@@ -42,6 +43,14 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 		this.parentAction = parentAction;
 	}
 
+	public String getActionString() {
+		return actionString;
+	}
+
+	public void setActionString(String actionString) {
+		this.actionString = actionString;
+	}
+
 	public List<HierarchicalActionSet> getSubActions() {
 		return subActions;
 	}
@@ -59,7 +68,7 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 
 	@Override
 	public String toString() {
-		String str = parseAction(action.toString());
+		String str = actionString;//parseAction(action.toString());
 		strList.add(str);
 		for (HierarchicalActionSet actionSet : subActions) {
 			actionSet.toString();
@@ -75,23 +84,6 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 		}
 		 
 		return str;
-	}
-	
-	private String parseAction(String actStr) {
-		// UPD 25@@!a from !a to isTrue(a) at 69
-		String[] actStrArrays = actStr.split("@@");
-		actStr = "";
-		int length = actStrArrays.length;
-		for (int i =0; i < length - 1; i ++) {
-			String actStrFrag = actStrArrays[i];
-			int index = actStrFrag.lastIndexOf(" ") + 1;
-			String nodeType = actStrFrag.substring(index);
-			nodeType = ASTNodeMap.map.get(Integer.parseInt(nodeType));
-			actStrFrag = actStrFrag.substring(0, index) + nodeType + "@@";
-			actStr += actStrFrag;
-		}
-		actStr += actStrArrays[length - 1];
-		return actStr;
 	}
 	
 	public String toASTNodeLevelAction() {

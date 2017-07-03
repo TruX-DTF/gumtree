@@ -35,6 +35,7 @@ public class HierarchicalRegouper {
 			if (parentAct == null) {
 				actionSet = new HierarchicalActionSet();
 				actionSet.setAction(act);
+				actionSet.setActionString(parseAction(act.toString()));
 				actionSet.setParentAction(parentAct);
 				actionSets.add(actionSet);
 			} else {
@@ -42,6 +43,7 @@ public class HierarchicalRegouper {
 					// The index of the parent action in the actions' list is larger than the index of this action.
 					actionSet = new HierarchicalActionSet();
 					actionSet.setAction(act);
+					actionSet.setActionString(parseAction(act.toString()));
 					actionSet.setParentAction(parentAct);
 					actionSets.add(actionSet);
 				}
@@ -64,6 +66,23 @@ public class HierarchicalRegouper {
 		return reActionSets;
 	}
 
+	private static String parseAction(String actStr) {
+		// UPD 25@@!a from !a to isTrue(a) at 69
+		String[] actStrArrays = actStr.split("@@");
+		actStr = "";
+		int length = actStrArrays.length;
+		for (int i =0; i < length - 1; i ++) {
+			String actStrFrag = actStrArrays[i];
+			int index = actStrFrag.lastIndexOf(" ") + 1;
+			String nodeType = actStrFrag.substring(index);
+			nodeType = ASTNodeMap.map.get(Integer.parseInt(nodeType));
+			actStrFrag = actStrFrag.substring(0, index) + nodeType + "@@";
+			actStr += actStrFrag;
+		}
+		actStr += actStrArrays[length - 1];
+		return actStr;
+	}
+	
 	private static void addToActionSets(HierarchicalActionSet actionSet, Action parentAct, List<HierarchicalActionSet> actionSets) {
 		for (HierarchicalActionSet actSet : actionSets) {
 			if (actSet.equals(actionSet)) continue;
@@ -80,11 +99,14 @@ public class HierarchicalRegouper {
 
 	private static boolean addToAactionSet(Action act, Action parentAct, List<HierarchicalActionSet> actionSets) {
 		ITree parentTree = parentAct.getNode();
+		
 		for(HierarchicalActionSet actionSet : actionSets) {
 			ITree tree = actionSet.getAction().getNode();
 			if (tree.equals(parentTree)) {
 				HierarchicalActionSet actSet = new HierarchicalActionSet();
 				actSet.setAction(act);
+				actSet.setActionString(parseAction(act.toString()));
+				actSet.setParentAction(actionSet.getAction());
 				actionSet.getSubActions().add(actSet);
 				return true;
 			} else {
