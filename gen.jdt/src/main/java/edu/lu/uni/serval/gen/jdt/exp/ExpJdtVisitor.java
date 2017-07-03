@@ -612,18 +612,25 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
     @Override
     public boolean visit(FieldDeclaration node) {
-    	String nodeStr = node.toString();
-    	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
-    	pushNode(node, nodeStr);
+    	String nodeStr = "";
     	List<?> modifiers = node.modifiers();
+    	List<Modifier> realModifiers = new ArrayList<>();
         for (Object obj : modifiers) {
         	IExtendedModifier modifier = (IExtendedModifier) obj;
         	if (modifier.isModifier()) {
-        		((Modifier)modifier).accept(this);
+        		nodeStr += modifier.toString() + ", ";
+        		realModifiers.add((Modifier)modifier);
         	}
         }
-        node.getType().accept(this);
-        visitList(node.fragments());
+        Type type = node.getType();
+        nodeStr += type.toString() + ", ";
+        List<?> fragments = node.fragments();
+        nodeStr += fragments.toString();
+    	pushNode(node, nodeStr);
+    	
+        visitList(realModifiers);
+        type.accept(this);
+        visitList(fragments);
         return false;
     }
 
@@ -651,12 +658,14 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		SimpleName methodName = node.getName();
 		List<?> parameters = node.parameters();
 		List<?> exceptionTypes = node.thrownExceptionTypes();
+		List<Modifier> realModifiers = new ArrayList<>();
 		
 		String methodLabel = "";
 		for (Object obj : modifiers) {
 			IExtendedModifier modifier = (IExtendedModifier) obj;
 			if (modifier.isModifier()) {
 				methodLabel += obj.toString() + ", ";
+				realModifiers.add((Modifier) modifier);
 			}
 		}
 		methodLabel += (returnType == null) ? "" : (returnType.toString() + ", ");
@@ -677,12 +686,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		 *  because there is no any fix pattern can be mined from these elements.
 		 *  Even though some fix patterns can be mined, they are not what we want.
 		 */
-        for (Object obj : modifiers) {
-        	IExtendedModifier modifier = (IExtendedModifier) obj;
-        	if (modifier.isModifier()) {
-        		((Modifier)modifier).accept(this);
-        	}
-        }
+        visitList(realModifiers);
 //		if (returnType != null) {
 //			returnType.accept(this);
 //		}
