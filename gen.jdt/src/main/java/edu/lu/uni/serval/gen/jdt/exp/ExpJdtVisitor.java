@@ -501,7 +501,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			className.accept(this);
 		}
 		SimpleName methodName = node.getName();
-		pushNode(methodName, "Method:" + methodName.getFullyQualifiedName());
+		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
 		popNode();
 		List<?> arguments = node.arguments();
 		visitList(arguments);
