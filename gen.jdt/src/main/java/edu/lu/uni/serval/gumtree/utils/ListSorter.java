@@ -1,4 +1,4 @@
-package edu.lu.uni.serval.gumtree;
+package edu.lu.uni.serval.gumtree.utils;
 
 import java.util.Collections;
 import java.util.List;

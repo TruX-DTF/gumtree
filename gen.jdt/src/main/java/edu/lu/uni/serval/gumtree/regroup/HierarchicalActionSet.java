@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.tree.ITree;
 
 /**
  * Hierarchical-level results of GumTree results
@@ -17,7 +18,24 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	private Action action;
 	private Action parentAction;
 	private String actionString;
+	private int startPosition;
+	private int length;
+	private int startLineNum;
+	private int endLineNum;
 	private List<HierarchicalActionSet>	subActions = new ArrayList<>();
+	
+	private ITree node;
+	private SimpleTree simpleTree;
+	private SimpleTree rawTokenTree;
+	private SimpleTree astNodeTree;
+
+	public ITree getNode() {
+		return node;
+	}
+
+	public void setNode(ITree node) {
+		this.node = node;
+	}
 
 	public String getAstNodeType() {
 		return astNodeType;
@@ -49,6 +67,49 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 
 	public void setActionString(String actionString) {
 		this.actionString = actionString;
+		
+		int atIndex = actionString.indexOf("@AT@") + 4;
+		int lengthIndex = actionString.indexOf("@LENGTH@");
+		if (lengthIndex == -1) {
+			this.startPosition = Integer.parseInt(actionString.substring(atIndex).trim());
+			this.length = 0;
+		} else {
+			this.startPosition = Integer.parseInt(actionString.substring(atIndex, lengthIndex).trim());
+			this.length = Integer.parseInt(actionString.substring(lengthIndex + 8).trim());
+		}
+		
+	}
+
+	public int getStartPosition() {
+		return startPosition;
+	}
+
+	public void setStartPosition(int startPosition) {
+		this.startPosition = startPosition;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public int getStartLineNum() {
+		return startLineNum;
+	}
+
+	public void setStartLineNum(int startLineNum) {
+		this.startLineNum = startLineNum;
+	}
+
+	public int getEndLineNum() {
+		return endLineNum;
+	}
+
+	public void setEndLineNum(int endLineNum) {
+		this.endLineNum = endLineNum;
 	}
 
 	public List<HierarchicalActionSet> getSubActions() {
@@ -57,6 +118,30 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 
 	public void setSubActions(List<HierarchicalActionSet> subActions) {
 		this.subActions = subActions;
+	}
+
+	public SimpleTree getSimpleTree() {
+		return simpleTree;
+	}
+
+	public void setSimpleTree(SimpleTree simpleTree) {
+		this.simpleTree = simpleTree;
+	}
+
+	public SimpleTree getRawTokenTree() {
+		return rawTokenTree;
+	}
+
+	public void setRawTokenTree(SimpleTree rawTokenTree) {
+		this.rawTokenTree = rawTokenTree;
+	}
+
+	public SimpleTree getAstNodeTree() {
+		return astNodeTree;
+	}
+
+	public void setAstNodeTree(SimpleTree astNodeTree) {
+		this.astNodeTree = astNodeTree;
 	}
 
 	@Override

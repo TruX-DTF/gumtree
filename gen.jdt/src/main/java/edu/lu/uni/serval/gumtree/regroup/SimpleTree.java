@@ -1,4 +1,4 @@
-package edu.lu.uni.serval.gumtree;
+package edu.lu.uni.serval.gumtree.regroup;
 
 import java.util.ArrayList;
 import java.util.List;

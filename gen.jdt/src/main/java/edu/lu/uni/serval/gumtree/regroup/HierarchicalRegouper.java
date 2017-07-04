@@ -7,7 +7,8 @@ import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Addition;
 import com.github.gumtreediff.tree.ITree;
 
-import edu.lu.uni.serval.gumtree.ListSorter;
+import edu.lu.uni.serval.gumtree.utils.ASTNodeMap;
+import edu.lu.uni.serval.gumtree.utils.ListSorter;
 
 /**
  * Regroup GumTree results to a hierarchical construction.
@@ -37,6 +38,7 @@ public class HierarchicalRegouper {
 				actionSet.setAction(act);
 				actionSet.setActionString(parseAction(act.toString()));
 				actionSet.setParentAction(parentAct);
+				actionSet.setNode(act.getNode());
 				actionSets.add(actionSet);
 			} else {
 				if (!addToAactionSet(act, parentAct, actionSets)) {
@@ -45,6 +47,7 @@ public class HierarchicalRegouper {
 					actionSet.setAction(act);
 					actionSet.setActionString(parseAction(act.toString()));
 					actionSet.setParentAction(parentAct);
+					actionSet.setNode(act.getNode());
 					actionSets.add(actionSet);
 				}
 			}
@@ -107,6 +110,7 @@ public class HierarchicalRegouper {
 				actSet.setAction(act);
 				actSet.setActionString(parseAction(act.toString()));
 				actSet.setParentAction(actionSet.getAction());
+				actSet.setNode(act.getNode());
 				actionSet.getSubActions().add(actSet);
 				return true;
 			} else {

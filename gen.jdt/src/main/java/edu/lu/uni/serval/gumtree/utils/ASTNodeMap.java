@@ -1,4 +1,4 @@
-package edu.lu.uni.serval.gumtree.regroup;
+package edu.lu.uni.serval.gumtree.utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +9,7 @@ public class ASTNodeMap {
 	
 	static {
 		map  = new HashMap<Integer, String>();
+		map.put(-1, "Operator");
 		map.put(0, "ASTNode");
 		map.put(1, "AnonymousClassDeclaration");
 		map.put(2, "ArrayAccess");
@@ -77,7 +78,7 @@ public class ASTNodeMap {
 		map.put(65, "TagElement");
 		map.put(66, "TextElement");
 		map.put(67, "MemberRef");
-		map.put(68,"MethodRef");
+		map.put(68, "MethodRef");
 		map.put(69, "MethodRefParameter");
 		map.put(70, "EnhancedForStatement");
 		map.put(71, "EnumDeclaration");
