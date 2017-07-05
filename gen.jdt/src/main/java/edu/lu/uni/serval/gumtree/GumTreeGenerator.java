@@ -3,6 +3,8 @@ package edu.lu.uni.serval.gumtree;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.jdt.core.dom.ASTParser;
+
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 
@@ -70,10 +72,10 @@ public class GumTreeGenerator {
 			TreeContext tc = null;
 			switch (type) {
 			case EXP_JDT:
-				tc = new ExpJdtTreeGenerator().generateFromString(codeBlock);
+				tc = new ExpJdtTreeGenerator().generateFromString(codeBlock, ASTParser.K_STATEMENTS);
 				break;
 			case RAW_TOKEN:
-				tc = new RawTokenJdtTreeGenerator().generateFromString(codeBlock);
+				tc = new RawTokenJdtTreeGenerator().generateFromString(codeBlock, ASTParser.K_STATEMENTS);
 				break;
 			default:
 				break;
