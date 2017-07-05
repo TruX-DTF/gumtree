@@ -16,7 +16,7 @@ public class GumTreeGenerator {
 		RAW_TOKEN,
 	}
 	
-	public static ITree generateITreeForJavaFile(File javaFile, GumTreeType type) {
+	public ITree generateITreeForJavaFile(File javaFile, GumTreeType type) {
 		ITree gumTree = null;
 		try {
 			TreeContext tc = null;
@@ -40,7 +40,7 @@ public class GumTreeGenerator {
 		return gumTree;
 	}
 	
-	public static ITree generateITreeForJavaFile(String javaFile, GumTreeType type) {
+	public ITree generateITreeForJavaFile(String javaFile, GumTreeType type) {
 		ITree gumTree = null;
 		try {
 			TreeContext tc = null;
@@ -64,7 +64,7 @@ public class GumTreeGenerator {
 		return gumTree;
 	}
 	
-	public static ITree generateITreeForCodeBlock(String codeBlock, GumTreeType type) {
+	public ITree generateITreeForCodeBlock(String codeBlock, GumTreeType type) {
 		ITree gumTree = null;
 		try {
 			TreeContext tc = null;

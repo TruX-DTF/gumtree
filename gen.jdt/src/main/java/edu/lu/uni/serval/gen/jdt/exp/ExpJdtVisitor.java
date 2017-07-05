@@ -672,7 +672,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		for (Object obj : typeParameters) {
 			methodLabel += obj.toString() + ", ";
 		}
-		methodLabel += methodName + ", ";
+		methodLabel += "MethodName:" + methodName + ", ";
 		for (Object obj : parameters) {
 			methodLabel += obj.toString() + ", ";
 		}
@@ -693,7 +693,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 //		visitList(typeParameters);
 //		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
 //		popNode();
-//		visitList(parameters);
+		visitList(parameters);
 //		visitList(exceptionTypes);
 
 		// The body can be null when the method declaration is from a interface
@@ -746,10 +746,17 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     
     @Override
     public boolean visit(SingleVariableDeclaration node) {
+        pushNode(node, node.toString());
+        List<?> modifiers = node.modifiers();
+        for (Object obj : modifiers) {
+        	IExtendedModifier modifier = (IExtendedModifier) obj;
+        	if (modifier.isModifier()) {
+        		((Modifier) modifier).accept(this);
+        	}
+        }
     	Type type = node.getType();
     	SimpleName variableName = node.getName();
     	Expression exp = node.getInitializer();
-        pushNode(node, node.toString());
         type.accept(this);
         variableName.accept(this);
         if (exp != null) {

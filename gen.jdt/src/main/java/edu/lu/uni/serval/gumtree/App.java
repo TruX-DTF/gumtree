@@ -3,23 +3,14 @@ package edu.lu.uni.serval.gumtree;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import com.github.gumtreediff.actions.ActionGenerator;
-import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.matchers.Matcher;
-import com.github.gumtreediff.matchers.Matchers;
-import com.github.gumtreediff.tree.ITree;
-
 import edu.lu.uni.serval.gumtree.utils.CUCreator;
 import edu.lu.uni.serval.gumtree.utils.FileHelper;
-import edu.lu.uni.serval.gumtree.GumTreeGenerator.GumTreeType;
+import edu.lu.uni.serval.gumtree.regroup.ActionFilter;
 import edu.lu.uni.serval.gumtree.regroup.HierarchicalActionSet;
-import edu.lu.uni.serval.gumtree.regroup.HierarchicalRegouper;
-import edu.lu.uni.serval.gumtree.regroup.SimpleTree;
 import edu.lu.uni.serval.gumtree.regroup.Traveler;
 
 public class App {
@@ -40,7 +31,7 @@ public class App {
 		/**
 		 * TODO list:
 		 * 1. Separate the modification by elements of Statements.
-		 * 2. AST node1 --> AST node2 --> AST node3 ...
+		 * 2. AST node sequence: AST node1 --> AST node2 --> AST node3 ...
 		 * 3. Pure raw token Source code Tree --> Semi-abstract/pseudo-code tree --> Pure AST node type tree.
 		 * 4. Modified/Changed Expressions.
 		 */
@@ -54,14 +45,11 @@ public class App {
 				String revisedFileName = revisedFile.getName();
 				File previousFile = new File(testDataPath + "prevFiles/prev_" + revisedFileName);
 				
-				List<HierarchicalActionSet> gumTreeResults = compareTwoFilesWithGumTree(previousFile, revisedFile);
+				List<HierarchicalActionSet> gumTreeResults = new GumTreeComparer().compareTwoFilesWithGumTree(previousFile, revisedFile);
+				// Filter out modified actions of changing method names, method parameters, variable names and field names in declaration part.
+				gumTreeResults = new ActionFilter().filterOutUselessActions(gumTreeResults);
+				
 				if (gumTreeResults.size() > 0) {
-					// TODO:
-					// Filter out modified actions of method declaration which contains change method names or change parameters.
-					// Filter out modified actions of variable declaration which changes variable name.
-					// Filter out modified actions of field declaration which changes field name.
-					
-					
 					File diffentryFile = new File(testDataPath + "DiffEntries/" + revisedFileName.replace(".java", ".txt"));
 		            StringBuilder builder = new StringBuilder();
 		            builder.append(FileHelper.readFile(diffentryFile) + "\n");
@@ -114,54 +102,6 @@ public class App {
 				}
 			}
 		}
-	}
-	
-	@SuppressWarnings("unused")
-	private static List<HierarchicalActionSet> compareTwoFilesWithGumTree(String a, String b) {
-		List<HierarchicalActionSet> actionSets = new ArrayList<>();
-
-		// Generate GumTree.
-		ITree oldTree = GumTreeGenerator.generateITreeForCodeBlock(a, GumTreeType.EXP_JDT);
-		ITree newTree = GumTreeGenerator.generateITreeForCodeBlock(b, GumTreeType.EXP_JDT);
-		if (oldTree != null && newTree != null) {
-			if (oldTree.isIsomorphicTo(newTree)) { // TODO: this method should be improved.
-				System.out.println(true);
-			}
-
-			SimpleTree simpleTree = Traveler.travelITreeDeepFirstToSimpleTree(oldTree, null);
-			System.out.println(simpleTree.toString() + "\n");
-			
-			Matcher m = Matchers.getInstance().getMatcher(oldTree, newTree);
-			m.match();
-			ActionGenerator ag = new ActionGenerator(oldTree, newTree, m.getMappings());
-			ag.generate();
-			List<Action> actions = ag.getActions(); // change actions from bug to patch
-
-			// Regroup GumTree results
-			actionSets = HierarchicalRegouper.regroupGumTreeResults(actions);
-		}
-		
-		return actionSets;
-	}
-	
-	public static List<HierarchicalActionSet> compareTwoFilesWithGumTree(File prevFile, File revFile) {
-		List<HierarchicalActionSet> actionSets = new ArrayList<>();
-		
-		// Generate GumTree.
-		ITree oldTree = GumTreeGenerator.generateITreeForJavaFile(prevFile, GumTreeType.EXP_JDT);
-		ITree newTree = GumTreeGenerator.generateITreeForJavaFile(revFile, GumTreeType.EXP_JDT);
-		if (oldTree != null && newTree != null) {
-			Matcher m = Matchers.getInstance().getMatcher(oldTree, newTree);
-			m.match();
-			ActionGenerator ag = new ActionGenerator(oldTree, newTree, m.getMappings());
-			ag.generate();
-			List<Action> actions = ag.getActions(); // change actions from bug to patch
-			
-			// Regroup GumTree results
-			actionSets = HierarchicalRegouper.regroupGumTreeResults(actions);
-		}
-
-		return actionSets;
 	}
 	
 }

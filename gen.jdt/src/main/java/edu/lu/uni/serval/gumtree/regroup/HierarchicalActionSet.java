@@ -22,6 +22,7 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	private int length;
 	private int startLineNum;
 	private int endLineNum;
+	private HierarchicalActionSet parent = null;
 	private List<HierarchicalActionSet>	subActions = new ArrayList<>();
 	
 	private ITree node;
@@ -39,10 +40,6 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 
 	public String getAstNodeType() {
 		return astNodeType;
-	}
-
-	public void setAstNodeType(String astNodeType) {
-		this.astNodeType = astNodeType;
 	}
 
 	public Action getAction() {
@@ -78,22 +75,17 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 			this.length = Integer.parseInt(actionString.substring(lengthIndex + 8).trim());
 		}
 		
+		String nodeType = actionString.substring(0, actionString.indexOf("@@"));
+		nodeType = nodeType.substring(nodeType.indexOf(" ")  + 1);
+		this.astNodeType = nodeType;
 	}
 
 	public int getStartPosition() {
 		return startPosition;
 	}
 
-	public void setStartPosition(int startPosition) {
-		this.startPosition = startPosition;
-	}
-
 	public int getLength() {
 		return length;
-	}
-
-	public void setLength(int length) {
-		this.length = length;
 	}
 
 	public int getStartLineNum() {
@@ -110,6 +102,14 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 
 	public void setEndLineNum(int endLineNum) {
 		this.endLineNum = endLineNum;
+	}
+
+	public HierarchicalActionSet getParent() {
+		return parent;
+	}
+
+	public void setParent(HierarchicalActionSet parent) {
+		this.parent = parent;
 	}
 
 	public List<HierarchicalActionSet> getSubActions() {

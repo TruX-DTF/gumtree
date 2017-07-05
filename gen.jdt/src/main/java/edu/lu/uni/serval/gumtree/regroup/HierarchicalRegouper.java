@@ -34,20 +34,12 @@ public class HierarchicalRegouper {
 		for(Action act : actions){
 			Action parentAct = findParentAction(act, actions);
 			if (parentAct == null) {
-				actionSet = new HierarchicalActionSet();
-				actionSet.setAction(act);
-				actionSet.setActionString(parseAction(act.toString()));
-				actionSet.setParentAction(parentAct);
-				actionSet.setNode(act.getNode());
+				actionSet = createActionSet(act, parentAct);
 				actionSets.add(actionSet);
 			} else {
 				if (!addToAactionSet(act, parentAct, actionSets)) {
 					// The index of the parent action in the actions' list is larger than the index of this action.
-					actionSet = new HierarchicalActionSet();
-					actionSet.setAction(act);
-					actionSet.setActionString(parseAction(act.toString()));
-					actionSet.setParentAction(parentAct);
-					actionSet.setNode(act.getNode());
+					actionSet = createActionSet(act, parentAct);
 					actionSets.add(actionSet);
 				}
 			}
@@ -67,6 +59,16 @@ public class HierarchicalRegouper {
 		}
 		
 		return reActionSets;
+	}
+
+	private static HierarchicalActionSet createActionSet(Action act, Action parentAct) {
+		HierarchicalActionSet actionSet = new HierarchicalActionSet();
+		actionSet.setAction(act);
+		actionSet.setActionString(parseAction(act.toString()));
+		actionSet.setParentAction(parentAct);
+		actionSet.setNode(act.getNode());
+		actionSet.setParent(null);
+		return actionSet;
 	}
 
 	private static String parseAction(String actStr) {
@@ -89,7 +91,8 @@ public class HierarchicalRegouper {
 	private static void addToActionSets(HierarchicalActionSet actionSet, Action parentAct, List<HierarchicalActionSet> actionSets) {
 		for (HierarchicalActionSet actSet : actionSets) {
 			if (actSet.equals(actionSet)) continue;
-			if (actSet.getAction().equals(parentAct)) {
+			if (actSet.getAction().equals(parentAct)) { // actSet is the parent of actionSet.
+				actionSet.setParent(actSet);
 				actSet.getSubActions().add(actionSet);
 				ListSorter<HierarchicalActionSet> sorter = new ListSorter<HierarchicalActionSet>(actSet.getSubActions());
 				actSet.setSubActions(sorter.sortAscending());
@@ -105,12 +108,9 @@ public class HierarchicalRegouper {
 		
 		for(HierarchicalActionSet actionSet : actionSets) {
 			ITree tree = actionSet.getAction().getNode();
-			if (tree.equals(parentTree)) {
-				HierarchicalActionSet actSet = new HierarchicalActionSet();
-				actSet.setAction(act);
-				actSet.setActionString(parseAction(act.toString()));
-				actSet.setParentAction(actionSet.getAction());
-				actSet.setNode(act.getNode());
+			if (tree.equals(parentTree)) { // actionSet is the parent of actSet.
+				HierarchicalActionSet actSet = createActionSet(act, actionSet.getAction());
+				actSet.setParent(actionSet);
 				actionSet.getSubActions().add(actSet);
 				return true;
 			} else {
