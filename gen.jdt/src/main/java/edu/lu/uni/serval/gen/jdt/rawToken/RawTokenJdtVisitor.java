@@ -99,7 +99,7 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
 			} else if (n instanceof ArrayCreation) {
 				return "ArrayCreation:" + ((ArrayCreation)n).toString();
 			} else if (n instanceof ArrayInitializer) {
-				return "ArrayInitializer:" + ((ArrayInitializer)n).toString();
+				return "ArrayInitializer:";// + ((ArrayInitializer)n).toString();
 			} else if (n instanceof Assignment) { // = += -= etc.
 				return "Assignment:" + ((Assignment) n).toString();
 			} else if (n instanceof BooleanLiteral) {// true, false
@@ -107,7 +107,7 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
 			} else if (n instanceof CastExpression) {
 				return "CastExpression:" + ((CastExpression)n).toString();
 			} else if (n instanceof CharacterLiteral) {
-				return "CharacterLiteral:" + ((CharacterLiteral) n).getEscapedValue();
+				return "CharacterLiteral:";// + ((CharacterLiteral) n).getEscapedValue();
 			} else if (n instanceof ClassInstanceCreation) {
 				return "ClassInstanceCreation:" + ((ClassInstanceCreation)n).toString();
 			} else if (n instanceof ConditionalExpression) {
@@ -141,7 +141,7 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
 			} else if (n instanceof PrefixExpression) {
 				return "PrefixExpression:"+((PrefixExpression) n).toString();
 			} else if (n instanceof StringLiteral) {
-				return "StringLiteral:"+((StringLiteral) n).getEscapedValue();
+				return "StringLiteral:";//+((StringLiteral) n).getEscapedValue();
 			} else if (n instanceof ThisExpression) {
 				return "this";
 			} else if (n instanceof SuperFieldAccess) {

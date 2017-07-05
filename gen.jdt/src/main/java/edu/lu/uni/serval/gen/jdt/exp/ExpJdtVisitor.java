@@ -83,9 +83,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(ArrayInitializer node) {
-		pushNode(node, node.toString());
-		List<?> expressions = node.expressions();
-		visitList(expressions);
+		pushNode(node, "arrayInitializer");//node.toString());
+//		List<?> expressions = node.expressions();
+//		visitList(expressions);
 		return false;
 	}
 
@@ -140,7 +140,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(CharacterLiteral node) {
-		pushNode(node, node.getEscapedValue());
+		pushNode(node, "charLiteral");//node.getEscapedValue());
 		return false;
 	}
 
@@ -154,10 +154,12 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		pushNode(node, node.toString());
 		Expression exp = node.getExpression();
 		if (exp != null) {
+			System.out.println("ClassInstanceCreation:" + exp.toString() + "\n node:" + node.toString());
 			exp.accept(this);
 		}
 		List<?> typeArguments = node.typeArguments();
 		for (Object obj : typeArguments) {
+			System.out.println("TypeArgument:" + obj.toString() + "\n node:" + node.toString());
 			Type typeArgu = (Type) obj;
 			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
 			popNode();
@@ -294,6 +296,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		}
 		for (Object obj : typeArguments) {
 			Type typeArgu = (Type) obj;
+			System.out.println("TypeArgument:" + typeArgu + "\n node: " + node.toString());
 			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
 			popNode();
 		}
@@ -311,62 +314,62 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	// ----------------MethodReference----------------
 	@Override
 	public boolean visit(CreationReference node) {
-		pushNode(node, node.toString());
-		Type type = node.getType();
-		type.accept(this);
-		List<?> typeArguments =  node.typeArguments();
-		for (Object obj : typeArguments) {
-			Type typeArgument = (Type) obj;
-			typeArgument.accept(this);
-		}
+//		pushNode(node, node.toString());
+//		Type type = node.getType();
+//		type.accept(this);
+//		List<?> typeArguments =  node.typeArguments();
+//		for (Object obj : typeArguments) {
+//			Type typeArgument = (Type) obj;
+//			typeArgument.accept(this);
+//		}
 		return false;
 	}
 
 	@Override
 	public void endVisit(CreationReference node) {
-		popNode();
+//		popNode();
 	}
 
 	@Override
 	public boolean visit(ExpressionMethodReference node) {
-		pushNode(node, node.getName().getFullyQualifiedName());
-		Expression exp = node.getExpression();
-		exp.accept(this);
-		List<?> typeArguments = node.typeArguments();
-		for (Object obj : typeArguments) {
-			Type typeArgument = (Type) obj;
-			typeArgument.accept(this);
-		}
+//		pushNode(node, node.getName().getFullyQualifiedName());
+//		Expression exp = node.getExpression();
+//		exp.accept(this);
+//		List<?> typeArguments = node.typeArguments();
+//		for (Object obj : typeArguments) {
+//			Type typeArgument = (Type) obj;
+//			typeArgument.accept(this);
+//		}
 		return false;
 	}
 
 	@Override
 	public void endVisit(ExpressionMethodReference node) {
-		popNode();
+//		popNode();
 	}
 
 	@Override
 	public boolean visit(SuperMethodReference node) {
 		// TODO Auto-generated method stub
-		return super.visit(node);
+		return false;//super.visit(node);
 	}
 
 	@Override
 	public void endVisit(SuperMethodReference node) {
 		// TODO Auto-generated method stub
-		super.endVisit(node);
+//		super.endVisit(node);
 	}
 	
 	@Override
 	public boolean visit(TypeMethodReference node) {
 		// TODO Auto-generated method stub
-		return super.visit(node);
+		return false;//super.visit(node);
 	}
 
 	@Override
 	public void endVisit(TypeMethodReference node) {
 		// TODO Auto-generated method stub
-		super.endVisit(node);
+//		super.endVisit(node);
 	}
 	// ----------------MethodReference----------------
 	
@@ -467,7 +470,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	
 	@Override
 	public boolean visit(StringLiteral node) {
-		pushNode(node, node.getEscapedValue());
+		pushNode(node, "stringLiteral");//node.getEscapedValue());
 		return false;
 	}
 
