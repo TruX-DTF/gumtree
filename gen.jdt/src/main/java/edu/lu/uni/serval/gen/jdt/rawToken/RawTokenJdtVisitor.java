@@ -365,7 +365,7 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
 	@Override
 	public boolean visit(SingleMemberAnnotation node) {
 		// TODO Auto-generated method stub
-		return super.visit(node);
+		return false;//super.visit(node);
 	}
 	// ---------------Annotation---------------
 	
@@ -398,7 +398,7 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
 
 	@Override
 	public boolean visit(ArrayInitializer node) {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -577,25 +577,25 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
 	@Override
 	public boolean visit(SuperMethodReference node) {
 		// TODO Auto-generated method stub
-		return super.visit(node);
+		return false;//super.visit(node);
 	}
 
 	@Override
 	public void endVisit(SuperMethodReference node) {
 		// TODO Auto-generated method stub
-		super.endVisit(node);
+//		super.endVisit(node);
 	}
 	
 	@Override
 	public boolean visit(TypeMethodReference node) {
 		// TODO Auto-generated method stub
-		return super.visit(node);
+		return false;//super.visit(node);
 	}
 
 	@Override
 	public void endVisit(TypeMethodReference node) {
 		// TODO Auto-generated method stub
-		super.endVisit(node);
+//		super.endVisit(node);
 	}
 	// ----------------MethodReference----------------
 	
