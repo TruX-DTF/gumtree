@@ -414,6 +414,10 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(NumberLiteral node) {
+		String num = node.getToken();
+		if (num.endsWith("L") || num.endsWith("l")) {
+			num = "longNumber";
+		}
 		pushNode(node, node.getToken());
 		return false;
 	}

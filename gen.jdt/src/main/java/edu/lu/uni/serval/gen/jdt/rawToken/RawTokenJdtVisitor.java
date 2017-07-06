@@ -133,7 +133,11 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
 			} else if (n instanceof NullLiteral) {
 				return "NullLiteral:null";
 			} else if (n instanceof NumberLiteral) {
-				return "NumberLiteral:" +((NumberLiteral) n).getToken();
+				String num = ((NumberLiteral) n).getToken();
+				if (num.endsWith("L") || num.endsWith("l")) {
+					num = "longNumber";
+				}
+				return "NumberLiteral:" + num;
 			} else if (n instanceof ParenthesizedExpression) {
 				return "ParenthesizedExpression:"+((ParenthesizedExpression)n).toString();
 			} else if (n instanceof PostfixExpression) {
