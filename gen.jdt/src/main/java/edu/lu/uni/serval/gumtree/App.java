@@ -3,7 +3,10 @@ package edu.lu.uni.serval.gumtree;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
@@ -11,6 +14,7 @@ import edu.lu.uni.serval.gumtree.utils.CUCreator;
 import edu.lu.uni.serval.gumtree.utils.FileHelper;
 import edu.lu.uni.serval.gumtree.regroup.ActionFilter;
 import edu.lu.uni.serval.gumtree.regroup.HierarchicalActionSet;
+import edu.lu.uni.serval.gumtree.regroup.SimpleTree;
 import edu.lu.uni.serval.gumtree.regroup.Traveler;
 
 public class App {
@@ -34,18 +38,29 @@ public class App {
 		 * 2. AST node sequence: AST node1 --> AST node2 --> AST node3 ...
 		 * 3. Pure raw token Source code Tree --> Semi-abstract/pseudo-code tree --> Pure AST node type tree.
 		 * 4. Modified/Changed Expressions.
+		 * 
+		 * Ignore the modification of StringLiteral, CharacterLiteral, and serial number
+		 * Abstract ITree: 
+		 * 		Iterate the tree, identify the label is final node or not.
+		 * 		UPD node, but this node is not final node and without sub actions. ignore it .
 		 */
 		String testDataPath = "Dataset/commons-io/";
 		File revisedFileFolder = new File(testDataPath + "revFiles/");
 		File[] revisedFiles = revisedFileFolder.listFiles();
 		
+		FileHelper.deleteDirectory("OUTPUT/GumTreeResults_Exp/");
+		FileHelper.deleteDirectory("OUTPUT/GumTreeResults_Exp_ASTNode/");
+		FileHelper.deleteDirectory("OUTPUT/GumTreeResults_Exp_RawCode/");
+		
 		System.out.println(revisedFiles.length);
+		int a = 0, b = 0, c= 0;
 		for (File revisedFile : revisedFiles) {
 			if (revisedFile.toString().endsWith(".java")) {
 				String revisedFileName = revisedFile.getName();
 				File previousFile = new File(testDataPath + "prevFiles/prev_" + revisedFileName);
 				
 				List<HierarchicalActionSet> gumTreeResults = new GumTreeComparer().compareTwoFilesWithGumTree(previousFile, revisedFile);
+				if (gumTreeResults.size() > 0) a ++;
 				// Filter out modified actions of changing method names, method parameters, variable names and field names in declaration part.
 				gumTreeResults = new ActionFilter().filterOutUselessActions(gumTreeResults);
 				
@@ -62,7 +77,10 @@ public class App {
 		            CompilationUnit prevUnit = cuCreator.createCompilationUnit(previousFile);
 		            CompilationUnit revUnit = cuCreator.createCompilationUnit(revisedFile);
 		            
+		            Map<String, List<HierarchicalActionSet>> actionSetMap = new HashMap<>(); // String: statement type. 
+		            b ++;
 		            for (HierarchicalActionSet gumTreeResult : gumTreeResults) {
+		            	c ++;
 		            	// set line numbers
 		            	String actionStr = gumTreeResult.getActionString();
 		            	CompilationUnit unit;
@@ -77,11 +95,13 @@ public class App {
 		            	
 	            		// convert the ITree of buggy code to a simple tree.
 	            		Traveler.abstractBuggyTree(gumTreeResult);
+	            		SimpleTree simpleTree = gumTreeResult.getSimpleTree();
+	            		SimpleTree abstractSimpleTree = gumTreeResult.getAbstractSimpleTree();
 	            		
+	            		// output Regrouped GumTree results
 	            		builder.append("@@ " + gumTreeResult.getStartLineNum() + " -- " + gumTreeResult.getEndLineNum() + "\n");
-		            	builder.append(gumTreeResult.getRawTokenTree().toString() + "\n");
-		            	builder.append(gumTreeResult.getSimpleTree().toString() + "\n");
-		            	builder.append(gumTreeResult.getAstNodeTree().toString() + "\n");
+		            	builder.append((simpleTree == null ? "null" : simpleTree.toString()) + "\n");
+		            	builder.append((abstractSimpleTree == null ?"null" : abstractSimpleTree.toString())+ "\n");
 		            	builder.append(gumTreeResult + "\n");
 		            	
 		            	astNodeBuilder.append(gumTreeResult.toASTNodeLevelAction() + "\n");
@@ -94,6 +114,15 @@ public class App {
 		            	astNodeBuilder.append("\n");
 		            	
 		            	rawCodeBuilder.append(gumTreeResult.toRawCodeLevelAction() + "\n");
+		            	
+		            	
+		            	// classify action by statement
+		            	String stmtType = readStatementType(gumTreeResult.getActionString());
+		            	addToMap(stmtType, gumTreeResult, actionSetMap);
+		            	
+		            	// classify action by the modified part of statements.
+		            	
+		            	// Expression types
 		            }
 		            
 		            FileHelper.outputToFile("OUTPUT/GumTreeResults_Exp/" + revisedFileName.replace(".java", ".txt"), builder, false);
@@ -102,6 +131,27 @@ public class App {
 				}
 			}
 		}
+		
+		System.out.println(a);
+		System.out.println(b);
+		System.out.println(c);
 	}
-	
+
+	private static void addToMap(String stmtType, HierarchicalActionSet gumTreeResult,
+			Map<String, List<HierarchicalActionSet>> actionSetMap) {
+		if (actionSetMap.containsKey(stmtType)) {
+			actionSetMap.get(stmtType).add(gumTreeResult);
+		} else {
+			List<HierarchicalActionSet> actionSets = new ArrayList<>();
+			actionSets.add(gumTreeResult);
+			actionSetMap.put(stmtType, actionSets);
+		}
+	}
+
+	private static String readStatementType(String actionString) {
+		String stmtType = actionString.substring(0, actionString.indexOf("@@"));
+		stmtType = stmtType.substring(stmtType.indexOf(" ")  + 1);
+		return stmtType;
+	}
+
 }

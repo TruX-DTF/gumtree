@@ -26,42 +26,43 @@ public class ActionFilter {
 
 	private List<HierarchicalActionSet> findoutUselessActionSets(List<HierarchicalActionSet> actionSets, boolean isRoot) {
 		List<HierarchicalActionSet> uselessActions = new ArrayList<>();
-		boolean breakFor = false;
 		
-		for (HierarchicalActionSet actionSet : actionSets) {
-			if (!isRoot) {
-				String actionStr = actionSet.getActionString();
-				if (actionStr.startsWith("UPD MethodInvocation")) {
-					String label = actionSet.getAction().getNode().getLabel();
-					for (String methodName : methodNames) {
-						if (actionSet.getActionString().startsWith("UPD MethodInvocation@@" + methodName + "(") 
-								|| label.contains("." + methodName + "(")) {
-							addToUselessActions(actionSet, uselessActions);
-							breakFor = true;
-							break;
+		FindActionSet: {
+			for (HierarchicalActionSet actionSet : actionSets) {
+				if (!isRoot) {
+					String actionStr = actionSet.getActionString();
+					if (actionStr.startsWith("UPD MethodInvocation") || actionStr.startsWith("INS MethodInvocation") || actionStr.startsWith("DEL MethodInvocation")) {
+						String label = actionSet.getAction().getNode().getLabel();
+						for (String methodName : methodNames) {
+							if (actionSet.getActionString().startsWith("UPD MethodInvocation@@" + methodName + "(")
+									|| actionSet.getActionString().startsWith("INS MethodInvocation@@" + methodName + "(")
+									|| actionSet.getActionString().startsWith("DEL MethodInvocation@@" + methodName + "(")
+									|| label.contains("." + methodName + "(")) {
+								addToUselessActions(actionSet, uselessActions);
+								break FindActionSet;
+							}
+						}
+					} else if (actionStr.startsWith("UPD SimpleName") || actionStr.startsWith("INS SimpleName") || actionStr.startsWith("DEL SimpleName")) {
+						String label = actionSet.getAction().getNode().getLabel();
+						for (String variableName : variableNames) {
+							if (label.equals(variableName) || label.equals("Name:" + variableName)) {
+								addToUselessActions(actionSet, uselessActions);
+								break FindActionSet;
+							}
 						}
 					}
-				} else if (actionStr.startsWith("UPD SimpleName")) {
-					String label = actionSet.getAction().getNode().getLabel();
-					for (String variableName : variableNames) {
-						if (label.equals(variableName)) {
-							addToUselessActions(actionSet, uselessActions);
-							breakFor = true;
-							break;
-						}
+					
+					List<HierarchicalActionSet> uselessActionSets = findoutUselessActionSets(actionSet.getSubActions(), false);
+					if (uselessActionSets.size() > 0) {
+						uselessActions.addAll(uselessActionSets);
+						break;
 					}
-				}
-				if (breakFor) break;
-				
-				List<HierarchicalActionSet> uselessActionSets = findoutUselessActionSets(actionSet.getSubActions(), false);
-				if (uselessActionSets.size() > 0) {
-					uselessActions.addAll(uselessActionSets);
-					break;
-				}
-			} else {
-				uselessActions.addAll(findoutUselessActionSets(actionSet.getSubActions(), false));
+				} else {
+					uselessActions.addAll(findoutUselessActionSets(actionSet.getSubActions(), false));
+                }
 			}
 		}
+		
 		return uselessActions;
 	}
 
@@ -85,37 +86,41 @@ public class ActionFilter {
 		
 		for (HierarchicalActionSet actionSet : actionSets) {
 			String actionType = actionSet.getAstNodeType();
-			if (actionType.equals("MethodDeclaration")) {
-				uselessActions.add(actionSet); // INS, MOV, DEL: useful?, UPD, except the modifier actions
+			if (actionType.equals("MethodDeclaration") && !actionSet.getActionString().startsWith("MOV ")) {
+				addToUselessActions(actionSet, uselessActions);// INS, DEL: useful?, UPD, except the modifier actions
 				String label = actionSet.getNode().getLabel();
 				String methodName = label.substring(label.indexOf("MethodName:"));
 				methodName = methodName.substring(11, methodName.indexOf(","));
 				methodNames.add(methodName); // "MethodName:***"
 				
-				// Update parameters.
-				if (actionSet.getActionString().startsWith("UPD ")) {
-					List<HierarchicalActionSet> subActionSets = actionSet.getSubActions();
-					if (subActionSets.size() > 0) {
-						for (HierarchicalActionSet subActionSet : subActionSets) {
-							if (subActionSet.getActionString().startsWith("UPD SingleVariableDeclaration")) {
-								List<HierarchicalActionSet> subActionSets2 = subActionSet.getSubActions(); // <Type, identifier>
-								HierarchicalActionSet actSet = subActionSets2.get(subActionSets2.size() - 1);
-								if (actSet.getActionString().startsWith("UPD SimpleName")) {
-									String variableName = actSet.getNode().getLabel();
-									variableNames.add(variableName); // "SimpleName:" + variableName TODO: effect range
-								}
+				// UPD, DEL, INS parameters.
+				List<HierarchicalActionSet> subActionSets = actionSet.getSubActions();
+				for (HierarchicalActionSet subActionSet : subActionSets) {
+					if (subActionSet.getAstNodeType().equals("SingleVariableDeclaration")) {
+						List<HierarchicalActionSet> subActionSets2 = subActionSet.getSubActions(); // <Type, identifier>
+						if (subActionSets2.size() == 0) {
+							String actSetStr = subActionSet.getActionString();
+							actSetStr = actSetStr.substring(actSetStr.indexOf("@@"), actSetStr.indexOf("@TO@")).trim();
+							String variableName = actSetStr.substring(actSetStr.lastIndexOf(" "));
+							variableNames.add(variableName); // "SimpleName:" + variableName TODO: effect range
+						} else {
+							HierarchicalActionSet actSet = subActionSets2.get(subActionSets2.size() - 1);
+							String actStr = actSet.getActionString();
+							if (actStr.startsWith("UPD SimpleName") || actStr.startsWith("INS SimpleName") || actStr.startsWith("DEL SimpleName")) {
+								String variableName = actSet.getNode().getLabel();
+								variableNames.add(variableName); // "SimpleName:" + variableName TODO: effect range
 							}
 						}
 					}
 				}
 			} else if (actionType.equals("FieldDeclaration") || actionType.equals("VariableDeclarationStatement")) { 
 				// UPD VariableDeclarationFragment
-				if (actionSet.getActionString().startsWith("UPD ")) {
+				if (!actionSet.getActionString().startsWith("MOV ")) {
 					List<HierarchicalActionSet> subActionSets = actionSet.getSubActions();
 					if (subActionSets.size() > 0) {
 						for (HierarchicalActionSet subActionSet : subActionSets) { // VariableDeclarationFragments
-							if (identifyUpdateVDF(subActionSet) && !uselessActions.contains(actionSet)) {
-								uselessActions.add(actionSet);
+							if (identifyUpdateVDF(subActionSet)) {
+								addToUselessActions(actionSet, uselessActions);
 							}
 						}
 					}
@@ -128,8 +133,8 @@ public class ActionFilter {
 							if (subActionSet.getActionString().startsWith("UPD VariableDeclarationExpression")) {
 								List<HierarchicalActionSet> subActionSets2 = subActionSet.getSubActions(); // VariableDeclarationFragments
 								for (HierarchicalActionSet subActionSet2 : subActionSets2) {
-									if (identifyUpdateVDF(subActionSet2) && !uselessActions.contains(actionSet)) {
-										uselessActions.add(actionSet);
+									if (identifyUpdateVDF(subActionSet2)) {
+										addToUselessActions(actionSet, uselessActions);
 									}
 								}
 							} else {
@@ -139,7 +144,7 @@ public class ActionFilter {
 					}
 				}
 			} else if (actionType.equals("EnhancedForStatement")) { // SingleVariableDeclaration
-				if (actionSet.getActionString().startsWith("UPD ")) {
+				if (!actionSet.getActionString().startsWith("MOV ")) {
 					List<HierarchicalActionSet> subActionSets = actionSet.getSubActions();
 					if (subActionSets.size() > 0) {
 						HierarchicalActionSet subActionSet = subActionSets.get(0);
@@ -149,16 +154,42 @@ public class ActionFilter {
 								if (subActionSet2.getActionString().startsWith("UPD SimpleName")) {
 									String variableName = subActionSet2.getNode().getLabel();
 									variableNames.add(variableName); // "SimpleName:" + variableName TODO: effect range
-									if (!uselessActions.contains(actionSet)) {
-										uselessActions.add(actionSet);
-									}
-									break;
+									addToUselessActions(actionSet, uselessActions);
 								}
 							}
 						}
 					}
 				}
-				// TODO: SingleVariableDeclaration: catch clause. lambda expression
+			} else if (actionType.equals("SingleVariableDeclaration")) {
+				if (!actionSet.getActionString().startsWith("MOV ")) {
+					List<HierarchicalActionSet> subActionSets2 = actionSet.getSubActions(); // <Type, identifier>
+					if (subActionSets2.size() == 0) {
+						String actSetStr = actionSet.getActionString();
+						actSetStr = actSetStr.substring(actSetStr.indexOf("@@"), actSetStr.indexOf("@TO@")).trim();
+						String variableName = actSetStr.substring(actSetStr.lastIndexOf(" "));
+						variableNames.add(variableName); // "SimpleName:" + variableName TODO: effect range
+						addToUselessActions(actionSet, uselessActions);
+					} else {
+						HierarchicalActionSet actSet = subActionSets2.get(subActionSets2.size() - 1);
+						String actStr = actSet.getActionString();
+						if (actStr.startsWith("UPD SimpleName") || actStr.startsWith("INS SimpleName") || actStr.startsWith("DEL SimpleName")) {
+							String variableName = actSet.getNode().getLabel();
+							variableNames.add(variableName); // "SimpleName:" + variableName TODO: effect range
+							addToUselessActions(actionSet, uselessActions);
+						}
+					}
+				}
+			}  else {
+				if (actionSet.getParent() != null) {
+					while (actionSet.getParent() != null) {
+						actionSet = actionSet.getParent();
+					}
+					if (uselessActions.contains(actionSet)) {
+						return uselessActions;
+					} else {
+						uselessActions.addAll(findoutUselessActions(actionSet.getSubActions()));
+					}
+				}
 			}
 		}
 		return uselessActions;
@@ -171,14 +202,18 @@ public class ActionFilter {
 	 * @param actionSet
 	 */
 	private boolean identifyUpdateVDF(HierarchicalActionSet actionSet) {
-		if (actionSet.getActionString().startsWith("UPD VariableDeclarationFragment")) {
+		String actStr = actionSet.getActionString();
+		if (actStr.startsWith("UPD VariableDeclarationFragment")
+				|| actStr.startsWith("INS VariableDeclarationFragment")
+				|| actStr.startsWith("DEL VariableDeclarationFragment")) {
 			List<HierarchicalActionSet> subActionSets = actionSet.getSubActions();
 			if (subActionSets == null || subActionSets.size() == 0) {
 				// modification of Dimension
 				return true;
 			}
 			HierarchicalActionSet actSet = subActionSets.get(0);
-			if (actSet.getActionString().startsWith("UPD SimpleName")) {
+			String actSetStr = actSet.getActionString();
+			if (actSetStr.startsWith("UPD SimpleName") || actSetStr.startsWith("INS SimpleName") || actSetStr.startsWith("DEL SimpleName")) {
 				String variableName = actSet.getNode().getLabel();
 				variableNames.add(variableName); // "SimpleName:" + variableName TODO: effect range
 				return true;
