@@ -745,7 +745,9 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
 
     @Override
     public boolean visit(TypeDeclaration node) {
-        return true;
+    	List<?> body = node.bodyDeclarations();
+    	visitList(body);
+        return false;
     }
 
     @Override
@@ -874,6 +876,8 @@ public class RawTokenJdtVisitor  extends AbstractRawTokenJdtVisitor {
     ////***************Statements*************************
     @Override
     public boolean visit(CatchClause node) {
+    	SingleVariableDeclaration exc = node.getException();
+    	exc.accept(this);
     	visitBody(node.getBody());
         return false;
     }

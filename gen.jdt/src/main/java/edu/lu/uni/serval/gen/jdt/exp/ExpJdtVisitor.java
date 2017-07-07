@@ -614,7 +614,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     @Override
     public boolean visit(TypeDeclaration node) {
     	pushNode(node, node.getName().toString());
-        return true;
+    	List<?> body = node.bodyDeclarations();
+    	visitList(body);
+        return false;
     }
 
     @Override
@@ -799,6 +801,8 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     @Override
     public boolean visit(CatchClause node) {
         pushNode(node, node.getException().toString());
+        SingleVariableDeclaration exc = node.getException();
+        exc.accept(this);
         visitBody(node.getBody());
         return false;
     }
