@@ -142,50 +142,36 @@ public class Traveler {
 	 * @param gumTreeResult
 	 */
 	public static void abstractBuggyTree(HierarchicalActionSet gumTreeResult) {
-		ITree tree = gumTreeResult.getNode();
-		SimpleTree simpleTree = abstractBuggyTree(gumTreeResult, tree, null);
-		SimpleTree rawTokenTree = abstractRawTokenBuggyTree(gumTreeResult, tree, null);
-		SimpleTree astNodeTree = abstractASTNodeBuggyTree(gumTreeResult, tree, null);
+		SimpleTree abstractSimpleTree = abstractBuggyTree(gumTreeResult, null, null);
+		SimpleTree simpleTree = buggyTree(gumTreeResult, null, null);
 		
+		gumTreeResult.setAbstractSimpleTree(abstractSimpleTree);
 		gumTreeResult.setSimpleTree(simpleTree);
-		gumTreeResult.setRawTokenTree(rawTokenTree);
-		gumTreeResult.setAstNodeTree(astNodeTree);
 	}
 	
-	private static SimpleTree abstractASTNodeBuggyTree(HierarchicalActionSet gumTreeResult, ITree tree, SimpleTree parent) {
-		SimpleTree simpleTree = new SimpleTree();
-
-		String astNode = ASTNodeMap.map.get(tree.getType());
-		simpleTree.setLabel(astNode);
-
-		List<ITree> children = tree.getChildren();
-		if (children.size() > 0) {
-			List<SimpleTree> subTrees = new ArrayList<>();
-			for (ITree child : children) {
-				subTrees.add(abstractASTNodeBuggyTree(gumTreeResult, child, simpleTree));
-			}
-			simpleTree.setChildren(subTrees);
-		}
-		
-		simpleTree.setParent(parent);
-		return simpleTree;
-	}
-
-	private static SimpleTree abstractRawTokenBuggyTree(HierarchicalActionSet gumTreeResult, ITree tree,
+	private static SimpleTree buggyTree(HierarchicalActionSet actionSet, ITree tree,
 			SimpleTree parent) {
+		if (parent == null){
+			actionSet = buggyTreeAction(actionSet);
+			if (actionSet == null) {
+				return null;
+			}
+			tree = actionSet.getNode();
+		}
 		SimpleTree simpleTree = new SimpleTree();
 
 		String label = tree.getLabel();
 		String astNode = ASTNodeMap.map.get(tree.getType());
 
+		simpleTree.setNodeType(astNode);
 		List<ITree> children = tree.getChildren();
 		if (children.size() > 0) {
 			List<SimpleTree> subTrees = new ArrayList<>();
 			for (ITree child : children) {
-				subTrees.add(abstractRawTokenBuggyTree(gumTreeResult, child, simpleTree));
+				subTrees.add(buggyTree(actionSet, child, simpleTree));
 			}
 			simpleTree.setChildren(subTrees);
-			simpleTree.setLabel(astNode);
+			simpleTree.setLabel(astNode); // TODO label or astNode
 		} else {
 			simpleTree.setLabel(label);
 		}
@@ -194,92 +180,142 @@ public class Traveler {
 		return simpleTree;
 	}
 
-	private static SimpleTree abstractBuggyTree(HierarchicalActionSet gumTreeResult, ITree tree, SimpleTree parent) {
+	private static SimpleTree abstractBuggyTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
+		if (parent == null){
+			actionSet = buggyTreeAction(actionSet);
+			if (actionSet == null) {
+				return null;
+			}
+			tree = actionSet.getNode();
+		}
+		
 		SimpleTree simpleTree = new SimpleTree();
-		// breadth first travel
+		simpleTree.setParent(parent);
+		// deep first
+		abstractBuggyTreeDeepFirst(actionSet, tree, simpleTree);
 		
+		return simpleTree;
+	}
+
+	private static HierarchicalActionSet buggyTreeAction(HierarchicalActionSet actionSet) {
+		if (actionSet.getActionString().startsWith("INS")) {
+			List<HierarchicalActionSet> subActions = actionSet.getSubActions();
+			HierarchicalActionSet subActionSet = null;
+			SubAction: {
+				while (subActions.size() > 0) { // find the non-INSERT action in a bread-first traveling way.
+					List<HierarchicalActionSet> subActions2 = new ArrayList<>();
+					for (HierarchicalActionSet subAction : subActions) {
+						if (!subAction.getActionString().startsWith("INS")) {
+							subActionSet = subAction; // FIXME: e.g. add a TryStatement as the parent of multiple statements.
+							break SubAction;
+						}
+						subActions2.addAll(subAction.getSubActions());
+					}
+					subActions.clear();
+					subActions.addAll(subActions2);
+				}
+			}
+			
+			if (subActionSet == null) {
+				return null;
+			} else {
+				actionSet = subActionSet;
+			}
+		}
 		
-		// deep first travel
-		int position = tree.getPos();
-		HierarchicalActionSet modifyAction = findHierarchicalActionSet(position, gumTreeResult);
-		// Change of Statement Type
-		// Change of Statement element
-		// Change of expression
-		// INS actions TODO
+		// FIXME: pure INS action
+		return actionSet;
+	}
+
+	private static void abstractBuggyTreeDeepFirst(HierarchicalActionSet actionSet, ITree tree, SimpleTree simpleTree) {
+		List<ITree> children = tree.getChildren();
+		List<SimpleTree> simpleChildren = new ArrayList<>();
+		if (children != null) {
+			for (ITree child : children) {
+				simpleChildren.add(abstractBuggyTree(actionSet, child, simpleTree));
+			}
+		}
+		simpleTree.setChildren(simpleChildren);
+		
+		HierarchicalActionSet modifyAction = findHierarchicalActionSet(tree.getPos(), tree.getLength(), actionSet);
 
 		String label = tree.getLabel();
 		String astNode = ASTNodeMap.map.get(tree.getType());
-		simpleTree.setParent(parent);
-		
-		
+
 		if (modifyAction == null || !modifyAction.getActionString().contains("@@" + label)) {
-			if (astNode.endsWith("Type")) {
+			if (astNode.endsWith("Type")) { // <Type, ?>
+				simpleTree.setNodeType("Type");
+				// simpleTree.setLabel("?");
 				if (astNode.equals("WildcardType")) {
 					simpleTree.setLabel("?");
 				} else {
-// ArrayType, PrimitiveType, SimpleType, ParameterizedType, QualifiedType, WildcardType, UnionType,NameQualifiedType, IntersectionType
+					// ArrayType, PrimitiveType, SimpleType, ParameterizedType,
+					// QualifiedType, WildcardType, UnionType,NameQualifiedType,
+					// IntersectionType
 					simpleTree.setLabel(astNode + "@@" + label);
 				}
 			} else if (astNode.endsWith("Name")) {
 				// variableName, methodName, QualifiedName
-				if (label.startsWith("MethodName:")) {
+				if (label.startsWith("MethodName:")) { // <Method, name>
 					label = label.substring(11);
+					simpleTree.setNodeType("Method");
 					simpleTree.setLabel(label);
 				} else if (label.startsWith("Name:")) {
 					label = label.substring(5);
 					String firstChar = label.substring(0, 1);
 					if (firstChar.equals(firstChar.toUpperCase())) {
-						simpleTree.setLabel(label);
-					} else {// variableName
+						simpleTree.setNodeType("Name");
+						simpleTree.setLabel(label); // <Name, name>
+					} else {// variableName: <Variable, var>
+						simpleTree.setNodeType("Variable");
 						simpleTree.setLabel("var");
 					}
-				} else {// variableName
+				} else {// variableName: <Variable, var>
+					simpleTree.setNodeType("Variable");
 					simpleTree.setLabel("var");
 				}
-			} else if (astNode.equals("BooleanLiteral")) {
+			} else if (astNode.equals("BooleanLiteral")) { // Literal TODO
+				simpleTree.setNodeType(astNode);
 				simpleTree.setLabel(label);
 			} else if (astNode.equals("CharacterLiteral")) {
-				simpleTree.setLabel("chConstant");
+				simpleTree.setNodeType(astNode);
+				simpleTree.setLabel(label);
 			} else if (astNode.equals("NullLiteral")) {
+				simpleTree.setNodeType(astNode);
 				simpleTree.setLabel("null");
 			} else if (astNode.equals("NumberLiteral")) {
-				simpleTree.setLabel("numConstant");
+				simpleTree.setNodeType(astNode);
+				simpleTree.setLabel(label); //"numConstant"
 			} else if (astNode.equals("StringLiteral")) {
-				simpleTree.setLabel("strConstant");
+				simpleTree.setNodeType(astNode);
+				simpleTree.setLabel(label);
 			} else {
-				// SingleVariableDeclaration, VariableDeclarationFragment
-				// CatchClause, BreakStatement+label,ContinueStatement+label,
-				// element or expressions
 				if (astNode.equals("ThisExpression")) {
+					simpleTree.setNodeType(astNode);
 					simpleTree.setLabel("this");
 				} else if (astNode.equals("Modifier") || astNode.equals("Operator")) {
+					simpleTree.setNodeType(astNode);
 					simpleTree.setLabel(label);
-				} else
-				if (isExpressionType(astNode)) {
+				} else if (isExpressionType(astNode)) {
+					simpleTree.setNodeType("Expression");
 					simpleTree.setLabel("EXP");
-				} else {
-					simpleTree.setLabel(astNode);
+				} else { // other parts or elements are not abstracted.
+					simpleTree.setNodeType(astNode);
+					simpleTree.setLabel("");
 				}
 			}
 		} else {
-			simpleTree.setLabel(astNode + "@@" + label);
-			simpleTree.setParent(parent);
-
-			List<ITree> children = tree.getChildren();
+			simpleTree.setNodeType(astNode);
 			if (children.size() > 0) {
-				List<SimpleTree> subTrees = new ArrayList<>();
-				for (ITree child : children) {
-					subTrees.add(abstractBuggyTree(gumTreeResult, child, simpleTree));
-				}
-				simpleTree.setChildren(subTrees);
+				simpleTree.setLabel(astNode);
+			} else {
+				simpleTree.setLabel(label);
 			}
 		}
-		
-		return simpleTree;
 	}
 
 	private static boolean isExpressionType(String astNode) {
-		if (astNode.equals("Annotation") || astNode.equals("ArrayAccess") || astNode.equals("ArrayCreation") ||
+		if (astNode.endsWith("Annotation") || astNode.equals("ArrayAccess") || astNode.equals("ArrayCreation") ||
 				astNode.equals("ArrayInitializer") || astNode.equals("Assignment") || astNode.equals("CastExpression") ||
 				astNode.equals("ClassInstanceCreation") || astNode.equals("ConditionalExpression") || astNode.equals("CreationReference") ||
 				astNode.equals("ExpressionMethodReference") || astNode.equals("FieldAccess") || astNode.equals("InfixExpression") ||
@@ -293,12 +329,15 @@ public class Traveler {
 		return false;
 	}
 
-	private static HierarchicalActionSet findHierarchicalActionSet(int position, HierarchicalActionSet gumTreeResult) {
-		if (gumTreeResult.getStartPosition() == position) {
-			return gumTreeResult;
+	private static HierarchicalActionSet findHierarchicalActionSet(int position, int length, HierarchicalActionSet actionSet) {
+		if (actionSet.getStartPosition() == position && actionSet.getLength() == length && !actionSet.getActionString().startsWith("INS")) {
+			return actionSet;
 		} else {
-			for (HierarchicalActionSet subActionSet : gumTreeResult.getSubActions()) {
-				return findHierarchicalActionSet(position, subActionSet);
+			for (HierarchicalActionSet subActionSet : actionSet.getSubActions()) {
+				HierarchicalActionSet actSet = findHierarchicalActionSet(position, length, subActionSet);
+				if (actSet != null) {
+					return actSet;
+				}
 			}
 		}
 		return null;

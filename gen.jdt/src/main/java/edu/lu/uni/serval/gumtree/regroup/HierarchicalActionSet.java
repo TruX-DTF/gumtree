@@ -26,9 +26,8 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	private List<HierarchicalActionSet>	subActions = new ArrayList<>();
 	
 	private ITree node;
+	private SimpleTree abstractSimpleTree;
 	private SimpleTree simpleTree;
-	private SimpleTree rawTokenTree;
-	private SimpleTree astNodeTree;
 
 	public ITree getNode() {
 		return node;
@@ -120,28 +119,20 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 		this.subActions = subActions;
 	}
 
+	public SimpleTree getAbstractSimpleTree() {
+		return abstractSimpleTree;
+	}
+
+	public void setAbstractSimpleTree(SimpleTree simpleTree) {
+		this.abstractSimpleTree = simpleTree;
+	}
+
 	public SimpleTree getSimpleTree() {
 		return simpleTree;
 	}
 
-	public void setSimpleTree(SimpleTree simpleTree) {
-		this.simpleTree = simpleTree;
-	}
-
-	public SimpleTree getRawTokenTree() {
-		return rawTokenTree;
-	}
-
-	public void setRawTokenTree(SimpleTree rawTokenTree) {
-		this.rawTokenTree = rawTokenTree;
-	}
-
-	public SimpleTree getAstNodeTree() {
-		return astNodeTree;
-	}
-
-	public void setAstNodeTree(SimpleTree astNodeTree) {
-		this.astNodeTree = astNodeTree;
+	public void setSimpleTree(SimpleTree rawTokenTree) {
+		this.simpleTree = rawTokenTree;
 	}
 
 	@Override
@@ -153,13 +144,15 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 
 	@Override
 	public String toString() {
-		String str = actionString;//parseAction(action.toString());
-		strList.add(str);
-		for (HierarchicalActionSet actionSet : subActions) {
-			actionSet.toString();
-			List<String> strList1 = actionSet.strList;
-			for (String str1 : strList1) {
-				strList.add("----" + str1);
+		String str = actionString;
+		if (strList.size() == 0) {
+			strList.add(str);
+			for (HierarchicalActionSet actionSet : subActions) {
+				actionSet.toString();
+				List<String> strList1 = actionSet.strList;
+				for (String str1 : strList1) {
+					strList.add("----" + str1);
+				}
 			}
 		}
 		
@@ -172,8 +165,9 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	}
 	
 	public String toASTNodeLevelAction() {
-//		strList.clear();
-//		toString();
+		if (strList.size() == 0) {
+			toString();
+		}
 		String astNodeStr = "";
 		for (String str : strList) {
 			astNodeStr += str.substring(0, str.indexOf("@@")) + "\n";
@@ -182,8 +176,9 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	}
 	
 	public String toRawCodeLevelAction() {
-//		strList.clear();
-//		toString();
+		if (strList.size() == 0) {
+			toString();
+		}
 		String astNodeStr = "";
 		for (String str : strList) {
 			str = str.substring(0, str.indexOf(" @AT@")) + "\n";
