@@ -15,10 +15,12 @@ public class ActionFilter {
 	 * @return
 	 */
 	public List<HierarchicalActionSet> filterOutUselessActions(List<HierarchicalActionSet> actionSets) {
+		// Filter out modifications of variable names and method names.
 		List<HierarchicalActionSet> uselessActions = findoutUselessActions(actionSets);
 		actionSets.removeAll(uselessActions);
 		uselessActions.clear();
 		
+		// Filter out non-UPD modifications, and modifications of variable names and method names.
 		uselessActions = findoutUselessActionSets(actionSets, true);
 		actionSets.removeAll(uselessActions);
 		return actionSets;
@@ -58,7 +60,11 @@ public class ActionFilter {
 						break;
 					}
 				} else {
-					uselessActions.addAll(findoutUselessActionSets(actionSet.getSubActions(), false));
+					if (!actionSet.getActionString().startsWith("UPD")) {// only UPD actions are selected.
+						uselessActions.add(actionSet);
+					} else {
+						uselessActions.addAll(findoutUselessActionSets(actionSet.getSubActions(), false));
+					}
                 }
 			}
 		}

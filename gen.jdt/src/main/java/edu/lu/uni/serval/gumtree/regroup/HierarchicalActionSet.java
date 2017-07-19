@@ -27,6 +27,7 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	
 	private ITree node;
 	private SimpleTree abstractSimpleTree;
+	private SimpleTree abstractIdentifierTree;
 	private SimpleTree simpleTree;
 
 	public ITree getNode() {
@@ -125,6 +126,14 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 
 	public void setAbstractSimpleTree(SimpleTree simpleTree) {
 		this.abstractSimpleTree = simpleTree;
+	}
+
+	public SimpleTree getAbstractIdentifierTree() {
+		return abstractIdentifierTree;
+	}
+
+	public void setAbstractIdentifierTree(SimpleTree abstractIdentifierTree) {
+		this.abstractIdentifierTree = abstractIdentifierTree;
 	}
 
 	public SimpleTree getSimpleTree() {

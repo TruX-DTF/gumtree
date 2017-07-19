@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +11,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import edu.lu.uni.serval.gumtree.utils.CUCreator;
 import edu.lu.uni.serval.gumtree.utils.FileHelper;
+import edu.lu.uni.serval.gumtree.regroup.SimplifyTree;
 import edu.lu.uni.serval.gumtree.regroup.ActionFilter;
 import edu.lu.uni.serval.gumtree.regroup.HierarchicalActionSet;
 import edu.lu.uni.serval.gumtree.regroup.SimpleTree;
@@ -36,13 +36,21 @@ public class App {
 		 * TODO list:
 		 * 1. Separate the modification by elements of Statements.
 		 * 2. AST node sequence: AST node1 --> AST node2 --> AST node3 ...
-		 * 3. Pure raw token Source code Tree --> Semi-abstract/pseudo-code tree --> Pure AST node type tree.
+		 * 3. Pure raw token Source code Tree --> Semi-abstract/pseudo-code tree --> Pure AST node type tree. (DONE)
 		 * 4. Modified/Changed Expressions.
 		 * 
-		 * Ignore the modification of StringLiteral, CharacterLiteral, and serial number
+		 * Ignore the modification of StringLiteral, CharacterLiteral, and serial number (DONE)
 		 * Abstract ITree: 
 		 * 		Iterate the tree, identify the label is final node or not.
 		 * 		UPD node, but this node is not final node and without sub actions. ignore it .
+		 * 
+		 * 
+		 * 
+		 * Reduce Interference for Deep Learning:  only UPD ACTIONS?
+		 * UPD ACTION: 1 line ==> FieldDeclaration, Statement ==> FieldDeclaration: element & expression, Statement: expression.
+		 * INS ACTION: if of try statement.
+		 * MOV ACTION:  
+		 * DEL ACTION:
 		 */
 		String testDataPath = "Dataset/commons-io/";
 		File revisedFileFolder = new File(testDataPath + "revFiles/");
@@ -77,7 +85,6 @@ public class App {
 		            CompilationUnit prevUnit = cuCreator.createCompilationUnit(previousFile);
 		            CompilationUnit revUnit = cuCreator.createCompilationUnit(revisedFile);
 		            
-		            Map<String, List<HierarchicalActionSet>> actionSetMap = new HashMap<>(); // String: statement type. 
 		            b ++;
 		            for (HierarchicalActionSet gumTreeResult : gumTreeResults) {
 		            	c ++;
@@ -90,13 +97,21 @@ public class App {
 		            		unit = prevUnit;
 		            	}
 	            		int position = gumTreeResult.getStartPosition();
-	            		gumTreeResult.setStartLineNum(unit.getLineNumber(position));
-	            		gumTreeResult.setEndLineNum(unit.getLineNumber(position + gumTreeResult.getLength()));
+	            		int startLineNum = unit.getLineNumber(position);
+	            		int endLineNum = unit.getLineNumber(position + gumTreeResult.getLength());
+	            		if (startLineNum != endLineNum) { // only single buggy line statements.
+	            			continue;
+	            		}
+	            		c ++;
+	            		gumTreeResult.setStartLineNum(startLineNum);
+	            		gumTreeResult.setEndLineNum(endLineNum);
 		            	
 	            		// convert the ITree of buggy code to a simple tree.
-	            		Traveler.abstractBuggyTree(gumTreeResult);
+	            		SimplifyTree abstractIdentifier = new SimplifyTree();
+	            		abstractIdentifier.abstractTree(gumTreeResult);
 	            		SimpleTree simpleTree = gumTreeResult.getSimpleTree();
 	            		SimpleTree abstractSimpleTree = gumTreeResult.getAbstractSimpleTree();
+	            		clearITree(gumTreeResult); 
 	            		
 	            		// output Regrouped GumTree results
 	            		builder.append("@@ " + gumTreeResult.getStartLineNum() + " -- " + gumTreeResult.getEndLineNum() + "\n");
@@ -115,14 +130,13 @@ public class App {
 		            	
 		            	rawCodeBuilder.append(gumTreeResult.toRawCodeLevelAction() + "\n");
 		            	
-		            	
-		            	// classify action by statement
-		            	String stmtType = readStatementType(gumTreeResult.getActionString());
-		            	addToMap(stmtType, gumTreeResult, actionSetMap);
-		            	
-		            	// classify action by the modified part of statements.
-		            	
-		            	// Expression types
+		            	// select edit scripts for deep learning.
+		            	// First level: AST node type.
+		            	String astEditScripts = getASTEditScripts(gumTreeResult);
+		            	System.out.println(astEditScripts);
+		            	// source code
+		            	// abstract identifiers
+		            	// semi-source code.
 		            }
 		            
 		            FileHelper.outputToFile("OUTPUT/GumTreeResults_Exp/" + revisedFileName.replace(".java", ".txt"), builder, false);
@@ -137,6 +151,51 @@ public class App {
 		System.out.println(c);
 	}
 
+	private static String getASTEditScripts(HierarchicalActionSet actionSet) {
+		String editScript = "";
+		
+		List<HierarchicalActionSet> actionSets = new ArrayList<>();
+		actionSets.add(actionSet);
+		while (actionSets.size() != 0) {
+			List<HierarchicalActionSet> subSets = new ArrayList<>();
+			for (HierarchicalActionSet set : actionSets) {
+				subSets.addAll(set.getSubActions());
+				String actionStr = set.getActionString();
+				int index = actionStr.indexOf("@@");
+				String singleEdit = actionStr.substring(0, index).replace(" ", "");
+				if (singleEdit.endsWith("SimpleName")) {
+					actionStr = actionStr.substring(index + 2);
+					if (actionStr.startsWith("MethodName")) {
+						singleEdit = singleEdit.replace("SimpleName", "MethodName");
+					} else {
+						if (actionStr.startsWith("Name")) {
+							actionStr = actionStr.substring(5, 6);
+							if (!actionStr.equals(actionStr.toLowerCase())) {
+								singleEdit = singleEdit.replace("SimpleName", "Name");
+							} else {
+								singleEdit = singleEdit.replace("SimpleName", "Variable");
+							}
+						} else {
+							singleEdit = singleEdit.replace("SimpleName", "Variable");
+						}
+					}
+				}
+				editScript += singleEdit + " ";
+			}
+			actionSets.clear();
+			actionSets.addAll(subSets);
+		}
+		return editScript;
+	}
+
+	private static void clearITree(HierarchicalActionSet actionSet) {
+		actionSet.getAction().setNode(null);
+		for (HierarchicalActionSet subActionSet : actionSet.getSubActions()) {
+			clearITree(subActionSet);
+		}
+	}
+
+	@SuppressWarnings("unused")
 	private static void addToMap(String stmtType, HierarchicalActionSet gumTreeResult,
 			Map<String, List<HierarchicalActionSet>> actionSetMap) {
 		if (actionSetMap.containsKey(stmtType)) {
@@ -148,6 +207,7 @@ public class App {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static String readStatementType(String actionString) {
 		String stmtType = actionString.substring(0, actionString.indexOf("@@"));
 		stmtType = stmtType.substring(stmtType.indexOf(" ")  + 1);
