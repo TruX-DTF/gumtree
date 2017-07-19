@@ -18,13 +18,13 @@ import edu.lu.uni.serval.gumtree.utils.FileHelper;
 public class Inputer {
 	
 	public static void inputData() throws FileNotFoundException, IOException {
-		String inputPath = "../OUTPUT/"; //DiffEntries  prevFiles  revFiles
+		String inputPath = "../../OUTPUT/"; //DiffEntries  prevFiles  revFiles
 		File inputFileDirector = new File(inputPath);
 		File[] files = inputFileDirector.listFiles();   // project folders
 		
-		FileHelper.deleteDirectory("../GumTreeResults/Exp/");
-		FileHelper.deleteDirectory("../GumTreeResults/Exp_ASTNode/");
-		FileHelper.deleteDirectory("../GumTreeResults/Exp_RawCode/");
+		FileHelper.deleteDirectory("../../GumTreeResults/Exp/");
+		FileHelper.deleteDirectory("../../GumTreeResults/Exp_ASTNode/");
+		FileHelper.deleteDirectory("../../GumTreeResults/Exp_RawCode/");
 		
 		StringBuilder astEditScriptsBuilder = new StringBuilder();
 		int counter = 0;
@@ -86,7 +86,7 @@ public class Inputer {
 			            	astEditScriptsBuilder.append(astEditScripts + "\n");
 			            	counter ++;
 			            	if (counter % 100000 == 0) {
-			            		FileHelper.outputToFile("../GumTreeResults/Exp_ASTNode/EditScripts.list", astEditScriptsBuilder, true);
+			            		FileHelper.outputToFile("../../GumTreeResults/Exp_ASTNode/EditScripts.list", astEditScriptsBuilder, true);
 			            		astEditScriptsBuilder.setLength(0);
 			            	}
 			            	// 2. source code TODO
@@ -99,7 +99,7 @@ public class Inputer {
 			}
 		}
 		
-		FileHelper.outputToFile("../GumTreeResults/Exp_ASTNode/EditScripts.list", astEditScriptsBuilder, true);
+		FileHelper.outputToFile("../../GumTreeResults/Exp_ASTNode/EditScripts.list", astEditScriptsBuilder, true);
 	}
 	
 	private static String getPatchSourceCode(String sourceCode, int startLineNum) {
