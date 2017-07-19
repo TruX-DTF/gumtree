@@ -18,7 +18,6 @@
 			<groupId>com.github.gumtreediff</groupId>
 			<artifactId>core</artifactId>
 			<version>2.0.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
