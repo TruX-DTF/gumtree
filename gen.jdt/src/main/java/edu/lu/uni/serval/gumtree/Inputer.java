@@ -37,7 +37,6 @@ public class Inputer {
 		FileHelper.deleteDirectory("../../GumTreeResults/Exp_RawCode/");
 		
 		StringBuilder astEditScriptsBuilder = new StringBuilder();
-		int counter = 0;
 		
 		for (File file : files) {
 			String projectFolder = file.getPath();
@@ -85,6 +84,9 @@ public class Inputer {
 		            		
 		            		// Source Code of patches.
 		            		String patchSourceCode = getPatchSourceCode(sourceCode, startLineNum);
+		            		if (patchSourceCode != null) {
+		            			
+		            		}
 		            		
 		            		// Simple tree of buggy code. TODO
 
@@ -94,11 +96,7 @@ public class Inputer {
 			            	// 1. First level: AST node type.
 			            	String astEditScripts = getASTEditScripts(gumTreeResult);
 			            	astEditScriptsBuilder.append(astEditScripts + "\n");
-			            	counter ++;
-			            	if (counter % 100000 == 0) {
-			            		FileHelper.outputToFile("../../GumTreeResults/Exp_ASTNode/EditScripts.list", astEditScriptsBuilder, true);
-			            		astEditScriptsBuilder.setLength(0);
-			            	}
+			            	
 			            	// 2. source code TODO
 			            	
 			            	// 3. abstract identifiers TODO
@@ -107,9 +105,11 @@ public class Inputer {
 					}
 				}
 			}
+			
+			FileHelper.outputToFile("../../GumTreeResults/Exp_ASTNode/EditScripts.list", astEditScriptsBuilder, true);
+			astEditScriptsBuilder.setLength(0);
 		}
 		
-		FileHelper.outputToFile("../../GumTreeResults/Exp_ASTNode/EditScripts.list", astEditScriptsBuilder, true);
 	}
 	
 	private static String getPatchSourceCode(String sourceCode, int startLineNum) {

@@ -295,8 +295,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			visitList(argumentsList);
 		}
 		for (Object obj : typeArguments) {
-			Type typeArgu = (Type) obj;
-			System.out.println("TypeArgument:" + typeArgu + "\n node: " + node.toString());
+			Type typeArgu = (Type) obj; // TypeArugment: Collections.<T>emptyList()
 			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
 			popNode();
 		}
