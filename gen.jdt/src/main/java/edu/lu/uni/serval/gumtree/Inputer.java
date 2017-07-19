@@ -17,6 +17,16 @@ import edu.lu.uni.serval.gumtree.utils.FileHelper;
 
 public class Inputer {
 	
+	public static void main(String[] args) {
+		try {
+			inputData();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void inputData() throws FileNotFoundException, IOException {
 		String inputPath = "../../OUTPUT/"; //DiffEntries  prevFiles  revFiles
 		File inputFileDirector = new File(inputPath);
