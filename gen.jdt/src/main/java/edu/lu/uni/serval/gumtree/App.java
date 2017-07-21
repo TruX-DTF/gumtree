@@ -9,13 +9,13 @@ import java.util.Map;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import edu.lu.uni.serval.gumtree.utils.CUCreator;
-import edu.lu.uni.serval.gumtree.utils.FileHelper;
 import edu.lu.uni.serval.gumtree.regroup.SimplifyTree;
 import edu.lu.uni.serval.gumtree.regroup.ActionFilter;
 import edu.lu.uni.serval.gumtree.regroup.HierarchicalActionSet;
 import edu.lu.uni.serval.gumtree.regroup.SimpleTree;
 import edu.lu.uni.serval.gumtree.regroup.Traveler;
+import edu.lu.uni.serval.gumtree.utils.CUCreator;
+import edu.lu.uni.serval.utils.FileHelper;
 
 public class App {
 

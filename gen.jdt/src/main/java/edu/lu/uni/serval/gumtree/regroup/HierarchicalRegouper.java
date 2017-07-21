@@ -8,7 +8,7 @@ import com.github.gumtreediff.actions.model.Addition;
 import com.github.gumtreediff.tree.ITree;
 
 import edu.lu.uni.serval.gumtree.utils.ASTNodeMap;
-import edu.lu.uni.serval.gumtree.utils.ListSorter;
+import edu.lu.uni.serval.utils.ListSorter;
 
 /**
  * Regroup GumTree results to a hierarchical construction.
