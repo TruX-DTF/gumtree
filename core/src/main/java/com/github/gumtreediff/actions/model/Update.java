@@ -25,10 +25,12 @@ import com.github.gumtreediff.tree.ITree;
 public class Update extends Action {
 
     private String value;
+    private ITree newNode;
 
-    public Update(ITree node, String value) {
+    public Update(ITree node, String value, ITree newNode) {
         super(node, node.getPos(), node.getLength());
         this.value = value;
+        this.newNode = newNode;
     }
 
     @Override
@@ -38,6 +40,10 @@ public class Update extends Action {
 
     public String getValue() {
         return this.value;
+    }
+    
+    public ITree getNewNode() {
+    	return this.newNode;
     }
 
     @Override

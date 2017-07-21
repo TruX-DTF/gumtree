@@ -802,7 +802,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         pushNode(node, node.getException().toString());
         SingleVariableDeclaration exc = node.getException();
         exc.accept(this);
-        visitBody(node.getBody());
+        Statement body = node.getBody();
+        if (body != null) {
+        	pushNode(body, "CatchBody");
+        	visitBody(body);
+        	popNode();
+        }
+//        visitBody(node.getBody());
         return false;
     }
 
@@ -846,7 +852,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
-        visitBody(node.getBody());
+        Statement body = node.getBody();
+        if (body != null) {
+        	pushNode(body, "DoBody");
+        	visitBody(body);
+        	popNode();
+        }
+//        visitBody(node.getBody());
         return false;
     }
 
@@ -866,7 +878,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         pushNode(node, parameter.toString() + ", " + exp.getClass().getSimpleName() + COLON + exp.toString());
         parameter.accept(this);
         exp.accept(this);
-        visitBody(node.getBody());
+        Statement body = node.getBody();
+        if (body != null) {
+        	pushNode(body, "EnForBody");
+        	visitBody(body);
+        	popNode();
+        }
+//        visitBody(node.getBody());
         return false;
     }
 
@@ -897,7 +915,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		}
 		visitList(update);
 		
-		visitBody(node.getBody());
+		Statement body = node.getBody();
+        if (body != null) {
+        	pushNode(body, "ForBody");
+        	visitBody(body);
+        	popNode();
+        }
+//        visitBody(node.getBody());
         return false;
     }
 
@@ -909,14 +933,14 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         exp.accept(this);
         Statement stmt = node.getThenStatement();
         if (stmt != null) {
-            pushNode(stmt, "ThenBlock");
+            pushNode(stmt, "ThenBody");
             visitBody(stmt);
             popNode();
         }
 
         stmt = node.getElseStatement();
         if (stmt != null) {
-            pushNode(stmt, "ElseBlock");
+            pushNode(stmt, "ElseBody");
             visitBody(stmt);
             popNode();
         }
@@ -926,7 +950,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     @Override
     public boolean visit(LabeledStatement node) {
         pushNode(node, node.getLabel().getFullyQualifiedName());
-        visitBody(node.getBody());
+        Statement body = node.getBody();
+        if (body != null) {
+        	pushNode(body, "LabelBody");
+        	visitBody(body);
+        	popNode();
+        }
+//        visitBody(node.getBody());
         return false;
     }
 
@@ -977,7 +1007,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
-        visitBody(node.getBody());
+        Statement body = node.getBody();
+        if (body != null) {
+        	pushNode(body, "SyncBody");
+        	visitBody(body);
+        	popNode();
+        }
+//        visitBody(node.getBody());
         return false;
     }
 
@@ -995,13 +1031,19 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	pushNode(node, "try:" + resources.toString());
 		visitList(resources);
 
-		visitBody(node.getBody());
+		Statement body = node.getBody();
+        if (body != null) {
+        	pushNode(body, "TryBody");
+        	visitBody(body);
+        	popNode();
+        }
+//        visitBody(node.getBody());
 
         visitList(node.catchClauses());
 
         Statement stmt = node.getFinally();
         if (stmt != null) {
-            pushNode(stmt, "Finally");
+            pushNode(stmt, "FinallyBody");
             visitBody(stmt);
             popNode();
         }
@@ -1025,7 +1067,14 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
-        visitBody(node.getBody());
+        
+        Statement body = node.getBody();
+        if (body != null) {
+        	pushNode(body, "WhileBody");
+        	visitBody(body);
+        	popNode();
+        }
+//        visitBody(node.getBody());
         return false;
     }
 

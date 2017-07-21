@@ -27,9 +27,17 @@ public class SimplifyTree {
 	 * @param gumTreeResult
 	 */
 	public void abstractTree(HierarchicalActionSet gumTreeResult) {
-		SimpleTree sourceCodeSimpleTree = sourceCodeTree(gumTreeResult, null, null);            // source code tree and AST node type tree
-		SimpleTree abstractIdentifierTree = abstractIdentifierTree(gumTreeResult, null, null);  // abstract identifier tree
-		SimpleTree abstractSimpleTree = semiSourceCodeTree(gumTreeResult, null, null);          // semi-source code tree. and AST node type tree
+		SimpleTree sourceCodeSimpleTree = null;
+		SimpleTree abstractIdentifierTree = null;
+		SimpleTree abstractSimpleTree =  null;
+		
+		gumTreeResult = buggyTreeAction(gumTreeResult);
+		if (gumTreeResult != null) {
+			ITree tree = gumTreeResult.getNode();
+			sourceCodeSimpleTree = sourceCodeTree(gumTreeResult, tree, null);            // source code tree and AST node type tree
+			abstractIdentifierTree = abstractIdentifierTree(gumTreeResult, tree, null);  // abstract identifier tree
+			abstractSimpleTree = semiSourceCodeTree(gumTreeResult, tree, null);          // semi-source code tree. and AST node type tree
+		}
 		
 		gumTreeResult.setAbstractSimpleTree(abstractSimpleTree);
 		gumTreeResult.setAbstractIdentifierTree(abstractIdentifierTree);
@@ -38,13 +46,6 @@ public class SimplifyTree {
 	
 	private SimpleTree sourceCodeTree(HierarchicalActionSet actionSet, ITree tree,
 			SimpleTree parent) {
-		if (parent == null){
-			actionSet = buggyTreeAction(actionSet);
-			if (actionSet == null) {
-				return null;
-			}
-			tree = actionSet.getNode();
-		}
 		SimpleTree simpleTree = new SimpleTree();
 
 		String label = tree.getLabel();
@@ -68,13 +69,6 @@ public class SimplifyTree {
 	}
 
 	private SimpleTree abstractIdentifierTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
-		if (parent == null){
-			actionSet = buggyTreeAction(actionSet);
-			if (actionSet == null) {
-				return null;
-			}
-			tree = actionSet.getNode();
-		}
 		SimpleTree simpleTree = new SimpleTree();
 
 		String label = tree.getLabel();
@@ -139,13 +133,6 @@ public class SimplifyTree {
 	}
 
 	private SimpleTree semiSourceCodeTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
-		if (parent == null){
-			actionSet = buggyTreeAction(actionSet);
-			if (actionSet == null) {
-				return null;
-			}
-			tree = actionSet.getNode();
-		}
 		SimpleTree simpleTree = new SimpleTree();
 		simpleTree.setParent(parent);
 		// deep first
@@ -215,13 +202,21 @@ public class SimplifyTree {
 
 	private HierarchicalActionSet buggyTreeAction(HierarchicalActionSet actionSet) {
 		if (actionSet.getActionString().startsWith("INS")) {
+//			String astNodeType = actionSet.getAstNodeType();
+//			if ("EnhancedForStatement".equals(astNodeType) || "ForStatement".equals(astNodeType) 
+//					|| "DoStatement".equals(astNodeType) || "WhileStatement".equals(astNodeType)
+//					|| "LabeledStatement".equals(astNodeType) || "SynchronizedStatement".equals(astNodeType)
+//					|| "IfStatement".equals(astNodeType) || "TryStatement".equals(astNodeType)) {
+//				
+//			}
+			
 			List<HierarchicalActionSet> subActions = actionSet.getSubActions();
 			HierarchicalActionSet subActionSet = null;
 			SubAction: {
 				while (subActions.size() > 0) { // find the non-INSERT action in a bread-first traveling way.
 					List<HierarchicalActionSet> subActions2 = new ArrayList<>();
 					for (HierarchicalActionSet subAction : subActions) {
-						if (!subAction.getActionString().startsWith("INS")) {
+						if (subAction.getActionString().startsWith("MOV")) { // 
 							subActionSet = subAction; // FIXME: e.g. add a TryStatement as the parent of multiple statements.
 							break SubAction;
 						}
@@ -233,13 +228,12 @@ public class SimplifyTree {
 			}
 			
 			if (subActionSet == null) {
-				return null;
+				return null; // FIXME: pure INS action
 			} else {
 				actionSet = subActionSet;
 			}
 		}
 		
-		// FIXME: pure INS action
 		return actionSet;
 	}
 

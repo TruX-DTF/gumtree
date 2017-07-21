@@ -26,9 +26,9 @@ public class App {
 		 * DEL, UPD, MOV: the positions of changed source code are the positions of these source code in previous java file.
 		 * INS: the positions of changed source code is the position of the source code in revised java file.
 		 */
-//		String a = "int a = 0;if (!isSymlink(file)) { size = size.add(BigInteger.valueOf(sizeOf(file)));}";
-//		String b = "int a = 1;if (!isSymlink(file)) { size = size.add(BigInteger.valueOf(sizeOf(file)));}";
-//		List<HierarchicalActionSet> gumTreeResults = compareTwoFilesWithGumTree(a, b);
+//      String a = "int a = 0;if (!isSymlink(file)) { size = size.add(BigInteger.valueOf(sizeOf(file)));}";
+//      String b = "int a = 1;if (!isSymlink(file)) { size = size.add(BigInteger.valueOf(sizeOf(file)));}";
+//      List<HierarchicalActionSet> gumTreeResults = compareTwoFilesWithGumTree(a, b);
 //		for (HierarchicalActionSet str : gumTreeResults) {
 //			System.out.println(str);
 //		}
