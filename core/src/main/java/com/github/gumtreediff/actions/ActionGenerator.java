@@ -119,7 +119,7 @@ public class ActionGenerator {
                 if (!x.equals(origDst)) { // TODO => x != origDst // Case of the root
                     ITree v = w.getParent();
                     if (!w.getLabel().equals(x.getLabel())) {
-                        actions.add(new Update(origSrcTrees.get(w.getId()), x.getLabel(), cpySrcTrees.get(x.getId())));
+                        actions.add(new Update(origSrcTrees.get(w.getId()), x));
                         w.setLabel(x.getLabel());
                     }
                     if (!z.equals(v)) {

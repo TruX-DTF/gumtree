@@ -27,9 +27,9 @@ public class Update extends Action {
     private String value;
     private ITree newNode;
 
-    public Update(ITree node, String value, ITree newNode) {
+    public Update(ITree node, ITree newNode) {
         super(node, node.getPos(), node.getLength());
-        this.value = value;
+        this.value = newNode.getLabel();
         this.newNode = newNode;
     }
 
