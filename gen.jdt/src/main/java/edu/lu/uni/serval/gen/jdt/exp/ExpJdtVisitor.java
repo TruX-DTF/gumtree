@@ -153,8 +153,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	public boolean visit(ClassInstanceCreation node) {
 		pushNode(node, node.toString());
 		Expression exp = node.getExpression();
-		if (exp != null) {
-			System.out.println("ClassInstanceCreation:" + exp.toString() + "\n node:" + node.toString());
+		if (exp != null) { 
+			// Example: ClassInstanceCreation:trie
+			//          node:trie.new TSTNode('\0',node)
 			exp.accept(this);
 		}
 		List<?> typeArguments = node.typeArguments();
