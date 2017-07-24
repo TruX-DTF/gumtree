@@ -18,13 +18,14 @@ import edu.lu.uni.serval.utils.ListSorter;
  */
 public class HierarchicalRegrouper {
 	
-	public static List<HierarchicalActionSet> regroupGumTreeResults(List<Action> actions) {
+	public static List<HierarchicalActionSet> regroupGumTreeResults(List<Action> actionsArgu) {
 		List<HierarchicalActionSet> actionSets = new ArrayList<>();
 		
 		/*
 		 * First, sort actions by their positions.
 		 */
-		actions = new ListSorter<>(actions).sortAscending();
+		List<Action> actions = new ListSorter<Action>(actionsArgu).sortAscending();
+		
 		HierarchicalActionSet actionSet = null;
 		
 		/*
