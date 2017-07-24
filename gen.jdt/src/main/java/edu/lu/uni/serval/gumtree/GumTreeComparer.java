@@ -12,7 +12,7 @@ import com.github.gumtreediff.tree.ITree;
 
 import edu.lu.uni.serval.gumtree.GumTreeGenerator.GumTreeType;
 import edu.lu.uni.serval.gumtree.regroup.HierarchicalActionSet;
-import edu.lu.uni.serval.gumtree.regroup.HierarchicalRegouper;
+import edu.lu.uni.serval.gumtree.regroup.HierarchicalRegrouper;
 import edu.lu.uni.serval.gumtree.regroup.SimpleTree;
 import edu.lu.uni.serval.gumtree.regroup.Traveler;
 
@@ -39,7 +39,7 @@ public class GumTreeComparer {
 			List<Action> actions = ag.getActions(); // change actions from bug to patch
 
 			// Regroup GumTree results
-			actionSets = HierarchicalRegouper.regroupGumTreeResults(actions);
+			actionSets = HierarchicalRegrouper.regroupGumTreeResults(actions);
 		}
 		
 		return actionSets;
@@ -70,7 +70,7 @@ public class GumTreeComparer {
 			List<Action> actions = ag.getActions(); // change actions from bug to patch
 			
 			// Regroup GumTree results
-			actionSets = HierarchicalRegouper.regroupGumTreeResults(actions);
+			actionSets = HierarchicalRegrouper.regroupGumTreeResults(actions);
 		}
 
 		return actionSets;

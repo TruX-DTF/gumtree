@@ -16,7 +16,7 @@ import edu.lu.uni.serval.utils.ListSorter;
  * @author kui.liu
  *
  */
-public class HierarchicalRegouper {
+public class HierarchicalRegrouper {
 	
 	public static List<HierarchicalActionSet> regroupGumTreeResults(List<Action> actions) {
 		List<HierarchicalActionSet> actionSets = new ArrayList<>();
