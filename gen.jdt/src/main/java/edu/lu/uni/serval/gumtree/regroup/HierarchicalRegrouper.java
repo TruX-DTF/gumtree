@@ -26,9 +26,7 @@ public class HierarchicalRegrouper {
 		 */
 		List<Action> actions = new ListSorter<Action>(actionsArgu).sortAscending();
 		if (actions == null) {
-			for (Action action : actionsArgu) {
-				System.out.println("Position: " + action.getPosition() + ", Length: " + action.getLength());
-			}
+			System.out.println(actionsArgu.size());
 			return actionSets;
 		}
 		
