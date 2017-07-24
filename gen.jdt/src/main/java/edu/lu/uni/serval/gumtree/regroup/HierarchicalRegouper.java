@@ -24,8 +24,7 @@ public class HierarchicalRegouper {
 		/*
 		 * First, sort actions by their positions.
 		 */
-		ListSorter<Action> sorter = new ListSorter<>(actions);
-		actions = sorter.sortAscending();
+		actions = new ListSorter<>(actions).sortAscending();
 		HierarchicalActionSet actionSet = null;
 		
 		/*
@@ -71,16 +70,21 @@ public class HierarchicalRegouper {
 		return actionSet;
 	}
 
-	private static String parseAction(String actStr) {
+	private static String parseAction(String actStr1) {
 		// UPD 25@@!a from !a to isTrue(a) at 69
-		String[] actStrArrays = actStr.split("@@");
-		actStr = "";
+		String[] actStrArrays = actStr1.split("@@");
+		String actStr = "";
 		int length = actStrArrays.length;
 		for (int i =0; i < length - 1; i ++) {
 			String actStrFrag = actStrArrays[i];
 			int index = actStrFrag.lastIndexOf(" ") + 1;
 			String nodeType = actStrFrag.substring(index);
-			nodeType = ASTNodeMap.map.get(Integer.parseInt(nodeType));
+			try {
+				nodeType = ASTNodeMap.map.get(Integer.parseInt(nodeType));
+			} catch (NumberFormatException e) {
+				System.out.println("NumberFormatException: " + actStr1);
+				e.printStackTrace();
+			}
 			actStrFrag = actStrFrag.substring(0, index) + nodeType + "@@";
 			actStr += actStrFrag;
 		}

@@ -49,8 +49,19 @@ public class GumTreeComparer {
 		List<HierarchicalActionSet> actionSets = new ArrayList<>();
 		
 		// Generate GumTree.
-		ITree oldTree = new GumTreeGenerator().generateITreeForJavaFile(prevFile, GumTreeType.EXP_JDT);
-		ITree newTree = new GumTreeGenerator().generateITreeForJavaFile(revFile, GumTreeType.EXP_JDT);
+		ITree oldTree = null;
+		ITree newTree = null;
+		try {
+			oldTree = new GumTreeGenerator().generateITreeForJavaFile(prevFile, GumTreeType.EXP_JDT);
+			newTree = new GumTreeGenerator().generateITreeForJavaFile(revFile, GumTreeType.EXP_JDT);
+		} catch (Exception e) {
+			if (oldTree == null) {
+				System.out.println("Previous File: " + prevFile.getPath());
+			} else if (newTree == null) {
+				System.out.println("Revised File: " + revFile.getPath());
+			}
+			e.printStackTrace();
+		}
 		if (oldTree != null && newTree != null) {
 			Matcher m = Matchers.getInstance().getMatcher(oldTree, newTree);
 			m.match();

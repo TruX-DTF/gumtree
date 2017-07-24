@@ -106,9 +106,15 @@ public class ActionFilter {
 						List<HierarchicalActionSet> subActionSets2 = subActionSet.getSubActions(); // <Type, identifier>
 						if (subActionSets2.size() == 0) {
 							String actSetStr = subActionSet.getActionString();
-							actSetStr = actSetStr.substring(actSetStr.indexOf("@@"), actSetStr.indexOf("@TO@")).trim();
+							int index1 = actSetStr.indexOf("@@");
+							int index2 = actSetStr.indexOf("@TO@");
+							if (index1 < 0 || index2 < 0) {
+								System.out.println("SingleVariableDeclaration: " + actSetStr);
+							} else {
+							actSetStr = actSetStr.substring(index1, index2).trim();
 							String variableName = actSetStr.substring(actSetStr.lastIndexOf(" "));
 							variableNames.add(variableName); // "SimpleName:" + variableName TODO: effect range
+							}
 						} else {
 							HierarchicalActionSet actSet = subActionSets2.get(subActionSets2.size() - 1);
 							String actStr = actSet.getActionString();
