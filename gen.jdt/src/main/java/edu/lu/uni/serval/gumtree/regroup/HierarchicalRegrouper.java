@@ -26,8 +26,7 @@ public class HierarchicalRegrouper {
 		 */
 		List<Action> actions = new ListSorter<Action>(actionsArgu).sortAscending();
 		if (actions == null) {
-			System.out.println(actionsArgu.size());
-			return actionSets;
+			actions = actionsArgu;
 		}
 		
 		HierarchicalActionSet actionSet = null;
@@ -85,7 +84,12 @@ public class HierarchicalRegrouper {
 			int index = actStrFrag.lastIndexOf(" ") + 1;
 			String nodeType = actStrFrag.substring(index);
 			if (!"".equals(nodeType)) {
-				nodeType = ASTNodeMap.map.get(Integer.parseInt(nodeType));
+				try {
+					nodeType = ASTNodeMap.map.get(Integer.parseInt(nodeType));
+				} catch (NumberFormatException e) {
+					nodeType = actStrFrag.substring(index);
+					System.out.println("===NumberFormatException===" + actStr1);
+				}
 			}
 			actStrFrag = actStrFrag.substring(0, index) + nodeType + "@@";
 			actStr += actStrFrag;
