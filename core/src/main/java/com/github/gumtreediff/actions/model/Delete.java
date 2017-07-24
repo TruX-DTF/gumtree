@@ -37,6 +37,6 @@ public class Delete extends Action {
     public String toString() {
     	// node.toShortString: getType()@@getLabel()
 //        return getName() + " " + node.toShortString() + " / "+node.getChildrenLabels() + " at " + node.getPos();
-    	return getName() + " " + node.toShortString() + " @AT@ " + node.getPos() + " @LENGTH@ " + node.getLength();
+    	return getName() + " " + node.toShortString() + " @AT@ " + position + " @LENGTH@ " + length;
     }
 }

@@ -24,7 +24,16 @@ public class HierarchicalRegrouper {
 		/*
 		 * First, sort actions by their positions.
 		 */
-		List<Action> actions = new ListSorter<Action>(actionsArgu).sortAscending();
+		List<Action> actions = null;
+		try {
+			actions = new ListSorter<Action>(actionsArgu).sortAscending();
+		} catch (Exception e) {
+			for (Action action : actionsArgu) {
+				System.out.println("Position: " + action.getPosition() + ", Length: " + action.getLength());
+			}
+			e.printStackTrace();
+			return actionSets;
+		}
 		
 		HierarchicalActionSet actionSet = null;
 		

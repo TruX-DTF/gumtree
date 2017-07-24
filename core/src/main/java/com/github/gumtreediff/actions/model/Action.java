@@ -42,6 +42,14 @@ public abstract class Action implements Comparable<Action> {
         this.node = node;
     }
 
+    public int getPosition() {
+        return position;
+    }
+    
+    public int getLength() {
+        return length;
+    }
+
     public abstract String getName();
 
     @Override

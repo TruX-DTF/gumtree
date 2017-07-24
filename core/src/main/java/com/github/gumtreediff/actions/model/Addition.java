@@ -35,17 +35,13 @@ public abstract class Addition extends Action {
         return parent;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
     @Override
     public String toString() {
 //        return getName() + " " + node.toTreeString() + " to " + parent.toShortString() + " at " + pos;
     	if (!parent.isRoot() && (parent.toShortString().startsWith("8@@") || parent.toShortString().startsWith("0@@Block:"))) {
     		parent = parent.getParent();
     	}
-    	return getName() + " " + node.toShortString() + " @TO@ " + parent.toShortString() + " @AT@ " + position + " @LENGTH@ " + node.getLength();
+    	return getName() + " " + node.toShortString() + " @TO@ " + parent.toShortString() + " @AT@ " + position + " @LENGTH@ " + length;
     }
 
 }
