@@ -79,11 +79,8 @@ public class HierarchicalRegouper {
 			String actStrFrag = actStrArrays[i];
 			int index = actStrFrag.lastIndexOf(" ") + 1;
 			String nodeType = actStrFrag.substring(index);
-			try {
+			if (!"".equals(nodeType)) {
 				nodeType = ASTNodeMap.map.get(Integer.parseInt(nodeType));
-			} catch (NumberFormatException e) {
-				System.out.println("NumberFormatException: " + actStr1);
-				e.printStackTrace();
 			}
 			actStrFrag = actStrFrag.substring(0, index) + nodeType + "@@";
 			actStr += actStrFrag;
