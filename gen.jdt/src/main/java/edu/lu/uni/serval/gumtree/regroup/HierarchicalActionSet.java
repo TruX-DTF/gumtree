@@ -26,9 +26,9 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	private List<HierarchicalActionSet>	subActions = new ArrayList<>();
 	
 	private ITree node;
-	private SimpleTree abstractSimpleTree;
-	private SimpleTree abstractIdentifierTree;
-	private SimpleTree simpleTree;
+	private SimpleTree abstractSimpleTree =  null;     // semi-source code tree. and AST node type tree
+	private SimpleTree abstractIdentifierTree = null;  // abstract identifier tree
+	private SimpleTree simpleTree;  				   // source code tree and AST node type tree
 
 	public ITree getNode() {
 		return node;

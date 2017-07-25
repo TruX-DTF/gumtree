@@ -46,14 +46,14 @@ public class SimpleTree {
 
 	@Override
 	public String toString() {
-		String str = this.nodeType + ":" + this.label;
+		String str = this.nodeType + "@@" + this.label;
 		if (strList.size() == 0) {
 			strList.add(str);
 			for (SimpleTree child : children) {
 				child.toString();
 				List<String> strList1 = child.strList;
 				for (String str1 : strList1) {
-					strList.add("    " + str1);
+					strList.add("------" + str1);
 				}
 			}
 		}

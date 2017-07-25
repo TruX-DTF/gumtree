@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.tree.ITree;
 
 import edu.lu.uni.serval.gumtree.utils.ASTNodeMap;
+import edu.lu.uni.serval.utils.ListSorter;
 
 public class SimplifyTree {
 	
@@ -20,30 +22,131 @@ public class SimplifyTree {
 	private Map<String, String> abstractMethodIdentifiers = new HashMap<>();
 	private Map<String, String> abstractNameIdentifiers = new HashMap<>();
 	private Map<String, String> abstractVariableIdentifiers = new HashMap<>();
-	
+
 	/**
 	 * Convert ITree to a source code simple tree, an abstract identifier simple tree, and a semi-source code simple tree.
 	 * 
-	 * @param gumTreeResult
+	 * @param actionSet
 	 */
-	public void abstractTree(HierarchicalActionSet gumTreeResult) {
-		SimpleTree sourceCodeSimpleTree = null;
-		SimpleTree abstractIdentifierTree = null;
-		SimpleTree abstractSimpleTree =  null;
+	public void abstractTree(HierarchicalActionSet actionSet) {
+		SimpleTree sourceCodeSimpleTree = null;    // source code tree and AST node type tree
+		SimpleTree abstractIdentifierTree = null;  // abstract identifier tree
+		SimpleTree abstractSimpleTree =  null;     // semi-source code tree. and AST node type tree
 		
-		gumTreeResult = buggyTreeAction(gumTreeResult);
-		if (gumTreeResult != null) {
-			ITree tree = gumTreeResult.getNode();
-			sourceCodeSimpleTree = sourceCodeTree(gumTreeResult, tree, null);            // source code tree and AST node type tree
-			abstractIdentifierTree = abstractIdentifierTree(gumTreeResult, tree, null);  // abstract identifier tree
-			abstractSimpleTree = semiSourceCodeTree(gumTreeResult, tree, null);          // semi-source code tree. and AST node type tree
+		if (actionSet.getActionString().startsWith("INS")) {
+			List<Action> allMoveActions = getAllMoveActions(actionSet);
+			if (allMoveActions != null) {
+				List<Action> actions = new ArrayList<>();
+				for (Action action : allMoveActions) {
+					boolean hasParent = false;
+					ITree parent = action.getNode().getParent();
+					for (Action act : allMoveActions) {
+						if (act == action)  continue;
+						ITree actNode = act.getNode();
+						if (actNode.equals(parent)) {
+							hasParent = true;
+							break;
+						}
+					}
+					if (!hasParent) {
+						actions.add(action);
+					}
+				}
+				sourceCodeSimpleTree = sourceCodeTree(actions);
+			}
+		} else {
+			ITree tree = actionSet.getNode();
+			String astNodeType = actionSet.getAstNodeType();
+			if ("EnhancedForStatement".equals(astNodeType) || "ForStatement".equals(astNodeType) 
+					|| "DoStatement".equals(astNodeType) || "WhileStatement".equals(astNodeType)
+					|| "LabeledStatement".equals(astNodeType) || "SynchronizedStatement".equals(astNodeType)
+					|| "IfStatement".equals(astNodeType) || "TryStatement".equals(astNodeType)) {
+				// delete the body block.
+				List<ITree> children = tree.getChildren();
+				List<ITree> newChildren = new ArrayList<>();
+				for (ITree child : children) {
+					if (!child.getLabel().endsWith("Body")) {
+						newChildren.add(child);
+					}
+				}
+				tree.setChildren(newChildren);
+			}
+			sourceCodeSimpleTree = sourceCodeTree(actionSet, tree, null);
+			abstractIdentifierTree = abstractIdentifierTree(actionSet, tree, null);
+			abstractSimpleTree = semiSourceCodeTree(actionSet, tree, null);
 		}
 		
-		gumTreeResult.setAbstractSimpleTree(abstractSimpleTree);
-		gumTreeResult.setAbstractIdentifierTree(abstractIdentifierTree);
-		gumTreeResult.setSimpleTree(sourceCodeSimpleTree);
+		actionSet.setAbstractSimpleTree(abstractSimpleTree);
+		actionSet.setAbstractIdentifierTree(abstractIdentifierTree);
+		actionSet.setSimpleTree(sourceCodeSimpleTree);
 	}
 	
+	/**
+	 * Convert the Move actions of an INS action into a simple tree with AST nodes and leaf labels.
+	 * 
+	 * @param actions
+	 * @return
+	 */
+	private SimpleTree sourceCodeTree(List<Action> actions) {
+		if (actions.size() > 0) {
+			SimpleTree simpleTree = new SimpleTree();
+			simpleTree.setNodeType("Block");
+			simpleTree.setLabel("Block");
+			simpleTree.setParent(null);
+			List<SimpleTree> subTrees = new ArrayList<>();
+			for (Action action : actions) {
+				ITree node = action.getNode();
+				subTrees.add(sourceCodeTree(node, simpleTree));
+			}
+			simpleTree.setChildren(subTrees);
+			
+			return simpleTree;
+		}
+		return null;
+	}
+
+	/**
+	 * Convert a Move action into a simple tree with AST nodes and leaf labels.
+	 * 
+	 * @param tree
+	 * @param parent
+	 * @return
+	 */
+	private SimpleTree sourceCodeTree(ITree tree, SimpleTree parent) {
+		SimpleTree simpleTree = new SimpleTree();
+		String astNode = ASTNodeMap.map.get(tree.getType());
+		do {
+			if (astNode.endsWith("Statement") || astNode.equals("FieldDeclaration")) break;
+			
+			tree = tree.getParent();
+			astNode = ASTNodeMap.map.get(tree.getType());// FIXME if the ASTNode is a method declaration or class declaration?
+		} while (!astNode.endsWith("Statement") && !astNode.equals("FieldDeclaration"));
+
+		String label = tree.getLabel();
+		List<ITree> children = tree.getChildren();
+		if (children.size() > 0) {
+			List<SimpleTree> subTrees = new ArrayList<>();
+			for (ITree child : children) {
+				subTrees.add(sourceCodeTree(child, simpleTree));
+			}
+			simpleTree.setChildren(subTrees);
+			simpleTree.setLabel(astNode);
+		} else {
+			simpleTree.setLabel(label);
+		}
+		simpleTree.setNodeType(astNode);
+		simpleTree.setParent(parent);
+		return simpleTree;
+	}
+
+	/**
+	 * Convert an UPD/DEL/MOV action into a simple tree with AST nodes and leaf labels.
+	 * 
+	 * @param actionSet
+	 * @param tree
+	 * @param parent
+	 * @return
+	 */
 	private SimpleTree sourceCodeTree(HierarchicalActionSet actionSet, ITree tree,
 			SimpleTree parent) {
 		SimpleTree simpleTree = new SimpleTree();
@@ -68,6 +171,14 @@ public class SimplifyTree {
 		return simpleTree;
 	}
 
+	/**
+	 * Convert an UPD/DEL/MOV action into a simple tree with abstract identifiers of AST nodes and abstract identifiers of leaf labels.
+	 * 
+	 * @param actionSet
+	 * @param tree
+	 * @param parent
+	 * @return
+	 */
 	private SimpleTree abstractIdentifierTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
 		SimpleTree simpleTree = new SimpleTree();
 
@@ -131,6 +242,15 @@ public class SimplifyTree {
 		simpleTree.setParent(parent);
 		return simpleTree;
 	}
+	
+	/**
+	 * Convert an UPD/DEL/MOV action into a semi-source code simple tree by abstracting the non-buggy code.
+	 * 
+	 * @param actionSet
+	 * @param tree
+	 * @param parent
+	 * @return
+	 */
 
 	private SimpleTree semiSourceCodeTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
 		SimpleTree simpleTree = new SimpleTree();
@@ -199,44 +319,51 @@ public class SimplifyTree {
 		}
 		simpleTree.setChildren(simpleChildren);
 	}
+	
 
-	private HierarchicalActionSet buggyTreeAction(HierarchicalActionSet actionSet) {
-		if (actionSet.getActionString().startsWith("INS")) {
-//			String astNodeType = actionSet.getAstNodeType();
-//			if ("EnhancedForStatement".equals(astNodeType) || "ForStatement".equals(astNodeType) 
-//					|| "DoStatement".equals(astNodeType) || "WhileStatement".equals(astNodeType)
-//					|| "LabeledStatement".equals(astNodeType) || "SynchronizedStatement".equals(astNodeType)
-//					|| "IfStatement".equals(astNodeType) || "TryStatement".equals(astNodeType)) {
-//				
-//			}
-			
-			List<HierarchicalActionSet> subActions = actionSet.getSubActions();
-			HierarchicalActionSet subActionSet = null;
-			SubAction: {
-				while (subActions.size() > 0) { // find the non-INSERT action in a bread-first traveling way.
-					List<HierarchicalActionSet> subActions2 = new ArrayList<>();
-					for (HierarchicalActionSet subAction : subActions) {
-						if (subAction.getActionString().startsWith("MOV")) { // 
-							subActionSet = subAction; // FIXME: e.g. add a TryStatement as the parent of multiple statements.
-							break SubAction;
-						}
-						subActions2.addAll(subAction.getSubActions());
-					}
-					subActions.clear();
-					subActions.addAll(subActions2);
+	private List<Action> getAllMoveActions(HierarchicalActionSet actionSet) {
+		String astNodeType = actionSet.getAstNodeType();
+		if ("EnhancedForStatement".equals(astNodeType) || "ForStatement".equals(astNodeType) 
+				|| "DoStatement".equals(astNodeType) || "WhileStatement".equals(astNodeType)
+				|| "LabeledStatement".equals(astNodeType) || "SynchronizedStatement".equals(astNodeType)
+				|| "IfStatement".equals(astNodeType) || "TryStatement".equals(astNodeType)) {
+			List<Action> allMoveActions = getAllMoveActions2(actionSet);
+			if (allMoveActions != null && allMoveActions.size() > 0) {
+				ListSorter<Action> sorter = new ListSorter<Action>(allMoveActions);
+				allMoveActions = sorter.sortAscending();
+				return allMoveActions;
+			} else {// FIXME: pure INS actions.
+				return null;
+			}
+		} else {// FIXME: pure INS actions.
+			return null;
+		}
+		/**
+		 * Variables, non-new and used in the inserted statements, could be selected to localize buggy code
+		 */
+	}
+
+	private List<Action> getAllMoveActions2(HierarchicalActionSet gumTreeResult) {
+		List<Action> allMoveActions = new ArrayList<>();
+		List<HierarchicalActionSet> actions = gumTreeResult.getSubActions();
+		if (actions.size() == 0) {
+			return null;
+		}
+		while (actions.size() > 0) {
+			List<HierarchicalActionSet> subActions = new ArrayList<>();
+			for (HierarchicalActionSet action : actions) {
+				subActions.addAll(action.getSubActions());
+				if (action.toString().startsWith("MOV")) {
+					allMoveActions.add(action.getAction());
 				}
 			}
 			
-			if (subActionSet == null) {
-				return null; // FIXME: pure INS action
-			} else {
-				actionSet = subActionSet;
-			}
+			actions.clear();
+			actions.addAll(subActions);
 		}
-		
-		return actionSet;
+		return allMoveActions;
 	}
-
+	
 	private String getAbstractLabel(Map<String, String> map, String label, String nameType) {
 		if (map.containsKey(label)) {
 			return map.get(label);
@@ -246,6 +373,7 @@ public class SimplifyTree {
 			return name;
 		}
 	}
+	
 
 	private boolean isExpressionType(String astNode) {
 		if (astNode.equals("ArrayAccess") || astNode.equals("ArrayCreation") ||
