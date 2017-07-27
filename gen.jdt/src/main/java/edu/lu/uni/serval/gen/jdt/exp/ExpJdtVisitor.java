@@ -165,6 +165,8 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 //			popNode();
 //		}
 		Type type = node.getType();
+		push(-2, "New", "new", type.getStartPosition() - 4, 3);
+		popNode();
 		type.accept(this);
 		List<?> arguments = node.arguments();
 		visitList(arguments);
@@ -238,6 +240,8 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		pushNode(node, node.toString());
 		Expression exp = node.getLeftOperand();
 		exp.accept(this);
+		push(-3, "Instanceof", "instanceof", exp.getStartPosition() + exp.getLength() + 1, 10);
+		popNode();
 		Type type = node.getRightOperand();
 		type.accept(this);
 		return false;
