@@ -9,6 +9,8 @@ public class ASTNodeMap {
 	
 	static {
 		map  = new HashMap<Integer, String>();
+		map.put(-3, "Instanceof");
+		map.put(-2, "New");
 		map.put(-1, "Operator");
 		map.put(0, "ASTNode");
 		map.put(1, "AnonymousClassDeclaration");
