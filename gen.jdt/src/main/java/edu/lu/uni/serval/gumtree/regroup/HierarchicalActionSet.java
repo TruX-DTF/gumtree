@@ -28,7 +28,8 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 	private ITree node;
 	private SimpleTree abstractSimpleTree =  null;     // semi-source code tree. and AST node type tree
 	private SimpleTree abstractIdentifierTree = null;  // abstract identifier tree
-	private SimpleTree simpleTree;  				   // source code tree and AST node type tree
+	private SimpleTree simpleTree = null;  			   // source code tree and AST node type tree
+	private SimpleTree originalTree = null;            // source code tree.
 
 	public ITree getNode() {
 		return node;
@@ -142,6 +143,14 @@ public class HierarchicalActionSet implements Comparable<HierarchicalActionSet> 
 
 	public void setSimpleTree(SimpleTree rawTokenTree) {
 		this.simpleTree = rawTokenTree;
+	}
+
+	public SimpleTree getOriginalTree() {
+		return originalTree;
+	}
+
+	public void setOriginalTree(SimpleTree originalTree) {
+		this.originalTree = originalTree;
 	}
 
 	@Override

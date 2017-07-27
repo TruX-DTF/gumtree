@@ -78,7 +78,7 @@ public class SimplifyTree {
 				}
 				tree.setChildren(newChildren);
 			}
-//			sourceCodeSimpleTree = sourceCodeTree(actionSet, tree, null);
+			sourceCodeSimpleTree = originalSourceCodeTree(tree, null);
 //			abstractIdentifierTree = abstractIdentifierTree(actionSet, tree, null);
 //			abstractSimpleTree = semiSourceCodeTree(actionSet, tree, null);
 			simpleTree = canonicalizeSourceCodeTree(tree, null);
@@ -88,6 +88,7 @@ public class SimplifyTree {
 //		actionSet.setAbstractIdentifierTree(abstractIdentifierTree);
 //		actionSet.setSimpleTree(sourceCodeSimpleTree);
 		actionSet.setSimpleTree(simpleTree);
+		actionSet.setOriginalTree(sourceCodeSimpleTree);
 	}
 	
 	private SimpleTree canonicalizeSourceCodeTree(ITree tree, SimpleTree parent) {
@@ -374,13 +375,11 @@ public class SimplifyTree {
 	/**
 	 * Convert an UPD/DEL/MOV action into a simple tree with AST nodes and leaf labels.
 	 * 
-	 * @param actionSet
 	 * @param tree
 	 * @param parent
 	 * @return
 	 */
-	private SimpleTree sourceCodeTree(HierarchicalActionSet actionSet, ITree tree,
-			SimpleTree parent) {
+	private SimpleTree originalSourceCodeTree(ITree tree, SimpleTree parent) {
 		SimpleTree simpleTree = new SimpleTree();
 
 		String label = tree.getLabel();
@@ -391,7 +390,7 @@ public class SimplifyTree {
 		if (children.size() > 0) {
 			List<SimpleTree> subTrees = new ArrayList<>();
 			for (ITree child : children) {
-				subTrees.add(sourceCodeTree(actionSet, child, simpleTree));
+				subTrees.add(originalSourceCodeTree(child, simpleTree));
 			}
 			simpleTree.setChildren(subTrees);
 			simpleTree.setLabel(astNode);
@@ -411,7 +410,7 @@ public class SimplifyTree {
 	 * @param parent
 	 * @return
 	 */
-	private SimpleTree abstractIdentifierTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
+	private SimpleTree abstractIdentifierTree(ITree tree, SimpleTree parent) {
 		SimpleTree simpleTree = new SimpleTree();
 
 		String label = tree.getLabel();
@@ -426,7 +425,7 @@ public class SimplifyTree {
 			} else {
 				List<SimpleTree> subTrees = new ArrayList<>();
 				for (ITree child : children) {
-					subTrees.add(sourceCodeTree(actionSet, child, simpleTree));
+					subTrees.add(abstractIdentifierTree(child, simpleTree));
 				}
 				simpleTree.setChildren(subTrees);
 				simpleTree.setLabel(astNode);
@@ -479,7 +478,6 @@ public class SimplifyTree {
 	 * @param parent
 	 * @return
 	 */
-
 	private SimpleTree semiSourceCodeTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
 		SimpleTree simpleTree = new SimpleTree();
 		simpleTree.setParent(parent);
@@ -548,7 +546,6 @@ public class SimplifyTree {
 		simpleTree.setChildren(simpleChildren);
 	}
 	
-
 	private List<Action> getAllMoveActions(HierarchicalActionSet actionSet) {
 		String astNodeType = actionSet.getAstNodeType();
 		if ("EnhancedForStatement".equals(astNodeType) || "ForStatement".equals(astNodeType) 
@@ -601,7 +598,6 @@ public class SimplifyTree {
 			return name;
 		}
 	}
-	
 
 	private boolean isExpressionType(String astNode) {
 		if (astNode.equals("ArrayAccess") || astNode.equals("ArrayCreation") ||
