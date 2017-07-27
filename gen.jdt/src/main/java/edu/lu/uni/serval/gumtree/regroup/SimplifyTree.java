@@ -11,6 +11,12 @@ import com.github.gumtreediff.tree.ITree;
 import edu.lu.uni.serval.gumtree.utils.ASTNodeMap;
 import edu.lu.uni.serval.utils.ListSorter;
 
+/**
+ * Simplify the ITree of source code into a simple tree.
+ * 
+ * @author kui.liu
+ *
+ */
 public class SimplifyTree {
 	
 	private static final String ABSTRACT_TYPE = "T";
@@ -32,6 +38,7 @@ public class SimplifyTree {
 		SimpleTree sourceCodeSimpleTree = null;    // source code tree and AST node type tree
 		SimpleTree abstractIdentifierTree = null;  // abstract identifier tree
 		SimpleTree abstractSimpleTree =  null;     // semi-source code tree. and AST node type tree
+		SimpleTree simpleTree = null; // source code tree with canonical variable names.
 		
 		if (actionSet.getActionString().startsWith("INS")) {
 			List<Action> allMoveActions = getAllMoveActions(actionSet);
@@ -71,15 +78,240 @@ public class SimplifyTree {
 				}
 				tree.setChildren(newChildren);
 			}
-			sourceCodeSimpleTree = sourceCodeTree(actionSet, tree, null);
-			abstractIdentifierTree = abstractIdentifierTree(actionSet, tree, null);
-			abstractSimpleTree = semiSourceCodeTree(actionSet, tree, null);
+//			sourceCodeSimpleTree = sourceCodeTree(actionSet, tree, null);
+//			abstractIdentifierTree = abstractIdentifierTree(actionSet, tree, null);
+//			abstractSimpleTree = semiSourceCodeTree(actionSet, tree, null);
+			simpleTree = canonicalizeSourceCodeTree(actionSet, tree, null);
 		}
 		
-		actionSet.setAbstractSimpleTree(abstractSimpleTree);
-		actionSet.setAbstractIdentifierTree(abstractIdentifierTree);
-		actionSet.setSimpleTree(sourceCodeSimpleTree);
+//		actionSet.setAbstractSimpleTree(abstractSimpleTree);
+//		actionSet.setAbstractIdentifierTree(abstractIdentifierTree);
+//		actionSet.setSimpleTree(sourceCodeSimpleTree);
+		actionSet.setSimpleTree(simpleTree);
 	}
+	
+	private SimpleTree canonicalizeSourceCodeTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
+		SimpleTree simpleTree = new SimpleTree();
+
+		String label = tree.getLabel();
+		String astNode = ASTNodeMap.map.get(tree.getType());
+
+		List<ITree> children = tree.getChildren();
+		if (children.size() > 0) {
+			simpleTree.setNodeType(astNode);
+			if (astNode.endsWith("Type")) {
+				simpleTree.setLabel(canonicalizeTypeStr(label).replaceAll(" ", ""));
+			} else {
+				List<SimpleTree> subTrees = new ArrayList<>();
+				for (ITree child : children) {
+					subTrees.add(sourceCodeTree(actionSet, child, simpleTree));
+				}
+				simpleTree.setChildren(subTrees);
+				simpleTree.setLabel(astNode);
+			}
+		} else {
+			if (astNode.endsWith("Name")) {
+				// variableName, methodName, QualifiedName
+				if (label.startsWith("MethodName:")) { // <MethodName, name>
+					label = label.substring(11);
+					simpleTree.setNodeType("MethodName");
+					simpleTree.setLabel(label);
+				} else if (label.startsWith("Name:")) {
+					label = label.substring(5);
+					String firstChar = label.substring(0, 1);
+					if (firstChar.equals(firstChar.toUpperCase())) {
+						simpleTree.setNodeType("Name");
+						simpleTree.setLabel(label);
+					} else {// variableName: <VariableName, canonicalName>
+						simpleTree.setNodeType("VariableName");
+						simpleTree.setLabel(canonicalVariableName(label, tree));
+					}
+				} else {// variableName: <VariableName, canonicalName>
+					simpleTree.setNodeType("VariableName");
+					simpleTree.setLabel(canonicalVariableName(label, tree));
+				}
+			} else {
+				simpleTree.setNodeType(astNode);
+				simpleTree.setLabel(label.replaceAll(" ", ""));
+			}
+		}
+		
+		simpleTree.setParent(parent);
+		return simpleTree;
+	}
+
+	private String canonicalVariableName(String label, ITree tree) {
+		ITree parent = tree.getParent();
+		if (parent == null) {
+			return label;
+		} else {
+			String matchStr = null;
+			int parentType = parent.getType();
+			if (parentType == 44) { // SingleVariableDeclaration
+				matchStr = matchSingleVariableDeclaration(parent, label);
+			} else if (parentType == 23 || parentType == 58 || parentType == 60) {
+				//FieldDeclaration, VariableDeclarationExpression, VariableDeclarationStatement
+				matchStr = matchVariableDeclarationExpression(parent, label);
+			} else if (parentType == 31) { // MethodDeclaration
+				List<ITree> children = parent.getChildren();
+				int index = children.indexOf(tree);
+				for (int i = index - 1; i >=0; i --) {
+					ITree child = children.get(i);
+					int childType = child.getType();
+					if (childType == 60) { // VariableDeclarationStatement
+						matchStr = matchVariableDeclarationExpression(child, label);
+					} else if (childType == 44) { // SingleVariableDeclaration
+						matchStr = matchSingleVariableDeclaration(child, label);
+					} else if (childType ==70 || childType == 24 ||childType == 12 || childType == 54) {
+						matchStr = matchStatements(childType, child, label);
+					}
+					if (matchStr != null) break;
+				}
+			} else if (parentType ==70 || parentType == 24 ||parentType == 12 || parentType == 54) {
+				// EnhancedForStatement, ForStatement, CatchClause, TryStatement
+				matchStr = matchStatements(parentType, parent, label);
+			} else if (parentType == 55) { // TypeDeclaration: Class Declaration
+				List<ITree> children = parent.getChildren();
+				for (ITree child : children) {
+					if (child.getType() == 23) { // FieldDeclaration
+						matchStr = matchVariableDeclarationExpression(child, label);
+					}
+				}
+			}
+			
+			if (matchStr != null) {
+				return matchStr;
+			} else {
+				return canonicalVariableName(label, parent);
+			}
+		}
+	}
+	
+	private String matchStatements(int typeInt, ITree tree, String label) {
+		String matchStr = null;
+		if (typeInt == 70) { // EnhancedForStatement
+			matchStr = matchSingleVariableDeclaration(tree.getChild(0), label);
+		} else if (typeInt == 24) { // ForStatement
+			List<ITree> children = tree.getChildren();
+			for (ITree child : children) {
+				if (child.getType() == 58) {
+					matchStr = matchVariableDeclarationExpression(child, label);
+					if (matchStr != null) break;
+				} else {
+					break;
+				}
+			}
+		} else if (typeInt == 12) { // CatchClause
+			matchStr = matchSingleVariableDeclaration(tree.getChild(0), label);
+		} else if (typeInt == 54) { // TryStatement
+			List<ITree> children = tree.getChildren();
+			for (ITree child : children) {
+				if (child.getType() == 58) { //VariableDeclarationExpression
+					matchStr = matchVariableDeclarationExpression(tree, label);
+					if (matchStr != null) break;
+				} else {
+					break;
+				}
+			}
+		}
+		return null;
+	}
+
+	private String matchVariableDeclarationExpression(ITree variable, String label) {
+		List<ITree> children = variable.getChildren();
+		ITree type = null;
+		for (int i = 0, size = children.size(); i < size; i ++) {
+			ITree child = children.get(i);
+			if (child.getType() == 59) {// VariableDeclarationFragment
+				if (type == null) {
+					type = children.get(i - 1);
+				}
+				ITree simpleName = child.getChild(0);
+				if (simpleName.getLabel().equals(label)) {
+					String typeStr = canonicalizeTypeStr(type.getLabel());
+					label = typeStr.toLowerCase() + "Var";
+					return label;
+				}
+			}
+		}
+		return null;
+	}
+
+	private String matchSingleVariableDeclaration(ITree singleVariable, String label) {
+		List<ITree> children = singleVariable.getChildren();
+		for (int i = 0, size = children.size(); i < size; i ++) {
+			ITree child = children.get(i);
+			if (child.getType() == 42) { // SimpleName
+				if (child.getLabel().equals(label)) {
+					ITree type = child.getChild(i - 1);
+					String typeStr = canonicalizeTypeStr(type.getLabel());
+					label = typeStr.toLowerCase() + "Var";
+					return label;
+				}
+				break;
+			}
+		}
+		return null;
+	}
+
+	private String canonicalizeTypeStr(String label) {
+		String typeStr = label;
+		int index1 = typeStr.indexOf("<");
+		if (index1 != -1) {
+			typeStr = typeStr.substring(0, index1);
+		}
+		index1 = typeStr.lastIndexOf(".");
+		if (index1 != -1) {
+			typeStr = typeStr.substring(index1 + 1);
+		}
+		return typeStr;
+	}
+
+//	public static String addPrefixByType(Type type) {
+//		String newName = "";
+//		if (type instanceof PrimitiveType) {
+//			// byte,short,char,int,long,float,double,boolean,void
+//			newName = type.toString().toLowerCase();
+//		} else if (type instanceof ArrayType) {
+//			// Type [ ]
+//			ArrayType at = (ArrayType) type;
+//			type = at.getElementType();
+//			if (type instanceof SimpleType || type instanceof PrimitiveType) {
+//				newName = getNewName(type);
+//			} else {
+//				newName = addPrefixByType(type);
+//			}
+//		} else if (type instanceof SimpleType) {
+//			// TypeName
+//			if (type.toString().equals("Integer")) {
+//				newName = "int";
+//			} else {
+//				newName = getNewName(type);
+//			}
+//		} else if (type instanceof QualifiedType) {
+//			// Type.SimpleName
+//			newName = ((QualifiedType) type).getName().toString().toLowerCase();
+//		} else if (type instanceof ParameterizedType) {
+//			// Type < Type { , Type } > 泛型
+//			ParameterizedType t = (ParameterizedType) type;
+//			newName = getNewName(t.getType());
+//		} else if (type instanceof WildcardType) {
+//			newName = "object";
+//		} 
+//		return newName;
+//	}
+//	
+//	private static String getNewName(Type type) {
+//		String newName = "";
+//		String typeName = type.toString();
+//		int dot = typeName.lastIndexOf(".");
+//		if (dot > 0) {
+//			newName = typeName.substring(dot + 1).toString().toLowerCase();
+//		} else {
+//			newName = typeName.toString().toLowerCase();
+//		}
+//		return newName;
+//	}
 	
 	/**
 	 * Convert the Move actions of an INS action into a simple tree with AST nodes and leaf labels.
@@ -190,11 +422,7 @@ public class SimplifyTree {
 		if (children.size() > 0) {
 			if (astNode.endsWith("Type")) {
 				simpleTree.setNodeType("Type");
-				if (astNode.equals("WildcardType")) {
-					simpleTree.setLabel("?");
-				} else {
-					simpleTree.setLabel(getAbstractLabel(abstractTypeIdentifiers, label, ABSTRACT_TYPE)); // abstract Type identifier
-				}
+				simpleTree.setLabel(getAbstractLabel(abstractTypeIdentifiers, label, ABSTRACT_TYPE)); // abstract Type identifier
 			} else {
 				List<SimpleTree> subTrees = new ArrayList<>();
 				for (ITree child : children) {
