@@ -81,7 +81,7 @@ public class SimplifyTree {
 //			sourceCodeSimpleTree = sourceCodeTree(actionSet, tree, null);
 //			abstractIdentifierTree = abstractIdentifierTree(actionSet, tree, null);
 //			abstractSimpleTree = semiSourceCodeTree(actionSet, tree, null);
-			simpleTree = canonicalizeSourceCodeTree(actionSet, tree, null);
+			simpleTree = canonicalizeSourceCodeTree(tree, null);
 		}
 		
 //		actionSet.setAbstractSimpleTree(abstractSimpleTree);
@@ -90,7 +90,7 @@ public class SimplifyTree {
 		actionSet.setSimpleTree(simpleTree);
 	}
 	
-	private SimpleTree canonicalizeSourceCodeTree(HierarchicalActionSet actionSet, ITree tree, SimpleTree parent) {
+	private SimpleTree canonicalizeSourceCodeTree(ITree tree, SimpleTree parent) {
 		SimpleTree simpleTree = new SimpleTree();
 
 		String label = tree.getLabel();
@@ -104,7 +104,7 @@ public class SimplifyTree {
 			} else {
 				List<SimpleTree> subTrees = new ArrayList<>();
 				for (ITree child : children) {
-					subTrees.add(sourceCodeTree(actionSet, child, simpleTree));
+					subTrees.add(canonicalizeSourceCodeTree(child, simpleTree));
 				}
 				simpleTree.setChildren(subTrees);
 				simpleTree.setLabel(astNode);
