@@ -100,7 +100,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		Expression leftHandExp = node.getLeftHandSide();
 		leftHandExp.accept(this);
 		String op = node.getOperator().toString();
-		push(-1, "Operator", "Operator:" + op, leftHandExp.getStartPosition() + leftHandExp.getLength(), op.length());
+		push(-1, "Operator", op, leftHandExp.getStartPosition() + leftHandExp.getLength(), op.length());
 		popNode();
 		Expression rightHandExp = node.getRightHandSide();
 		rightHandExp.accept(this);
@@ -158,13 +158,12 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			//          node:trie.new TSTNode('\0',node)
 			exp.accept(this);
 		}
-		List<?> typeArguments = node.typeArguments();
-		for (Object obj : typeArguments) {
-			System.out.println("TypeArgument:" + obj.toString() + "\n node:" + node.toString());
-			Type typeArgu = (Type) obj;
-			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
-			popNode();
-		}
+//		List<?> typeArguments = node.typeArguments();
+//		for (Object obj : typeArguments) {
+//			Type typeArgu = (Type) obj;// TypeArugment: Collections.<T>emptyList()
+//			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
+//			popNode();
+//		}
 		Type type = node.getType();
 		type.accept(this);
 		List<?> arguments = node.arguments();
@@ -217,7 +216,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		leftExp.accept(this);
 		
 		String op = node.getOperator().toString();
-		push(-1, "Operator", "Operator:" + op, leftExp.getStartPosition() + leftExp.getLength() + 1, op.length());
+		push(-1, "Operator", op, leftExp.getStartPosition() + leftExp.getLength() + 1, op.length());
 		popNode();
 		
 		Expression rightExp = node.getRightOperand();
@@ -272,7 +271,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	public boolean visit(MethodInvocation node) {
 		pushNode(node, node.toString());
 		Expression exp = node.getExpression();
-		List<?> typeArguments = node.typeArguments();
+//		List<?> typeArguments = node.typeArguments();
 		SimpleName methodName = node.getName();
 		List<?> arguments = node.arguments();
 		String arguStr = arguments.toString();
@@ -295,11 +294,11 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			popNode();
 			visitList(argumentsList);
 		}
-		for (Object obj : typeArguments) {
-			Type typeArgu = (Type) obj; // TypeArugment: Collections.<T>emptyList()
-			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
-			popNode();
-		}
+//		for (Object obj : typeArguments) {
+//			Type typeArgu = (Type) obj; // TypeArugment: Collections.<T>emptyList()
+//			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
+//			popNode();
+//		}
 		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
     	popNode();
 		visitList(arguments);
@@ -446,7 +445,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		Expression exp = node.getOperand();
 		exp.accept(this);
 		String op = node.getOperator().toString();
-		push(-1, "Operator", "Operator:" + op, exp.getStartPosition() + exp.getLength() + 1, op.length());
+		push(-1, "Operator", op, exp.getStartPosition() + exp.getLength() + 1, op.length());
 		popNode();
 		return false;
 	}
@@ -460,7 +459,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	public boolean visit(PrefixExpression node) {
 		pushNode(node, node.toString());
 		String op = node.getOperator().toString();
-		push(-1, "Operator", "Operator:" +op, node.getStartPosition(), op.length());
+		push(-1, "Operator", op, node.getStartPosition(), op.length());
 		popNode();
 		Expression exp = node.getOperand();
 		exp.accept(this);
@@ -1056,6 +1055,14 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	String nodeStr = node.toString();
     	nodeStr = nodeStr.substring(0, nodeStr.length() - 1);
         pushNode(node, nodeStr);
+        List<?> modifiers = node.modifiers();
+        for (Object obj : modifiers) {
+        	IExtendedModifier modifier = (IExtendedModifier) obj;
+        	if (modifier.isModifier()) {
+        		((Modifier)modifier).accept(this);
+        	}
+        }
+        
     	Type type = node.getType();
     	type.accept(this);
     	List<?> fragments = node.fragments();
