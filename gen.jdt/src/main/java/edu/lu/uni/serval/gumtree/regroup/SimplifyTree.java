@@ -244,7 +244,7 @@ public class SimplifyTree {
 			ITree child = children.get(i);
 			if (child.getType() == 42) { // SimpleName
 				if (child.getLabel().equals(label)) {
-					ITree type = child.getChild(i - 1);
+					ITree type = children.get(i - 1);
 					String typeStr = canonicalizeTypeStr(type.getLabel());
 					label = typeStr.toLowerCase() + "Var";
 					return label;
