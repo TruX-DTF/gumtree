@@ -52,6 +52,9 @@ public class ActionFilter {
 								break FindActionSet;
 							}
 						}
+					} else if (actionStr.startsWith("INS StringLiteral") || actionStr.startsWith("DEL StringLiteral") || actionStr.startsWith("MOV StringLiteral")) {
+						addToUselessActions(actionSet, uselessActions);
+						break FindActionSet;
 					}
 					
 					List<HierarchicalActionSet> uselessActionSets = findoutUselessActionSets(actionSet.getSubActions(), false);
