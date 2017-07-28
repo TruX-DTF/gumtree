@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Addition;
+import com.github.gumtreediff.actions.model.Insert;
+import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.tree.ITree;
 
 import edu.lu.uni.serval.gumtree.utils.ASTNodeMap;
@@ -19,8 +21,6 @@ import edu.lu.uni.serval.utils.ListSorter;
 public class HierarchicalRegrouper {
 	
 	public static List<HierarchicalActionSet> regroupGumTreeResults(List<Action> actionsArgu) {
-		List<HierarchicalActionSet> actionSets = new ArrayList<>();
-		
 		/*
 		 * First, sort actions by their positions.
 		 */
@@ -29,11 +29,11 @@ public class HierarchicalRegrouper {
 			actions = actionsArgu;
 		}
 		
-		HierarchicalActionSet actionSet = null;
-		
 		/*
 		 * Second, group actions by their positions.
 		 */
+		List<HierarchicalActionSet> actionSets = new ArrayList<>();
+		HierarchicalActionSet actionSet = null;
 		for(Action act : actions){
 			Action parentAct = findParentAction(act, actions);
 			if (parentAct == null) {
@@ -60,7 +60,6 @@ public class HierarchicalRegrouper {
 				reActionSets.add(actSet);
 			}
 		}
-		
 		return reActionSets;
 	}
 
@@ -88,7 +87,6 @@ public class HierarchicalRegrouper {
 					nodeType = ASTNodeMap.map.get(Integer.parseInt(nodeType));
 				} catch (NumberFormatException e) {
 					nodeType = actStrFrag.substring(index);
-					System.out.println("===NumberFormatException===" + actStr1);
 				}
 			}
 			actStrFrag = actStrFrag.substring(0, index) + nodeType + "@@";
@@ -117,13 +115,31 @@ public class HierarchicalRegrouper {
 		ITree parentTree = parentAct.getNode();
 		
 		for(HierarchicalActionSet actionSet : actionSets) {
-			ITree tree = actionSet.getAction().getNode();
+			Action action = actionSet.getAction();
+			
+			ITree tree = action.getNode();
 			if (tree.equals(parentTree)) { // actionSet is the parent of actSet.
+				if (action instanceof Move && !(act instanceof Move)) {
+					continue;
+				}
+				
 				HierarchicalActionSet actSet = createActionSet(act, actionSet.getAction());
 				actSet.setParent(actionSet);
 				actionSet.getSubActions().add(actSet);
 				return true;
 			} else {
+				if ((!(act instanceof Insert) && !(action instanceof Insert)) 
+						|| (act instanceof Insert && action instanceof Insert)) {
+					int startPosition = act.getPosition();
+					int length = act.getLength();
+					int startP = action.getPosition();
+					int leng = action.getLength();
+					if (!(startP <= startPosition) || !(length <= leng)) {
+						continue;
+					} else if (startP > startPosition + length) {
+						break;
+					}
+				}
 				List<HierarchicalActionSet> subActionSets = actionSet.getSubActions();
 				if (subActionSets.size() > 0) {
 					boolean added = addToAactionSet(act, parentAct, subActionSets);
@@ -145,8 +161,10 @@ public class HierarchicalRegrouper {
 			parent = ((Addition) action).getParent();
 		}
 		for (Action act : actions) {
-			ITree actNode = act.getNode();
-			if (actNode.equals(parent)) {
+			if (act.getNode().equals(parent)) {
+				if (act instanceof Move && !(action instanceof Move)) {
+					continue;
+				}
 				return act;
 			}
 		}
