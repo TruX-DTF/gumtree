@@ -9,5 +9,6 @@ samples/
 *.iml
 .DS_Store
 OUTPUT/
+Dataset/
 logs/
-gen.jdt/src/main/java/edu/lu/uni/serval/gumtree/GumTreeAnalysis.java
+gen.jdt/src/main/java/edu/lu/uni/serval/gumtree/GumTreeTester.java
