@@ -83,9 +83,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(ArrayInitializer node) {
-		pushNode(node, "arrayInitializer");//node.toString());
-//		List<?> expressions = node.expressions();
-//		visitList(expressions);
+		pushNode(node, node.toString());
+		List<?> expressions = node.expressions();
+		visitList(expressions);
 		return false;
 	}
 
@@ -140,7 +140,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(CharacterLiteral node) {
-		pushNode(node, "charLiteral");//node.getEscapedValue());
+		pushNode(node, node.getEscapedValue());
 		return false;
 	}
 
@@ -479,7 +479,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	
 	@Override
 	public boolean visit(StringLiteral node) {
-		pushNode(node, "stringLiteral");//node.getEscapedValue());
+		pushNode(node, node.getEscapedValue());
 		return false;
 	}
 
@@ -1004,7 +1004,12 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
         exp.accept(this);
+        int startPosition = exp.getStartPosition();
+        int length1 = exp.getLength();
+        int length2 = node.getLength();
+        push(8, "Block", "SwitchBody", startPosition + length1 + 1, startPosition + length2 - length1);
         visitList(node.statements());
+		popNode();
         return false;
     }
 
