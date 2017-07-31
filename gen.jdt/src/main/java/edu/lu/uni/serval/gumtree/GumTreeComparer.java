@@ -1,8 +1,10 @@
 package edu.lu.uni.serval.gumtree;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
@@ -11,16 +13,12 @@ import com.github.gumtreediff.matchers.Matchers;
 import com.github.gumtreediff.tree.ITree;
 
 import edu.lu.uni.serval.gumtree.GumTreeGenerator.GumTreeType;
-import edu.lu.uni.serval.gumtree.regroup.HierarchicalActionSet;
-import edu.lu.uni.serval.gumtree.regroup.HierarchicalRegrouper;
-import edu.lu.uni.serval.gumtree.regroup.SimpleTree;
-import edu.lu.uni.serval.gumtree.regroup.Traveler;
 
 public class GumTreeComparer {
+	
+	private static Logger log = LoggerFactory.getLogger(GumTreeComparer.class);
 
-	public List<HierarchicalActionSet> compareTwoCodeBlocksWithGumTree(String oldCodeBlock, String newCodeBlock) {
-		List<HierarchicalActionSet> actionSets = new ArrayList<>();
-
+	public List<Action> compareTwoCodeBlocksWithGumTree(String oldCodeBlock, String newCodeBlock) {
 		// Generate GumTree.
 		ITree oldTree = new GumTreeGenerator().generateITreeForCodeBlock(oldCodeBlock, GumTreeType.EXP_JDT);
 		ITree newTree = new GumTreeGenerator().generateITreeForCodeBlock(newCodeBlock, GumTreeType.EXP_JDT);
@@ -28,26 +26,19 @@ public class GumTreeComparer {
 			if (oldTree.isIsomorphicTo(newTree)) { // TODO: this method should be improved.
 				System.out.println(true);
 			}
-
-			SimpleTree simpleTree = Traveler.travelITreeDeepFirstToSimpleTree(oldTree, null);
-			System.out.println(simpleTree.toString() + "\n");
 			
 			Matcher m = Matchers.getInstance().getMatcher(oldTree, newTree);
 			m.match();
 			ActionGenerator ag = new ActionGenerator(oldTree, newTree, m.getMappings());
 			ag.generate();
 			List<Action> actions = ag.getActions(); // change actions from bug to patch
-
-			// Regroup GumTree results
-			actionSets = HierarchicalRegrouper.regroupGumTreeResults(actions);
+			return actions;
 		}
 		
-		return actionSets;
+		return null;
 	}
 	
-	public List<HierarchicalActionSet> compareTwoFilesWithGumTree(File prevFile, File revFile) {
-		List<HierarchicalActionSet> actionSets = new ArrayList<>();
-		
+	public List<Action> compareTwoFilesWithGumTree(File prevFile, File revFile) {
 		// Generate GumTree.
 		ITree oldTree = null;
 		ITree newTree = null;
@@ -56,11 +47,10 @@ public class GumTreeComparer {
 			newTree = new GumTreeGenerator().generateITreeForJavaFile(revFile, GumTreeType.EXP_JDT);
 		} catch (Exception e) {
 			if (oldTree == null) {
-				System.out.println("Previous File: " + prevFile.getPath());
+				log.info("Null GumTree of Previous File: " + prevFile.getPath());
 			} else if (newTree == null) {
-				System.out.println("Revised File: " + revFile.getPath());
+				log.info("Null GumTree of Revised File: " + revFile.getPath());
 			}
-			e.printStackTrace();
 		}
 		if (oldTree != null && newTree != null) {
 			Matcher m = Matchers.getInstance().getMatcher(oldTree, newTree);
@@ -68,12 +58,10 @@ public class GumTreeComparer {
 			ActionGenerator ag = new ActionGenerator(oldTree, newTree, m.getMappings());
 			ag.generate();
 			List<Action> actions = ag.getActions(); // change actions from bug to patch
-			
-			// Regroup GumTree results
-			actionSets = HierarchicalRegrouper.regroupGumTreeResults(actions);
+			return actions;
 		}
 
-		return actionSets;
+		return null;
 	}
 	
 }
