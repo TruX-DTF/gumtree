@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_6573cesrc#main#java#org#apache#commons#io#FileUtils.java
-Revised File: OUTPUT/commons-io/revFiles/6573cesrc#main#java#org#apache#commons#io#FileUtils.java
-DiffEntry: @@ -2513,3 +2513,3 @@
-                 if (!isSymlink(file)) {
--                    size.add(BigInteger.valueOf(sizeOf(file)));
-+                    size = size.add(BigInteger.valueOf(sizeOf(file)));
-                 }
-

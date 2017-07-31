@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_558e03src#main#java#org#apache#commons#io#EndianUtils.java
-Revised File: OUTPUT/commons-io/revFiles/558e03src#main#java#org#apache#commons#io#EndianUtils.java
-DiffEntry: @@ -31,3 +31,3 @@
-  * (eg Motorola), the situation is reversed.
-- * This class helps you solve this incompatability.
-+ * This class helps you solve this incompatibility.
-  * <p>
-

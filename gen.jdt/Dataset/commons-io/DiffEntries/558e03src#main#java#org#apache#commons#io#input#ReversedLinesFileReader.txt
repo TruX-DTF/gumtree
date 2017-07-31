@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_558e03src#main#java#org#apache#commons#io#input#ReversedLinesFileReader.java
-Revised File: OUTPUT/commons-io/revFiles/558e03src#main#java#org#apache#commons#io#input#ReversedLinesFileReader.java
-DiffEntry: @@ -165,3 +165,3 @@
- 
--        // aligned behaviour wiht BufferedReader that doesn't return a last, emtpy line
-+        // aligned behaviour with BufferedReader that doesn't return a last, empty line
-         if("".equals(line) && !trailingNewlineOfFileSkipped) {
-

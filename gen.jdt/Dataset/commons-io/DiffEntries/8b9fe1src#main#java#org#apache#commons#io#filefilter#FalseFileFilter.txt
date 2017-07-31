@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_8b9fe1src#main#java#org#apache#commons#io#filefilter#FalseFileFilter.java
-Revised File: OUTPUT/commons-io/revFiles/8b9fe1src#main#java#org#apache#commons#io#filefilter#FalseFileFilter.java
-DiffEntry: @@ -46,3 +46,3 @@
-     /**
--     * Restrictive consructor.
-+     * Restrictive constructor.
-      */
-

@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_558e03src#main#java#org#apache#commons#io#output#ByteArrayOutputStream.java
-Revised File: OUTPUT/commons-io/revFiles/558e03src#main#java#org#apache#commons#io#output#ByteArrayOutputStream.java
-DiffEntry: @@ -217,3 +217,3 @@
-      * @throws IOException never (this method should not declare this exception
--     * but it has to now due to backwards compatability)
-+     * but it has to now due to backwards compatibility)
-      */
-

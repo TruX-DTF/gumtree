@@ -1,9 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_279f0csrc#main#java#org#apache#commons#io#FileCleaningTracker.java
-Revised File: OUTPUT/commons-io/revFiles/279f0csrc#main#java#org#apache#commons#io#FileCleaningTracker.java
-DiffEntry: @@ -184,3 +184,4 @@
-      * This method allows the thread to be terminated. Simply call this method
--     * in the resource cleanup code, such as {@link javax.servlet.ServletContextListener#contextDestroyed}.
-+     * in the resource cleanup code, such as 
-+     * {@link javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)}.
-      * Once called, no new objects can be tracked by the file cleaner.
-

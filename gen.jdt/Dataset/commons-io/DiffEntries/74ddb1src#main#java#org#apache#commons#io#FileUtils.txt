@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_74ddb1src#main#java#org#apache#commons#io#FileUtils.java
-Revised File: OUTPUT/commons-io/revFiles/74ddb1src#main#java#org#apache#commons#io#FileUtils.java
-DiffEntry: @@ -1521,3 +1521,3 @@
-      * will be overwritten if it already exists.
--     * The {@code source} stream is closed.
-+     * The {@code source} stream is left open, e.g. for use with {@link java.util.zip.ZipInputStream ZipInputStream}.
-      *
-

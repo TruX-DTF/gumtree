@@ -1,9 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_74b54asrc#java#org#apache#commons#io#comparator#ExtensionFileComparator.java
-Revised File: OUTPUT/commons-io/revFiles/74b54asrc#java#org#apache#commons#io#comparator#ExtensionFileComparator.java
-DiffEntry: @@ -62,3 +62,4 @@
-     /** Case-insensitive extension comparator instance (see {@link IOCase#INSENSITIVE}) */
--    public static final Comparator<File> EXTENSION_INSENSITIVE_COMPARATOR = new ExtensionFileComparator(IOCase.INSENSITIVE);
-+    public static final Comparator<File> EXTENSION_INSENSITIVE_COMPARATOR
-+                                                = new ExtensionFileComparator(IOCase.INSENSITIVE);
- 
-

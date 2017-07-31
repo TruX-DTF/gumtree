@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_8b9fe1src#main#java#org#apache#commons#io#IOCase.java
-Revised File: OUTPUT/commons-io/revFiles/8b9fe1src#main#java#org#apache#commons#io#IOCase.java
-DiffEntry: @@ -56,3 +56,3 @@
-      * <p>
--     * If you derialize this constant of Windows, and deserialize on Unix, or vice
-+     * If you serialize this constant on Windows, and deserialize on Unix, or vice
-      * versa, then the value of the case-sensitivity flag will change.
-

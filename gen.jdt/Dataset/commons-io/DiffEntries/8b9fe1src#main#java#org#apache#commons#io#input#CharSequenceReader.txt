@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_8b9fe1src#main#java#org#apache#commons#io#input#CharSequenceReader.java
-Revised File: OUTPUT/commons-io/revFiles/8b9fe1src#main#java#org#apache#commons#io#input#CharSequenceReader.java
-DiffEntry: @@ -92,3 +92,3 @@
-     /**
--     * Read the sepcified number of characters into the array.
-+     * Read the specified number of characters into the array.
-      *
-

@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_a45944src#main#java#org#apache#commons#io#output#CloseShieldOutputStream.java
-Revised File: OUTPUT/commons-io/revFiles/a45944src#main#java#org#apache#commons#io#output#CloseShieldOutputStream.java
-DiffEntry: @@ -26,3 +26,3 @@
-  * other components would still use the stream for output.
-- *
-+ * </p>
-  * @version $Id$
-

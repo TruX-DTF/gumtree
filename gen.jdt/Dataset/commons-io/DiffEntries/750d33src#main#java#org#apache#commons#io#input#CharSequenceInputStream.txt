@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_750d33src#main#java#org#apache#commons#io#input#CharSequenceInputStream.java
-Revised File: OUTPUT/commons-io/revFiles/750d33src#main#java#org#apache#commons#io#input#CharSequenceInputStream.java
-DiffEntry: @@ -212,2 +212,4 @@
-             this.mark = NO_MARK;
-+            this.bbuf.limit(0);
-+            this.encoder.reset();
-         }
-

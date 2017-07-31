@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_799205src#main#java#org#apache#commons#io#output#DeferredFileOutputStream.java
-Revised File: OUTPUT/commons-io/revFiles/799205src#main#java#org#apache#commons#io#output#DeferredFileOutputStream.java
-DiffEntry: @@ -117,3 +117,3 @@
-     {
--        this(threshold,   null, prefix, suffix, directory);
-+        this(threshold, null, prefix, suffix, directory);
-         if (prefix == null) {
-

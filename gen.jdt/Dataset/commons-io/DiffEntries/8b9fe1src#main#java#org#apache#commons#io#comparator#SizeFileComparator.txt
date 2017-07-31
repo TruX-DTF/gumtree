@@ -1,8 +1,0 @@
-Previous File: OUTPUT/commons-io/prevFiles/prev_8b9fe1src#main#java#org#apache#commons#io#comparator#SizeFileComparator.java
-Revised File: OUTPUT/commons-io/revFiles/8b9fe1src#main#java#org#apache#commons#io#comparator#SizeFileComparator.java
-DiffEntry: @@ -89,3 +89,3 @@
-      *
--     * @param sumDirectoryContents {@code true} if the sum of the directoryies contents
-+     * @param sumDirectoryContents {@code true} if the sum of the directories' contents
-      *  should be calculated, otherwise {@code false} if directories should be treated
-
