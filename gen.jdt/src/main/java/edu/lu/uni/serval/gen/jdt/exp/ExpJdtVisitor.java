@@ -273,42 +273,46 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(MethodInvocation node) {
-		pushNode(node, node.toString());
 		Expression exp = node.getExpression();
 //		List<?> typeArguments = node.typeArguments();
 		SimpleName methodName = node.getName();
 		List<?> arguments = node.arguments();
-		List<MethodInvocation> methods = new ArrayList<>();
-		while (exp != null) {
-			if (exp instanceof MethodInvocation) {
-				MethodInvocation method = (MethodInvocation) exp;
-				methods.add(0, method);
-				exp = method.getExpression();
-			} else {
-				if (exp instanceof Name) {
-					pushNode(exp, "Name:" + exp.toString());
-					popNode();
+		if (exp == null && arguments.size() == 0) {
+			pushNode(node, "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString());
+		} else {
+			pushNode(node, node.toString());
+			List<MethodInvocation> methods = new ArrayList<>();
+			while (exp != null) {
+				if (exp instanceof MethodInvocation) {
+					MethodInvocation method = (MethodInvocation) exp;
+					methods.add(0, method);
+					exp = method.getExpression();
 				} else {
-					exp.accept(this);	
+					if (exp instanceof Name) {
+						pushNode(exp, "Name:" + exp.toString());
+						popNode();
+					} else {
+						exp.accept(this);	
+					}
+					exp = null;
 				}
-				exp = null;
 			}
+			for (MethodInvocation method : methods) {
+				List<?> argumentsList = method.arguments();
+				pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName() + ":" + argumentsList.toString());
+				visitList(argumentsList);
+				popNode();
+			}
+//			for (Object obj : typeArguments) {
+//				Type typeArgu = (Type) obj; // TypeArugment: Collections.<T>emptyList()
+//				pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
+//				popNode();
+//			}
+			push(42, "SimpleName", "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString(), methodName.getStartPosition(), 
+					node.getStartPosition() + node.getLength() - methodName.getStartPosition());
+			visitList(arguments);
+	    	popNode();
 		}
-		for (MethodInvocation method : methods) {
-			List<?> argumentsList = method.arguments();
-			pushNode(method, "MethodName:" + method.toString());
-			visitList(argumentsList);
-			popNode();
-		}
-//		for (Object obj : typeArguments) {
-//			Type typeArgu = (Type) obj; // TypeArugment: Collections.<T>emptyList()
-//			pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
-//			popNode();
-//		}
-		push(42, "SimpleName", "MethodName:" + methodName.getFullyQualifiedName() + arguments.toString(), methodName.getStartPosition(), 
-				node.getStartPosition() + node.getLength() - methodName.getStartPosition());
-		visitList(arguments);
-    	popNode();
 		return false;
 	}
 
@@ -515,7 +519,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		}
 		SimpleName methodName = node.getName();
 		List<?> arguments = node.arguments();
-		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName() + arguments.toString());
+		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString());
 		visitList(arguments);
 		popNode();
 		return false;
