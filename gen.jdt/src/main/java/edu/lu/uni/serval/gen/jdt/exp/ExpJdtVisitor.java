@@ -428,7 +428,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		if (num.endsWith("L") || num.endsWith("l")) {
 			num = "longNumber";
 		}
-		pushNode(node, node.getToken());
+		pushNode(node, num);
 		return false;
 	}
 
@@ -706,18 +706,21 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		 *  Even though some fix patterns can be mined, they are not what we want.
 		 */
         visitList(realModifiers);
-//		if (returnType != null) {
-//			returnType.accept(this);
-//		}
+		if (returnType != null) {
+			returnType.accept(this);
+		}
 //		visitList(typeParameters);
-//		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
-//		popNode();
+		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
+		popNode();
 		visitList(parameters);
 //		visitList(exceptionTypes);
 
 		// The body can be null when the method declaration is from a interface
-		if (node.getBody() != null) {
-			node.getBody().accept(this);
+		Block methodBody = node.getBody();
+		if (methodBody != null) {
+			push(8, "Block", "MethodBody", methodBody.getStartPosition(), methodBody.getLength());
+			methodBody.accept(this);
+			popNode();
 		}
 		return false;
 
@@ -815,7 +818,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         exc.accept(this);
         Statement body = node.getBody();
         if (body != null) {
-        	pushNode(body, "CatchBody");
+        	push(8, "Block", "CatchBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
@@ -865,7 +868,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         exp.accept(this);
         Statement body = node.getBody();
         if (body != null) {
-        	pushNode(body, "DoBody");
+        	push(8, "Block", "DoBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
@@ -891,7 +894,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         exp.accept(this);
         Statement body = node.getBody();
         if (body != null) {
-        	pushNode(body, "EnForBody");
+        	push(8, "Block", "EnForBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
@@ -928,7 +931,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		
 		Statement body = node.getBody();
         if (body != null) {
-        	pushNode(body, "ForBody");
+        	push(8, "Block", "ForBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
@@ -944,14 +947,14 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         exp.accept(this);
         Statement stmt = node.getThenStatement();
         if (stmt != null) {
-            pushNode(stmt, "ThenBody");
+        	push(8, "Block", "ThenBody", stmt.getStartPosition(), stmt.getLength());
             visitBody(stmt);
             popNode();
         }
 
         stmt = node.getElseStatement();
         if (stmt != null) {
-            pushNode(stmt, "ElseBody");
+        	push(8, "Block", "ElseBody", stmt.getStartPosition(), stmt.getLength());
             visitBody(stmt);
             popNode();
         }
@@ -963,7 +966,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         pushNode(node, node.getLabel().getFullyQualifiedName());
         Statement body = node.getBody();
         if (body != null) {
-        	pushNode(body, "LabelBody");
+        	push(8, "Block", "LabelBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
@@ -1025,7 +1028,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         exp.accept(this);
         Statement body = node.getBody();
         if (body != null) {
-        	pushNode(body, "SyncBody");
+        	push(8, "Block", "SyncBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
@@ -1049,7 +1052,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 		Statement body = node.getBody();
         if (body != null) {
-        	pushNode(body, "TryBody");
+        	push(8, "Block", "TryBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
@@ -1059,7 +1062,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
         Statement stmt = node.getFinally();
         if (stmt != null) {
-            pushNode(stmt, "FinallyBody");
+        	push(8, "Block", "FinallyBody", stmt.getStartPosition(), stmt.getLength());
             visitBody(stmt);
             popNode();
         }
@@ -1094,11 +1097,10 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         
         Statement body = node.getBody();
         if (body != null) {
-        	pushNode(body, "WhileBody");
+        	push(8, "Block", "WhileBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
-//        visitBody(node.getBody());
         return false;
     }
 
