@@ -865,14 +865,13 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     public boolean visit(DoStatement node) {
     	Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
-        exp.accept(this);
         Statement body = node.getBody();
         if (body != null) {
         	push(8, "Block", "DoBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
         	popNode();
         }
-//        visitBody(node.getBody());
+        exp.accept(this);
         return false;
     }
 
@@ -943,7 +942,6 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     public boolean visit(IfStatement node) {
         Expression exp = node.getExpression();
         pushNode(node, exp.getClass().getSimpleName() + COLON + exp.toString());
-        
         exp.accept(this);
         Statement stmt = node.getThenStatement();
         if (stmt != null) {
@@ -1015,7 +1013,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         int startPosition = exp.getStartPosition();
         int length1 = exp.getLength();
         int length2 = node.getLength();
-        push(8, "Block", "SwitchBody", startPosition + length1 + 1, startPosition + length2 - length1);
+        push(8, "Block", "SwitchBody", startPosition + length1 + 1, node.getStartPosition() + length2 - startPosition - length1 - 1);
         visitList(node.statements());
 		popNode();
         return false;
