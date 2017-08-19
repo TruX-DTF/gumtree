@@ -152,12 +152,12 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	@Override
 	public boolean visit(ClassInstanceCreation node) {
 		pushNode(node, node.toString());
-		Expression exp = node.getExpression();
-		if (exp != null) { 
-			// Example: ClassInstanceCreation:trie
-			//          node:trie.new TSTNode('\0',node)
-			exp.accept(this);
-		}
+//		Expression exp = node.getExpression();
+//		if (exp != null) { 
+//			// Example: ClassInstanceCreation:trie
+//			//          node:trie.new TSTNode('\0',node)
+//			exp.accept(this);
+//		}
 //		List<?> typeArguments = node.typeArguments();
 //		for (Object obj : typeArguments) {
 //			Type typeArgu = (Type) obj;// TypeArugment: Collections.<T>emptyList()
@@ -167,10 +167,10 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		Type type = node.getType();
 		push(-2, "New", "new", type.getStartPosition() - 4, 3);
 		popNode();
-		type.accept(this);
-		List<?> arguments = node.arguments();
-		visitList(arguments);
-		return false;
+//		type.accept(this);
+//		List<?> arguments = node.arguments();
+//		visitList(arguments);
+		return true;
 	}
 
 	@Override
@@ -1109,6 +1109,11 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		} else {
 			body.accept(this);
 		}
+	}
+
+	@Override
+	public boolean visit(AnonymousClassDeclaration node) {
+		return true;
 	}
 
 }
