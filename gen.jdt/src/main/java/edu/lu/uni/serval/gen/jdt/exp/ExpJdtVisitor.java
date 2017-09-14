@@ -14,6 +14,63 @@ import org.eclipse.jdt.core.dom.*;
  *
  */
 public class ExpJdtVisitor extends CdJdtVisitor {
+	
+	
+	@Override
+	public boolean visit(CompilationUnit node) {
+		pushNode(node, "JavaFile");
+		return true;
+	}
+	
+	@Override
+	public void endVisit(CompilationUnit node) {
+		popNode();
+	}
+
+	@Override
+	public boolean visit(EnumConstantDeclaration node) {
+		pushNode(node, node.getName().toString());
+        return true;
+	}
+	
+	@Override
+	public void endVisit(EnumConstantDeclaration node) {
+		popNode();
+	}
+
+	@Override
+	public boolean visit(EnumDeclaration node) {
+		pushNode(node, node.getName().toString());
+        return true;
+	}
+	
+	@Override
+	public void endVisit(EnumDeclaration node) {
+		popNode();
+	}
+
+	@Override
+	public boolean visit(AnnotationTypeDeclaration node) {
+		pushNode(node, node.getName().toString());
+		return true;
+	}
+	
+	@Override
+	public void endVisit(AnnotationTypeDeclaration node) {
+		popNode();
+	}
+
+	@Override
+	public boolean visit(AnnotationTypeMemberDeclaration node) {
+		pushNode(node, node.getName().toString());
+		return true;
+	}
+	
+	@Override
+	public void endVisit(AnnotationTypeMemberDeclaration node) {
+		popNode();
+	}
+
 	////---------------Expressions---------------
 	//  ----------------Annotation---------------
 	@Override
