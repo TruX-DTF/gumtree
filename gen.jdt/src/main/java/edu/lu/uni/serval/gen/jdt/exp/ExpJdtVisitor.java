@@ -240,7 +240,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		if (acd != null) {
 			acd.accept(this);
 		}
-		return true;
+		return false;
 	}
 
 	@Override
