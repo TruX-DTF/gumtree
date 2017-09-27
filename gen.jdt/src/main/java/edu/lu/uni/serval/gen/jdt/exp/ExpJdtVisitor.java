@@ -709,7 +709,6 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     	
     	Type superClass = node.getSuperclassType();
     	if (superClass != null) {
-    		superClass.accept(this);
     		label += superClass.toString();
     	}
     	List<?> interfaceTypes = node.superInterfaceTypes(); // type
