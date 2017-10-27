@@ -40,7 +40,26 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 	@Override
 	public boolean visit(EnumDeclaration node) {
-		pushNode(node, node.getName().toString());
+		String label = "";
+    	int startPosition = 0;
+    	int nodeStartPosition = node.getStartPosition();
+    	int length = node.getLength();
+    	List<?> modifiers = node.modifiers();
+    	if (modifiers.size() > 0) {
+    		label += modifiers.toString();
+    		startPosition = ((ASTNode)  modifiers.get(0)).getStartPosition();
+    	}
+    	label += node.getName().toString() + ", ";
+    	if (startPosition == 0) {
+    		startPosition = node.getName().getStartPosition();
+    	}
+    	
+    	List<?> interfaceTypes = node.superInterfaceTypes(); // type
+    	if (interfaceTypes.size() > 0) {
+    		label += interfaceTypes.toString();
+    	}
+
+    	push(node.getNodeType(), node.getClass().getSimpleName(), label, startPosition, nodeStartPosition + length - startPosition);
         return true;
 	}
 	
@@ -736,9 +755,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     @Override
     public boolean visit(FieldDeclaration node) {
     	String nodeStr = "";
-    	int startPosition = 0;
-    	int nodeStartPosition = node.getStartPosition();
-    	int length = node.getLength();
+//    	int startPosition = 0;
+//    	int nodeStartPosition = node.getStartPosition();
+//    	int length = node.getLength();
     	
     	List<?> modifiers = node.modifiers();
     	List<Modifier> realModifiers = new ArrayList<>();
@@ -747,19 +766,20 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         	if (modifier.isModifier()) {
         		nodeStr += modifier.toString() + ", ";
         		realModifiers.add((Modifier)modifier);
-        		if (startPosition == 0) {
-        			startPosition = ((Modifier) modifier).getStartPosition();
-        		}
+//        		if (startPosition == 0) {
+//        			startPosition = ((Modifier) modifier).getStartPosition();
+//        		}
         	}
         }
         Type type = node.getType();
-        if (startPosition == 0) {
-        	startPosition = type.getStartPosition();
-        }
+//        if (startPosition == 0) {
+//        	startPosition = type.getStartPosition();
+//        }
         nodeStr += type.toString() + ", ";
         List<?> fragments = node.fragments();
         nodeStr += fragments.toString();
-    	push(node.getNodeType(), node.getClass().getSimpleName(), nodeStr, startPosition, nodeStartPosition + length - startPosition);
+        pushNode(node, nodeStr);
+//    	push(node.getNodeType(), node.getClass().getSimpleName(), nodeStr, startPosition, nodeStartPosition + length - startPosition);
     	
         visitList(realModifiers);
         type.accept(this);
@@ -809,7 +829,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 				}
 			}
 		}
-		methodLabel += (returnType == null) ? "" : (returnType.toString() + ", ");
+		methodLabel += (returnType == null) ? "void, " : (returnType.toString() + ", ");
 		for (Object obj : typeParameters) {
 			methodLabel += obj.toString() + ", ";
 		}
