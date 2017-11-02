@@ -830,9 +830,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			}
 		}
 		methodLabel += (returnType == null) ? "void, " : (returnType.toString() + ", ");
-		for (Object obj : typeParameters) {
-			methodLabel += obj.toString() + ", ";
-		}
+//		for (Object obj : typeParameters) {
+//			methodLabel += obj.toString() + ", ";
+//		}
 		methodLabel += "MethodName:" + methodName + ", ";
 		if (startPosition == 0) {
 			startPosition = methodName.getStartPosition();
