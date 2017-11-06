@@ -830,7 +830,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			}
 		}
 		methodLabel += (returnType == null) ? "void, " : (returnType.toString() + ", ");
-//		for (Object obj : typeParameters) {
+//		for (Object obj : typeParameters) { // Remove it for identifying inconsistent method names.
 //			methodLabel += obj.toString() + ", ";
 //		}
 		methodLabel += "MethodName:" + methodName + ", ";
@@ -858,7 +858,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 //		visitList(typeParameters);
 		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
 		popNode();
-		visitList(parameters);
+//		visitList(parameters);// Remove it for identifying method re-naming.
 //		visitList(exceptionTypes);
 
 		// The body can be null when the method declaration is from a interface
