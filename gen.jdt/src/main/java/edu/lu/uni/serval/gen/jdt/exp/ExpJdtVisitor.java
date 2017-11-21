@@ -755,9 +755,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
     @Override
     public boolean visit(FieldDeclaration node) {
     	String nodeStr = "";
-//    	int startPosition = 0;
-//    	int nodeStartPosition = node.getStartPosition();
-//    	int length = node.getLength();
+    	int startPosition = 0;
+    	int nodeStartPosition = node.getStartPosition();
+    	int length = node.getLength();
     	
     	List<?> modifiers = node.modifiers();
     	List<Modifier> realModifiers = new ArrayList<>();
@@ -766,20 +766,20 @@ public class ExpJdtVisitor extends CdJdtVisitor {
         	if (modifier.isModifier()) {
         		nodeStr += modifier.toString() + ", ";
         		realModifiers.add((Modifier)modifier);
-//        		if (startPosition == 0) {
-//        			startPosition = ((Modifier) modifier).getStartPosition();
-//        		}
+        		if (startPosition == 0) {
+        			startPosition = ((Modifier) modifier).getStartPosition();
+        		}
         	}
         }
         Type type = node.getType();
-//        if (startPosition == 0) {
-//        	startPosition = type.getStartPosition();
-//        }
+        if (startPosition == 0) {
+        	startPosition = type.getStartPosition();
+        }
         nodeStr += type.toString() + ", ";
         List<?> fragments = node.fragments();
         nodeStr += fragments.toString();
-        pushNode(node, nodeStr);
-//    	push(node.getNodeType(), node.getClass().getSimpleName(), nodeStr, startPosition, nodeStartPosition + length - startPosition);
+//        pushNode(node, nodeStr);
+    	push(node.getNodeType(), node.getClass().getSimpleName(), nodeStr, startPosition, nodeStartPosition + length - startPosition);
     	
         visitList(realModifiers);
         type.accept(this);
@@ -829,10 +829,11 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 				}
 			}
 		}
-		methodLabel += "@@" + ((returnType == null) ? "void, " : (returnType.toString() + ", "));
-//		for (Object obj : typeParameters) { // Remove it for identifying inconsistent method names.
-//			methodLabel += obj.toString() + ", ";
-//		}
+		methodLabel += (returnType == null) ? "void" : (returnType.toString()) + ", ";
+//		methodLabel += "@@" + ((returnType == null) ? "void" : returnType.toString()) + ", ";
+		for (Object obj : typeParameters) {
+			methodLabel += obj.toString() + ", ";
+		}
 		methodLabel += "MethodName:" + methodName + ", ";
 		if (startPosition == 0) {
 			startPosition = methodName.getStartPosition();
@@ -858,7 +859,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 //		visitList(typeParameters);
 		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
 		popNode();
-//		visitList(parameters);// Remove it for identifying method re-naming.
+		visitList(parameters);
 //		visitList(exceptionTypes);
 
 		// The body can be null when the method declaration is from a interface
