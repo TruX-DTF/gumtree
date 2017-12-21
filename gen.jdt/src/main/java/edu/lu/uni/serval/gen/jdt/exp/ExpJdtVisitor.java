@@ -388,9 +388,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			}
 			for (MethodInvocation method : methods) {
 				List<?> argumentsList = method.arguments();
-				pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName() + ":" + argumentsList.toString());
-				visitList(argumentsList);
+				pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName() + ":");//  + ":" + argumentsList.toString()
 				popNode();
+				visitList(argumentsList);
 			}
 //			for (Object obj : typeArguments) {
 //				Type typeArgu = (Type) obj; // TypeArugment: Collections.<T>emptyList()
@@ -514,9 +514,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 	@Override
 	public boolean visit(NumberLiteral node) {
 		String num = node.getToken();
-		if (num.endsWith("L") || num.endsWith("l")) {
-			num = "longNumber";
-		}
+//		if (num.endsWith("L") || num.endsWith("l")) {
+//			num = "longNumber";
+//		}
 		pushNode(node, num);
 		return false;
 	}
@@ -608,9 +608,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		}
 		SimpleName methodName = node.getName();
 		List<?> arguments = node.arguments();
-		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString());
-		visitList(arguments);
+		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName() + ":");//  + ":" + arguments.toString()
 		popNode();
+		visitList(arguments);
 		return false;
 	}
 
