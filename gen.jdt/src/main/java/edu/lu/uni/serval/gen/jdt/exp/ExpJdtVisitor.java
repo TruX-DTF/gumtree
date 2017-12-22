@@ -1232,9 +1232,9 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 
 		Statement body = node.getBody();
         if (body != null) {
-        	push(8, "Block", "TryBody", body.getStartPosition(), body.getLength());
+//        	push(8, "Block", "TryBody", body.getStartPosition(), body.getLength());
         	visitBody(body);
-        	popNode();
+//        	popNode();
         }
 //        visitBody(node.getBody());
 
