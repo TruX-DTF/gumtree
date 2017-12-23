@@ -388,18 +388,18 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 			}
 			for (MethodInvocation method : methods) {
 				List<?> argumentsList = method.arguments();
-				pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName() + ":");//  + ":" + argumentsList.toString()
-				popNode();
+				pushNode(method, "MethodName:" + method.getName().getFullyQualifiedName() + ":" + argumentsList.toString());
 				visitList(argumentsList);
+				popNode();
 			}
 //			for (Object obj : typeArguments) {
 //				Type typeArgu = (Type) obj; // TypeArugment: Collections.<T>emptyList()
 //				pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
 //				popNode();
 //			}
-			push(42, "SimpleName", "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString(), methodName.getStartPosition(), 
-					node.getStartPosition() + node.getLength() - methodName.getStartPosition());
-			visitList(arguments);
+			push(42, "SimpleName", "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString(), 
+					methodName.getStartPosition(), node.getStartPosition() + node.getLength() - methodName.getStartPosition());
+	    	visitList(arguments);
 	    	popNode();
 		}
 		return false;
@@ -608,7 +608,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		}
 		SimpleName methodName = node.getName();
 		List<?> arguments = node.arguments();
-		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName() + ":");//  + ":" + arguments.toString()
+		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString());
 		popNode();
 		visitList(arguments);
 		return false;
