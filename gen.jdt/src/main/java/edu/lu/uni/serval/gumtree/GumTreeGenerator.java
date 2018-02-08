@@ -90,4 +90,22 @@ public class GumTreeGenerator {
 		return gumTree;
 	}
 
+
+
+
+	public ITree generateITreeForJavaFileForCode(File javaFile) {
+		ITree gumTree = null;
+		try {
+			TreeContext tc = null;
+			tc = new CTreeGenerator().generateFromFile(javaFile);
+
+			if (tc != null){
+				gumTree = tc.getRoot();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return gumTree;
+	}
+
 }

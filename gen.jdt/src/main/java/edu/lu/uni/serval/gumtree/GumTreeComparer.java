@@ -63,5 +63,33 @@ public class GumTreeComparer {
 
 		return null;
 	}
+
+
+
+	public List<Action> compareTwoFilesWithGumTreeForCCode(File prevFile, File revFile) {
+		// Generate GumTree.
+		ITree oldTree = null;
+		ITree newTree = null;
+		try {
+			oldTree = new GumTreeGenerator().generateITreeForJavaFileForCode(prevFile);
+			newTree = new GumTreeGenerator().generateITreeForJavaFileForCode(revFile);
+		} catch (Exception e) {
+			if (oldTree == null) {
+				log.info("Null GumTree of Previous File: " + prevFile.getPath());
+			} else if (newTree == null) {
+				log.info("Null GumTree of Revised File: " + revFile.getPath());
+			}
+		}
+		if (oldTree != null && newTree != null) {
+			Matcher m = Matchers.getInstance().getMatcher(oldTree, newTree);
+			m.match();
+			ActionGenerator ag = new ActionGenerator(oldTree, newTree, m.getMappings());
+			ag.generate();
+			List<Action> actions = ag.getActions(); // change actions from bug to patch
+			return actions;
+		}
+
+		return null;
+	}
 	
 }
