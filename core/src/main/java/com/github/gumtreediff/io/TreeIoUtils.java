@@ -614,10 +614,14 @@ public final class TreeIoUtils {
         private static final QName TYPE_LABEL = new QName("typeLabel");
         private static final String POS = "pos";
         private static final String LENGTH = "length";
+        private static final String LINE_BEFORE = "line_before";
+        private static final String LINE_AFTER = "line_after";
 
         static {
-            defaultUnserializers.add(POS, Integer::parseInt);
-            defaultUnserializers.add(LENGTH, Integer::parseInt);
+//            defaultUnserializers.add(POS, Integer::parseInt);
+//            defaultUnserializers.add(LENGTH, Integer::parseInt);
+            defaultUnserializers.add(LINE_BEFORE, Integer::parseInt);
+            defaultUnserializers.add(LINE_AFTER, Integer::parseInt);
         }
 
         public XmlInternalGenerator() {

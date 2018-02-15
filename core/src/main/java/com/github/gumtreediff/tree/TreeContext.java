@@ -76,6 +76,7 @@ public class TreeContext {
     public ITree createTree(int type, String label, String typeLabel) {
         registerTypeLabel(type, typeLabel);
         return new Tree(type, label);
+
     }
 
     public ITree createTree(ITree... trees) {
@@ -276,9 +277,13 @@ public class TreeContext {
         public void load(ITree tree, String key, String value) throws Exception {
             MetadataUnserializer s = serializers.get(key);
             if (s != null) {
-                if (key.equals("pos"))
+//                if (key.equals("pos"))
+////                    tree.setPos(Integer.parseInt(value));
+//                else if (key.equals("length"))
+////                    tree.setLength(Integer.parseInt(value));
+                if (key.equals("line_before"))
                     tree.setPos(Integer.parseInt(value));
-                else if (key.equals("length"))
+                else if (key.equals("line_after"))
                     tree.setLength(Integer.parseInt(value));
                 else
                     tree.setMetadata(key, s.fromString(value));

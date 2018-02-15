@@ -56,6 +56,7 @@ public class Tree extends AbstractTree implements ITree {
         this.children = new ArrayList<>();
     }
 
+
     // Only used for cloning ...
     private Tree(Tree other) {
         this.type = other.type;
