@@ -24,10 +24,28 @@ import com.github.gumtreediff.tree.ITree;
 
 public class Move extends Addition {
 
+	private ITree newNode;
+	
     public Move(ITree node, ITree parent, int pos) {
         super(node, parent, pos);
     }
-
+    
+    /**
+     * 
+     * @param node, old node.
+     * @param parent, parent of old node.
+     * @param newNode, new node.
+     * @param pos, position of the new node in the children array list of its corresponding old parent node.
+     */
+    public Move(ITree node, ITree parent, ITree newNode, int pos) {
+        this(node, parent, pos);
+        this.newNode = newNode;
+    }
+    
+    public ITree getNewNode() {
+    	return this.newNode;
+    }
+    
     @Override
     public String getName() {
         return "MOV";

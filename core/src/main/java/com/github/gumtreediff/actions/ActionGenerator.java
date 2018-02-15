@@ -124,7 +124,8 @@ public class ActionGenerator {
                     }
                     if (!z.equals(v)) {
                         int k = findPos(x);
-                        Action mv = new Move(origSrcTrees.get(w.getId()), origSrcTrees.get(z.getId()), k);
+//                        Action mv = new Move(origSrcTrees.get(w.getId()), origSrcTrees.get(z.getId()), k);
+                        Action mv = new Move(origSrcTrees.get(w.getId()), origSrcTrees.get(z.getId()), x, k);
                         actions.add(mv);
                         //System.out.println(mv);
                         int oldk = w.positionInParent();
@@ -180,7 +181,8 @@ public class ActionGenerator {
                 if (origMappings.has(a, b)) {
                     if (!lcs.contains(new Mapping(a, b))) {
                         int k = findPos(b);
-                        Action mv = new Move(origSrcTrees.get(a.getId()), origSrcTrees.get(w.getId()), k);
+//                        Action mv = new Move(origSrcTrees.get(a.getId()), origSrcTrees.get(w.getId()), k);
+                        Action mv = new Move(origSrcTrees.get(a.getId()), origSrcTrees.get(w.getId()), b, k);
                         actions.add(mv);
                         //System.out.println(mv);
                         int oldk = a.positionInParent();

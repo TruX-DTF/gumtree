@@ -25,23 +25,24 @@ import com.github.gumtreediff.tree.ITree;
 public abstract class Addition extends Action {
 
     protected ITree parent;
+    protected int pos;//index position of the new node in the children array list of its corresponding old parent node.
 
     public Addition(ITree node, ITree parent, int pos) {
     	super(node, node.getPos(), node.getLength());
         this.parent = parent;
+        this.pos = pos;
     }
 
     public ITree getParent() {
         return parent;
     }
 
+    public int getPos() {
+    	return pos;
+    }
+    
     @Override
     public String toString() {
-//    	boolean newParent = false;
-//    	if (!parent.isRoot() && (parent.toShortString().startsWith("8@@") || parent.toShortString().startsWith("0@@Block:"))) {
-//    		newParent = true;
-//    	}
-//    	return getName() + " " + node.toShortString() + " @TO@ " + (newParent ? parent.getParent().toShortString() : parent.toShortString()) + " @AT@ " + position + " @LENGTH@ " + length;
         return getName() + " " + node.toShortString() + " @TO@ " + parent.toShortString() + " @AT@ " + position + " @LENGTH@ " + length;
     }
 
