@@ -397,7 +397,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 //				pushNode(typeArgu, "TypeArgument:" + typeArgu.getClass().getSimpleName() + ":" + typeArgu.toString());
 //				popNode();
 //			}
-			push(42, "SimpleName", "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString(), 
+			push(42, "SimpleName", "MethodName:" + methodName.getFullyQualifiedName() + ":" + arguments.toString(),
 					methodName.getStartPosition(), node.getStartPosition() + node.getLength() - methodName.getStartPosition());
 	    	visitList(arguments);
 	    	popNode();

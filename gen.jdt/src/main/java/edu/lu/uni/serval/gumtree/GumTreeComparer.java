@@ -2,7 +2,9 @@ package edu.lu.uni.serval.gumtree;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
+import com.github.gumtreediff.matchers.Mapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +60,7 @@ public class GumTreeComparer {
 			ActionGenerator ag = new ActionGenerator(oldTree, newTree, m.getMappings());
 			ag.generate();
 			List<Action> actions = ag.getActions(); // change actions from bug to patch
+
 			return actions;
 		}
 

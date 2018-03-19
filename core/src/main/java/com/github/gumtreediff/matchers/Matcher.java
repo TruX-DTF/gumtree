@@ -75,17 +75,17 @@ public abstract class Matcher {
         }
     }
 
-    protected double chawatheSimilarity(ITree src, ITree dst) {
+    public double chawatheSimilarity(ITree src, ITree dst) {
         int max = Math.max(src.getDescendants().size(), dst.getDescendants().size());
         return (double) numberOfCommonDescendants(src, dst) / (double) max;
     }
 
-    protected double diceSimilarity(ITree src, ITree dst) {
+    public double diceSimilarity(ITree src, ITree dst) {
         double c = (double) numberOfCommonDescendants(src, dst);
         return (2D * c) / ((double) src.getDescendants().size() + (double) dst.getDescendants().size());
     }
 
-    protected double jaccardSimilarity(ITree src, ITree dst) {
+    public double jaccardSimilarity(ITree src, ITree dst) {
         double num = (double) numberOfCommonDescendants(src, dst);
         double den = (double) src.getDescendants().size() + (double) dst.getDescendants().size() - num;
         return num / den;

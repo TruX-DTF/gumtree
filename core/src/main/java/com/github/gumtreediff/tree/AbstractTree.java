@@ -22,9 +22,10 @@ package com.github.gumtreediff.tree;
 
 import com.github.gumtreediff.tree.hash.HashUtils;
 
+import java.io.Serializable;
 import java.util.*;
 
-public abstract class AbstractTree implements ITree {
+public abstract class AbstractTree implements ITree,Serializable {
 
     protected int id;
 
