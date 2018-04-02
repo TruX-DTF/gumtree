@@ -22,7 +22,9 @@ package com.github.gumtreediff.actions.model;
 
 import com.github.gumtreediff.tree.ITree;
 
-public abstract class Action implements Comparable<Action> {
+import java.io.Serializable;
+
+public abstract class Action implements Comparable<Action>,Serializable {
 
     protected ITree node;
     protected Integer position;
