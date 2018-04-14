@@ -860,7 +860,7 @@ public class ExpJdtVisitor extends CdJdtVisitor {
 		pushNode(methodName, "MethodName:" + methodName.getFullyQualifiedName());
 		popNode();
 		visitList(parameters);
-//		visitList(exceptionTypes);
+		visitList(exceptionTypes);
 
 		// The body can be null when the method declaration is from a interface
 		Block methodBody = node.getBody();
