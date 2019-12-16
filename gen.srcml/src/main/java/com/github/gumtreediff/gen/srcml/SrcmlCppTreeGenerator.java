@@ -20,6 +20,10 @@
 package com.github.gumtreediff.gen.srcml;
 
 import com.github.gumtreediff.gen.Register;
+import com.github.gumtreediff.tree.TreeContext;
+
+import java.io.IOException;
+import java.io.Reader;
 
 @Register(id = "cpp-srcml", accept = "\\.(CC?|cpp|cc|hh?|hpp)$")
 public class SrcmlCppTreeGenerator extends AbstractSrcmlTreeGenerator {
@@ -27,5 +31,10 @@ public class SrcmlCppTreeGenerator extends AbstractSrcmlTreeGenerator {
     @Override
     public String getLanguage() {
         return "C++";
+    }
+
+    @Override
+    protected TreeContext generate(Reader r, int astParserType) throws IOException {
+        return null;
     }
 }

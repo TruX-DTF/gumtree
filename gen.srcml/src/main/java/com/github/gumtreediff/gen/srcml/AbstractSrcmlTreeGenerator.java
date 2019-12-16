@@ -21,8 +21,10 @@ package com.github.gumtreediff.gen.srcml;
 
 import com.github.gumtreediff.gen.TreeGenerator;
 import com.github.gumtreediff.io.LineReader;
+import com.github.gumtreediff.io.TreeIoUtils;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
+import com.github.gumtreediff.tree.TreeUtils;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -30,10 +32,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.*;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
-    private static final String SRCML_CMD = System.getProperty("gumtree.srcml.path", "srcml");
+//    private static final String SRCML_CMD = System.getProperty("gumtree.srcml.path", "srcml");
+    private static final String SRCML_CMD = "/Users/haoyetian/Downloads/srcML/src2srcml";
 
     private static final QName LINE = new  QName("http://www.srcML.org/srcML/position", "line", "pos");
 
@@ -51,6 +55,14 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
         return getTreeContext(xml);
     }
 
+    public static <T, E> List<T> getKeysByValue(Map<T, E> map, E value) {
+        return map.entrySet()
+                .stream()
+                .filter(entry -> Objects.equals(entry.getValue(), value))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
     public TreeContext getTreeContext(String xml) {
         XMLInputFactory fact = XMLInputFactory.newInstance();
         TreeContext context = new TreeContext();
@@ -65,7 +77,17 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                     if (typeLabel.equals("position"))
                         setLength(trees.peek(), s);
                     else {
+                        //TODO call map and put your numbers.
+                        List<Integer> keysByValue = getKeysByValue(NodeMap_new.map, typeLabel);
+                        if (keysByValue.size() == 0){
+                            System.out.println(typeLabel);
+                        }
+
                         int type = typeLabel.hashCode();
+                        if(keysByValue.size() != 1){
+                            System.err.println("More than 1");
+                        }
+                        type = keysByValue.get(0);
                         ITree t = context.createTree(type, "", typeLabel);
 
                         if (trees.isEmpty()) {

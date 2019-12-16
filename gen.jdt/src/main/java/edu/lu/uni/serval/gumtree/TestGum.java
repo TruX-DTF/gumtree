@@ -26,11 +26,15 @@ public class TestGum {
     private static Logger log = LoggerFactory.getLogger(TestGum.class);
 
     public static void main(String[] args) {
-        String root = "/Volumes/data/bugStudy_backup/dataset/GumTreeInputBug/AMQP";
-        File oldFile = new File(root +"/revFiles/"+"5eb845_5c1c61_spring-rabbit#src#main#java#org#springframework#amqp#rabbit#listener#DirectMessageListenerContainer.java");
-        File newFile = new File(root +"/prevFiles/prev_"+"5eb845_5c1c61_spring-rabbit#src#main#java#org#springframework#amqp#rabbit#listener#DirectMessageListenerContainer.java");
+        String root = "/Users/haoyetian/Documents/Lu_code/";
+//        File oldFile = new File(root +"/revFiles/"+"5eb845_5c1c61_spring-rabbit#src#main#java#org#springframework#amqp#rabbit#listener#DirectMessageListenerContainer.java");
+        File oldFile = new File(root +"first.c");
+//        File newFile = new File(root +"/prevFiles/prev_"+"5eb845_5c1c61_spring-rabbit#src#main#java#org#springframework#amqp#rabbit#listener#DirectMessageListenerContainer.java");
+        File newFile = new File(root +"second.c");
 
-        List<Action> gumTreeResults = compareTwoFilesWithGumTree(root,newFile,oldFile);
+//        List<Action> gumTreeResults = compareTwoFilesWithGumTree(root,newFile,oldFile);
+
+        List<Action> gumTreeResults = new GumTreeComparer().compareCFilesWithGumTree(oldFile, newFile);
 
     }
 

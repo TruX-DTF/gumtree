@@ -31,7 +31,7 @@ import com.github.gumtreediff.tree.TreeContext;
 
 public class RhinoTreeVisitor implements NodeVisitor {
 
-    private Map<AstNode, ITree> trees;
+    private Map<, ITree> trees;
     private TreeContext context;
 
     public RhinoTreeVisitor(AstRoot root) {

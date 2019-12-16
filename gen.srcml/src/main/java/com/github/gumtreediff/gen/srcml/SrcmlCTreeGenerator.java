@@ -21,6 +21,7 @@ package com.github.gumtreediff.gen.srcml;
 
 import com.github.gumtreediff.gen.Register;
 import com.github.gumtreediff.gen.TreeGenerator;
+import com.github.gumtreediff.io.LineReader;
 import com.github.gumtreediff.io.TreeIoUtils;
 import com.github.gumtreediff.tree.TreeContext;
 import com.github.gumtreediff.tree.TreeContext.MetadataSerializers;
@@ -36,5 +37,13 @@ public class SrcmlCTreeGenerator extends AbstractSrcmlTreeGenerator {
     @Override
     public String getLanguage() {
         return "C";
+    }
+
+    @Override
+    protected TreeContext generate(Reader r, int astParserType) throws IOException {
+            LineReader lr;
+            lr = new LineReader(r);
+            String xml = getXml(lr);
+            return getTreeContext(xml);
     }
 }

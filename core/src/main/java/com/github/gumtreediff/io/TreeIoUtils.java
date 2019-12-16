@@ -37,10 +37,10 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.*;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Stack;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public final class TreeIoUtils {
 
@@ -624,6 +624,14 @@ public final class TreeIoUtils {
             defaultUnserializers.add(LINE_AFTER, Integer::parseInt);
         }
 
+        public static <T, E> List<T> getKeysByValue(Map<T, E> map, E value) {
+            return map.entrySet()
+                    .stream()
+                    .filter(entry -> Objects.equals(entry.getValue(), value))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+        }
+
         public XmlInternalGenerator() {
             unserializers.addAll(defaultUnserializers);
         }
@@ -641,7 +649,10 @@ public final class TreeIoUtils {
                         StartElement s = (StartElement) e;
                         if (!s.getName().getLocalPart().equals("tree")) // FIXME need to deal with options
                             continue;
-                        int type = Integer.parseInt(s.getAttributeByName(TYPE).getValue());
+//                        int type = Integer.parseInt(s.getAttributeByName(TYPE).getValue());
+                        List<Integer> keysByValue = getKeysByValue(CNodeMap.map, s.getAttributeByName(TYPE).getValue());
+                        int type = keysByValue.get(0);
+
 
                         ITree t = context.createTree(type,
                                 labelForAttribute(s, LABEL), labelForAttribute(s, TYPE_LABEL));

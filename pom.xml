@@ -26,6 +26,7 @@
         <module>gen.antlr-php</module>
         <module>gen.antlr-xml</module> -->
         <module>gen.jdt</module>
+        <module>gen.srcml</module>
         <!-- <module>gen.js</module>
         <module>gen.ruby</module>
         <module>gen.sax</module>
@@ -40,6 +41,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

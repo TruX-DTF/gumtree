@@ -19,23 +19,19 @@
 
 package com.github.gumtreediff.gen.srcml;
 
-import com.github.gumtreediff.gen.Register;
-import com.github.gumtreediff.tree.TreeContext;
+import com.github.gumtreediff.tree.ITree;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 
-@Register(id = "cs-srcml", accept = "\\.cs$")
-public class SrcmlCsTreeGenerator extends AbstractSrcmlTreeGenerator {
+public class TestSrcmlCGenerator {
 
-    @Override
-    public String getLanguage() {
-        return "C#";
+    @Test
+    public void testSimple() throws IOException {
+        String input = "/Users/haoyetian/Documents/Lu_code/first.c";
+        ITree t = new SrcmlCppTreeGenerator().generateFromFile(input).getRoot();
+        Assert.assertEquals(148, t.getSize());
     }
 
-    @Override
-    protected TreeContext generate(Reader r, int astParserType) throws IOException {
-        return null;
-    }
 }
