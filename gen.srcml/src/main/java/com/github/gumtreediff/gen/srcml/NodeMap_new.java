@@ -106,6 +106,14 @@ public class NodeMap_new {
             map.put(93	,"macro");
             map.put(94	,"value");
             map.put(95	,"import");
+            map.put(96	,"constructor_decl");
+            map.put(97	,"empty_stmt");
+            map.put(98	,"escape");
+            map.put(99	,"annotation");
+            map.put(100	,"alignof");
+            map.put(101	,"forever");
+
+
 
         }
 

@@ -37,11 +37,11 @@ import java.util.stream.Collectors;
 public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
 //    private static final String SRCML_CMD = System.getProperty("gumtree.srcml.path", "srcml");
-    private static final String SRCML_CMD = "/Users/haoyetian/Downloads/srcML/src2srcml";
+    private static final String SRCML_CMD = "/Users/anil.koyuncu/Downloads/srcML/src2srcml";
 
-    private static final QName LINE = new  QName("http://www.srcML.org/srcML/position", "line", "pos");
+    private static final QName LINE = new  QName("http://www.sdml.info/srcML/position", "line", "pos");
 
-    private static final QName COLUMN = new  QName("http://www.srcML.org/srcML/position", "column", "pos");
+    private static final QName COLUMN = new  QName("http://www.sdml.info/srcML/position", "column", "pos");
 
     private LineReader lr;
 
