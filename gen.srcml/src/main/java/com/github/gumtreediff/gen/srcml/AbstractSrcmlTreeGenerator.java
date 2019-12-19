@@ -34,6 +34,9 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
+
 public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
 //    private static final String SRCML_CMD = System.getProperty("gumtree.srcml.path", "srcml");
@@ -46,7 +49,9 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
     private LineReader lr;
 
     private Set<String> labeled = new HashSet<String>(
-            Arrays.asList("specifier", "name", "comment", "literal", "operator"));
+            Arrays.asList("specifier", "name", "comment", "literal", "operator","expr","type"));
+
+
 
     @Override
     public TreeContext generate(Reader r) throws IOException {
@@ -105,10 +110,16 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                         trees.pop();
                 } else if (ev.isCharacters()) {
                     Characters chars = ev.asCharacters();
-                    if (!chars.isWhiteSpace()
-                            && trees.peek().getLabel().equals("")
-                            && labeled.contains(context.getTypeLabel(trees.peek().getType())))
-                        trees.peek().setLabel(chars.getData().trim());
+//                    if (!chars.isWhiteSpace()
+//                            && trees.peek().getLabel().equals("")
+//                            && labeled.contains(context.getTypeLabel(trees.peek().getType())))
+//                    if(labeled.contains(context.getTypeLabel(trees.peek().getType()))){
+                        String label = trees.peek().getLabel();
+                        label = label + chars.getData().trim();
+                        trees.peek().setLabel(label);
+//                        trees.peek().setLabel(chars.getData().trim());
+
+
                 }
             }
             fixPos(context);
@@ -134,6 +145,9 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                     }
                 }
             }
+//            else{
+//                t.setLength(t.getLabel().length());
+//            }
         }
     }
 
