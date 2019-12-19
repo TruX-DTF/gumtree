@@ -22,8 +22,8 @@ public class GumTreeCComparer {
         try {
 //			oldTree = new GumTreeGenerator().generateITreeForCFileForCode(prevFile);
 //			newTree = new GumTreeGenerator().generateITreeForCFileForCode(revFile);
-			oldTree = new SrcmlCppTreeGenerator().generateFromFile(prevFile).getRoot();
-			newTree = new SrcmlCppTreeGenerator().generateFromFile(revFile).getRoot();
+			oldTree = new SrcmlCTreeGenerator().generateFromFile(prevFile).getRoot();
+			newTree = new SrcmlCTreeGenerator().generateFromFile(revFile).getRoot();
         } catch (Exception e) {
             if (oldTree == null) {
                 log.info("Null GumTree of Previous File: " + prevFile.getPath());

@@ -29,7 +29,7 @@ public class TestSrcmlCGenerator {
 
     @Test
     public void testSimple() throws IOException {
-        String input = "/Users/haoyetian/Documents/Lu_code/first.c";
+        String input = "/Users/anil.koyuncu/projects/test/fixminer-core/python/data/gumInputLinux/revFiles/7f52f3_3845d29_drivers#pci#host#pcie-altera.c";
         ITree t = new SrcmlCppTreeGenerator().generateFromFile(input).getRoot();
         Assert.assertEquals(148, t.getSize());
     }

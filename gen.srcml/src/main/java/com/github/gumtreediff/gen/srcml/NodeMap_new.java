@@ -11,8 +11,8 @@ public class NodeMap_new {
 
         static {
             map = new HashMap<Integer, String>();
-            map.put(1, "unit");
-            map.put(2,"comment");
+            map.put(1   ,"unit");
+            map.put(2   ,"comment");
             map.put(3	,"name");
             map.put(4	,"type");
             map.put(5	,"condition");
@@ -112,6 +112,7 @@ public class NodeMap_new {
             map.put(99	,"annotation");
             map.put(100	,"alignof");
             map.put(101	,"forever");
+            map.put(102	,"extern");
 
 
 
