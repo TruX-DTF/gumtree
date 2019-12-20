@@ -1,13 +1,17 @@
 package com.github.gumtreediff.gen.srcml;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class NodeMap_new {
 
 
 
     public static Map<Integer, String> map;
+    public static Map<Integer, String> StatementMap;
 
         static {
             map = new HashMap<Integer, String>();
@@ -117,5 +121,69 @@ public class NodeMap_new {
 
 
         }
+    static {
+        StatementMap = new HashMap<Integer, String>();
+
+        StatementMap.put(11	,"assert");
+        StatementMap.put(16	,"expr_stmt");
+        StatementMap.put(18	,"decl_stmt");
+        StatementMap.put(21	,"break");
+        StatementMap.put(22	,"continue");
+        StatementMap.put(23	,"goto");
+        StatementMap.put(24	,"label");
+        StatementMap.put(25	,"typedef");
+        StatementMap.put(26	,"asm");
+        StatementMap.put(27	,"enum");
+        StatementMap.put(30	,"while");
+        StatementMap.put(31	,"lock");
+        StatementMap.put(32	,"fixed");
+        StatementMap.put(33	,"checked");
+        StatementMap.put(34	,"unchecked");
+        StatementMap.put(35	,"unsafe");
+        StatementMap.put(36	,"do");
+        StatementMap.put(37	,"switch");
+        StatementMap.put(38	,"case");
+        StatementMap.put(39	,"default");
+        StatementMap.put(40	,"for");
+        StatementMap.put(41	,"foreach");
+        StatementMap.put(46	,"function_decl");
+        StatementMap.put(49	,"return");
+        StatementMap.put(59	,"struct");
+        StatementMap.put(60	,"struct_decl");
+        StatementMap.put(61	,"union");
+        StatementMap.put(62	,"union_decl");
+        StatementMap.put(63	,"class");
+        StatementMap.put(64	,"class_decl");
+        StatementMap.put(70	,"try");
+        StatementMap.put(71	,"catch");
+        StatementMap.put(72	,"finally");
+        StatementMap.put(73	,"throw");
+        StatementMap.put(74	,"throws");
+        StatementMap.put(80	,"include");
+        StatementMap.put(81	,"define");
+        StatementMap.put(82	,"undef");
+        StatementMap.put(84	,"if");
+        StatementMap.put(85	,"ifdef");
+        StatementMap.put(86	,"ifndef");
+        StatementMap.put(87	,"else");
+        StatementMap.put(88	,"elif");
+        StatementMap.put(89	,"endif");
+        StatementMap.put(90	,"then");
+        StatementMap.put(91	,"pragma");
+        StatementMap.put(92	,"error");
+        StatementMap.put(93	,"macro");
+        StatementMap.put(96	,"constructor_decl");
+
+
+
+    }
+
+    public static <T, E> List<T> getKeysByValue(Map<T, E> map, E value) {
+        return map.entrySet()
+                .stream()
+                .filter(entry -> Objects.equals(entry.getValue(), value))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
 
 }
