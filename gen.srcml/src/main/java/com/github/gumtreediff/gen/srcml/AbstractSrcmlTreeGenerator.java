@@ -49,7 +49,8 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
     private LineReader lr;
 
     private Set<String> labeled = new HashSet<String>(
-            Arrays.asList("specifier", "name", "comment", "literal", "operator","expr","type"));
+//            Arrays.asList("comment"));
+            Arrays.asList("specifier", "name",  "argument","expr","type","comment"));
 
 
 
@@ -110,14 +111,17 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                         trees.pop();
                 } else if (ev.isCharacters()) {
                     Characters chars = ev.asCharacters();
-//                    if (!chars.isWhiteSpace()
-//                            && trees.peek().getLabel().equals("")
-//                            && labeled.contains(context.getTypeLabel(trees.peek().getType())))
+                    if (!chars.isWhiteSpace()
+                            && trees.peek().getLabel().equals("")
+                            && labeled.contains(context.getTypeLabel(trees.peek().getType()))
+                    ) {
 //                    if(labeled.contains(context.getTypeLabel(trees.peek().getType()))){
+
                         String label = trees.peek().getLabel();
                         label = label + chars.getData().trim();
                         trees.peek().setLabel(label);
 //                        trees.peek().setLabel(chars.getData().trim());
+                    }
 
 
                 }
@@ -137,17 +141,23 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                 if (t.getPos() == ITree.NO_VALUE || t.getLength() == ITree.NO_VALUE) {
                     ITree firstChild = t.getChild(0);
                     t.setPos(firstChild.getPos());
-                    if (t.getChildren().size() == 1)
+                    if (t.getChildren().size() == 1) {
                         t.setLength(firstChild.getLength());
+//                        t.setLabel(t.getLabel() + firstChild.getLabel());
+                    }
                     else {
                         ITree lastChild = t.getChild(t.getChildren().size() - 1);
                         t.setLength(lastChild.getEndPos() - firstChild.getPos());
+//                        t.setLabel(t.getLabel() + t.getChildrenLabels());
                     }
                 }
+                if(t.getType() != 6 ) {
+                    t.setLabel(t.getLabel() + t.getChildrenLabels());
+                }
             }
-//            else{
-//                t.setLength(t.getLabel().length());
-//            }
+            else{
+                t.setLength(t.getLabel().length());
+            }
         }
     }
 

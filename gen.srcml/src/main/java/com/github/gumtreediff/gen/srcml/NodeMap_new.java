@@ -127,6 +127,7 @@ public class NodeMap_new {
         StatementMap.put(11	,"assert");
         StatementMap.put(16	,"expr_stmt");
         StatementMap.put(18	,"decl_stmt");
+        StatementMap.put(19	,"decl");
         StatementMap.put(21	,"break");
         StatementMap.put(22	,"continue");
         StatementMap.put(23	,"goto");
@@ -146,6 +147,7 @@ public class NodeMap_new {
         StatementMap.put(39	,"default");
         StatementMap.put(40	,"for");
         StatementMap.put(41	,"foreach");
+        StatementMap.put(45	,"function");
         StatementMap.put(46	,"function_decl");
         StatementMap.put(49	,"return");
         StatementMap.put(59	,"struct");
