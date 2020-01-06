@@ -39,8 +39,11 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
-//    private static final String SRCML_CMD = System.getProperty("gumtree.srcml.path", "srcml");
-    private static final String SRCML_CMD = "/Users/anil.koyuncu/Downloads/srcML/src2srcml";
+
+
+
+    //    private static final String SRCML_CMD = System.getProperty("gumtree.srcml.path", "srcml");
+    private String SRCML_CMD = "/Users/anil.koyuncu/Downloads22/srcML/src2srcml";
 
     private static final QName LINE = new  QName("http://www.sdml.info/srcML/position", "line", "pos");
 
@@ -216,7 +219,17 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
     public abstract String getLanguage();
 
+
+
+    public void setSRCML_CMD(String SRCML_CMD) {
+        this.SRCML_CMD = SRCML_CMD;
+    }
+
+    public String getSRCML_CMD() {
+        return SRCML_CMD;
+    }
+
     public String[] getArguments(String file) {
-        return new String[]{SRCML_CMD, "-l", getLanguage(), "--position", file, "--tabs=1"};
+        return new String[]{getSRCML_CMD(), "-l", getLanguage(), "--position", file, "--tabs=1"};
     }
 }

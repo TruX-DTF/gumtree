@@ -15,15 +15,15 @@ public class GumTreeCComparer {
 
     private static Logger log = LoggerFactory.getLogger(GumTreeCComparer.class);
 
-    public List<Action> compareCFilesWithGumTree(File prevFile, File revFile) {
+    public List<Action> compareCFilesWithGumTree(File prevFile, File revFile, String srcmlPath) {
         // Generate GumTree.
         ITree oldTree = null;
         ITree newTree = null;
         try {
 //			oldTree = new GumTreeGenerator().generateITreeForCFileForCode(prevFile);
 //			newTree = new GumTreeGenerator().generateITreeForCFileForCode(revFile);
-			oldTree = new SrcmlCTreeGenerator().generateFromFile(prevFile).getRoot();
-			newTree = new SrcmlCTreeGenerator().generateFromFile(revFile).getRoot();
+			oldTree = new SrcmlCTreeGenerator(srcmlPath).generateFromFile(prevFile).getRoot();
+			newTree = new SrcmlCTreeGenerator(srcmlPath).generateFromFile(revFile).getRoot();
         } catch (Exception e) {
             if (oldTree == null) {
                 log.info("Null GumTree of Previous File: " + prevFile.getPath());

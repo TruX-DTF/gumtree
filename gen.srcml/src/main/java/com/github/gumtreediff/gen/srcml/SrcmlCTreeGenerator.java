@@ -34,10 +34,16 @@ import java.util.regex.Pattern;
 @Register(id = "c-srcml", accept = "\\.[ch]$")
 public class SrcmlCTreeGenerator extends AbstractSrcmlTreeGenerator {
 
+    public SrcmlCTreeGenerator(String SRCML_CMD) {
+        super.setSRCML_CMD(SRCML_CMD);
+    }
+
     @Override
     public String getLanguage() {
         return "C";
     }
+
+
 
     @Override
     protected TreeContext generate(Reader r, int astParserType) throws IOException {

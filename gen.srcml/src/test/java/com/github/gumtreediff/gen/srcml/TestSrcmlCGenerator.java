@@ -29,8 +29,8 @@ public class TestSrcmlCGenerator {
 
     @Test
     public void testSimple() throws IOException {
-        String input = "/Users/anil.koyuncu/projects/test/fixminer-core/python/data/gumInputLinux/revFiles/7f52f3_3845d29_drivers#pci#host#pcie-altera.c";
-        ITree t = new SrcmlCppTreeGenerator().generateFromFile(input).getRoot();
+        String input = "/Users/anilkoyuncu/Downloads/parmap-1.0-rc8/bytearray_stubs.c";
+        ITree t = new SrcmlCTreeGenerator("/Users/anilkoyuncu/Downloads/srcML2/src2srcml").generateFromFile(input).getRoot();
         Assert.assertEquals(148, t.getSize());
     }
 
