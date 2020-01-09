@@ -133,7 +133,7 @@ public class NodeMap_new {
         StatementMap.put(23	,"goto");
         StatementMap.put(24	,"label");
         StatementMap.put(25	,"typedef");
-        StatementMap.put(26	,"asm");
+//        StatementMap.put(26	,"asm");
         StatementMap.put(27	,"enum");
         StatementMap.put(30	,"while");
         StatementMap.put(31	,"lock");

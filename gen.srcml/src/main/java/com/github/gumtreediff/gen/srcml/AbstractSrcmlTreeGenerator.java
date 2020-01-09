@@ -53,7 +53,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
     private Set<String> labeled = new HashSet<String>(
 //            Arrays.asList("comment"));
-            Arrays.asList("specifier", "name",  "argument","expr","type","comment"));
+            Arrays.asList("specifier", "name",  "argument","expr","type","value"));
 
 
 
@@ -114,14 +114,20 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                         trees.pop();
                 } else if (ev.isCharacters()) {
                     Characters chars = ev.asCharacters();
-                    if (!chars.isWhiteSpace()
-                            && trees.peek().getLabel().equals("")
-                            && labeled.contains(context.getTypeLabel(trees.peek().getType()))
+                    if (
+//                            !chars.isWhiteSpace()
+//                            && trees.peek().getLabel().equals("")
+//                            &&
+                            labeled.contains(context.getTypeLabel(trees.peek().getType()))
                     ) {
 //                    if(labeled.contains(context.getTypeLabel(trees.peek().getType()))){
-
+//                        if(context.getTypeLabel(trees.peek().getType()) == "comment"){
+//                            System.out.println();
+//                        }
                         String label = trees.peek().getLabel();
-                        label = label + chars.getData().trim();
+//                        label = label + chars.getData().trim();
+                        label = label + chars.getData();
+                        label = label.replaceAll("\\n+|\\t+","");
                         trees.peek().setLabel(label);
 //                        trees.peek().setLabel(chars.getData().trim());
                     }
@@ -154,8 +160,22 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 //                        t.setLabel(t.getLabel() + t.getChildrenLabels());
                     }
                 }
+
                 if(t.getType() != 6 ) {
-                    t.setLabel(t.getLabel() + t.getChildrenLabels());
+                    String label = t.getLabel() + t.getChildrenLabels();
+                    label = label.replaceAll("\\n+|\\t+","");
+                    t.setLabel(label);
+                }else{
+                    //17,
+                    //45
+                    //87
+                    if (t.getParent().getType() == 45) {
+                        t.setLabel("{}");
+                    }else{
+                        String label = t.getLabel() + t.getChildrenLabels();
+                        label = label.replaceAll("\\n+|\\t+","");
+                        t.setLabel(label);
+                    }
                 }
             }
             else{
