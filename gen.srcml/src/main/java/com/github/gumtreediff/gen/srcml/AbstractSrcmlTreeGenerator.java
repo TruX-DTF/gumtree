@@ -56,7 +56,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
     private Set<String> labeled = new HashSet<String>(
 //            Arrays.asList("comment"));
-            Arrays.asList("specifier", "name",  "argument","expr","type","value","index","operator","literal","incr"));
+            Arrays.asList("specifier", "name",  "argument","expr","type","value","index","operator","literal","incr","modifier"));
 
     private StringBuilder currentLabel;
 
@@ -270,7 +270,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                 }else if (t.getLabel().equals("")){
 
 //                    System.out.println(t.getType());
-                    if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 ||  t.getType() == 53 || t.getType() == 27){
+                    if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 ||  t.getType() == 53 || t.getType() == 27|| NodeMap_new.StatementMap.containsKey(t.getParent().getType())){
                         t.setLabel(t.getLabel() + t.getChildrenLabels());
 
                     }

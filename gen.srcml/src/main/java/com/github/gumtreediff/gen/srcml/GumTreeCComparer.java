@@ -37,10 +37,10 @@ public class GumTreeCComparer {
             }
         }
 //
-        if(checkTree(oldTree) || checkTree(newTree)){
-            log.debug("Not parsebable " + prevFile.getPath());
-            return null;
-        }
+//        if(checkTree(oldTree) || checkTree(newTree)){
+//            log.debug("Not parsebable " + prevFile.getPath());
+//            return null;
+//        }
 
         if (oldTree != null && newTree != null) {
             Matcher m = Matchers.getInstance().getMatcher(oldTree, newTree);

@@ -204,122 +204,158 @@ public class NodeMap_new {
     }
     static {
         StatementMap = new HashMap<Integer, String>();
-
-        StatementMap.put(14	,	"assert");
-        StatementMap.put(15	,	"generic_selection");
-        StatementMap.put(16	,	"selector");
-        StatementMap.put(17	,	"association_list");
-        StatementMap.put(18	,	"association");
-        StatementMap.put(19	,	"expr_stmt");
-//        StatementMap.put(20	,	"expr");
-        StatementMap.put(21	,	"decl_stmt");
-        StatementMap.put(22	,	"decl");
-        StatementMap.put(23	,	"init");
-        StatementMap.put(24	,	"range");
-        StatementMap.put(25	,	"break");
-        StatementMap.put(26	,	"continue");
-        StatementMap.put(27	,	"goto");
-        StatementMap.put(28	,	"label");
-        StatementMap.put(29	,	"typedef");
-        StatementMap.put(30	,	"asm");
-        StatementMap.put(31	,	"macro");
-        StatementMap.put(32	,	"enum");
-        StatementMap.put(33	,	"enum_decl");
         StatementMap.put(34	,	"if");
-        StatementMap.put(35	,	"ternary");
+        StatementMap.put(8	,	"condition");
         StatementMap.put(36	,	"then");
         StatementMap.put(37	,	"else");
         StatementMap.put(38	,	"elseif");
         StatementMap.put(39	,	"while");
-        StatementMap.put(40	,	"typeof");
+        StatementMap.put(45	,	"for");
         StatementMap.put(41	,	"do");
+        StatementMap.put(25	,	"break");
+        StatementMap.put(26	,	"continue");
+        StatementMap.put(53	,	"return");
         StatementMap.put(42	,	"switch");
         StatementMap.put(43	,	"case");
         StatementMap.put(44	,	"default");
-        StatementMap.put(45	,	"for");
-        StatementMap.put(46	,	"foreach");
-        StatementMap.put(47	,	"control");
+        StatementMap.put(9	,	"block");
+        StatementMap.put(27	,	"goto");
+        StatementMap.put(28	,	"label");
 
-        StatementMap.put(49	,	"function");
-        StatementMap.put(50	,	"function_decl");
-        StatementMap.put(53	,	"return");
-
-        StatementMap.put(63	,	"struct");
-        StatementMap.put(64	,	"struct_decl");
-        StatementMap.put(65	,	"union");
-        StatementMap.put(66	,	"union_decl");
-        StatementMap.put(67	,	"class");
-        StatementMap.put(68	,	"class_decl");
-
-        StatementMap.put(73	,	"forever");
-        StatementMap.put(74	,	"emit");
-        StatementMap.put(88	,	"throw");
-
-        StatementMap.put(95	,	"include");
-        StatementMap.put(96	,	"define");
-
-        StatementMap.put(114	,	"lock");
-        StatementMap.put(115	,	"fixed");
-        StatementMap.put(116	,	"checked");
-        StatementMap.put(117	,	"unchecked");
-        StatementMap.put(118	,	"unsafe");
-        StatementMap.put(119	,	"using_stmt");
-
-//        StatementMap.put(14	,"assert");
-//        StatementMap.put(16	,"expr_stmt");
-//        StatementMap.put(18	,"decl_stmt");
-//        StatementMap.put(19	,"decl");
-//        StatementMap.put(21	,"break");
-//        StatementMap.put(22	,"continue");
-//        StatementMap.put(23	,"goto");
-//        StatementMap.put(24	,"label");
-//        StatementMap.put(25	,"typedef");
-////        StatementMap.put(26	,"asm");
-//        StatementMap.put(27	,"enum");
-//        StatementMap.put(30	,"while");
-//        StatementMap.put(31	,"lock");
-//        StatementMap.put(32	,"fixed");
-//        StatementMap.put(33	,"checked");
-//        StatementMap.put(34	,"unchecked");
-//        StatementMap.put(35	,"unsafe");
-//        StatementMap.put(36	,"do");
-//        StatementMap.put(37	,"switch");
-//        StatementMap.put(38	,"case");
-//        StatementMap.put(39	,"default");
-//        StatementMap.put(40	,"for");
-//        StatementMap.put(41	,"foreach");
-//        StatementMap.put(45	,"function");
-//        StatementMap.put(46	,"function_decl");
-//        StatementMap.put(49	,"return");
-//        StatementMap.put(59	,"struct");
-//        StatementMap.put(60	,"struct_decl");
-//        StatementMap.put(61	,"union");
-//        StatementMap.put(62	,"union_decl");
-//        StatementMap.put(63	,"class");
-//        StatementMap.put(64	,"class_decl");
-//        StatementMap.put(70	,"try");
-//        StatementMap.put(71	,"catch");
-//        StatementMap.put(72	,"finally");
-//        StatementMap.put(73	,"throw");
-//        StatementMap.put(74	,"throws");
-//        StatementMap.put(80	,"include");
-//        StatementMap.put(81	,"define");
-//        StatementMap.put(82	,"undef");
-//        StatementMap.put(84	,"if");
-//        StatementMap.put(85	,"ifdef");
-//        StatementMap.put(86	,"ifndef");
-//        StatementMap.put(87	,"else");
-//        StatementMap.put(88	,"elif");
-//        StatementMap.put(89	,"endif");
-//        StatementMap.put(90	,"then");
-//        StatementMap.put(91	,"pragma");
-//        StatementMap.put(92	,"error");
-//        StatementMap.put(93	,"macro");
-//        StatementMap.put(96	,"constructor_decl");
-
-
-
+//        StatementMap.put(21	,	"decl_stmt");
+//        StatementMap.put(22	,	"decl");
+//        StatementMap.put(50	,	"function_decl");
+//        StatementMap.put(49	,	"function");
+//        StatementMap.put(5	,	"modifier");
+//        StatementMap.put(29	,	"typedef");
+//        StatementMap.put(23	,	"init");
+//        StatementMap.put(24	,	"range");
+//        StatementMap.put(64	,	"struct_decl");
+//        StatementMap.put(63	,	"struct");
+//        StatementMap.put(65	,	"union");
+//        StatementMap.put(66	,	"union_decl");
+//        StatementMap.put(32	,	"enum");
+//        StatementMap.put(33	,	"enum_decl");
     }
+//    static {
+//        StatementMap = new HashMap<Integer, String>();
+//
+//        StatementMap.put(9	,	"block");
+//        StatementMap.put(14	,	"assert");
+//        StatementMap.put(15	,	"generic_selection");
+//        StatementMap.put(16	,	"selector");
+//        StatementMap.put(17	,	"association_list");
+//        StatementMap.put(18	,	"association");
+//        StatementMap.put(19	,	"expr_stmt");
+////        StatementMap.put(20	,	"expr");
+//        StatementMap.put(21	,	"decl_stmt");
+//        StatementMap.put(22	,	"decl");
+//        StatementMap.put(23	,	"init");
+//        StatementMap.put(24	,	"range");
+//        StatementMap.put(25	,	"break");
+//        StatementMap.put(26	,	"continue");
+//        StatementMap.put(27	,	"goto");
+//        StatementMap.put(28	,	"label");
+//        StatementMap.put(29	,	"typedef");
+//        StatementMap.put(30	,	"asm");
+//        StatementMap.put(31	,	"macro");
+//        StatementMap.put(32	,	"enum");
+//        StatementMap.put(33	,	"enum_decl");
+//        StatementMap.put(34	,	"if");
+//        StatementMap.put(35	,	"ternary");
+//        StatementMap.put(36	,	"then");
+//        StatementMap.put(37	,	"else");
+//        StatementMap.put(38	,	"elseif");
+//        StatementMap.put(39	,	"while");
+//        StatementMap.put(40	,	"typeof");
+//        StatementMap.put(41	,	"do");
+//        StatementMap.put(42	,	"switch");
+//        StatementMap.put(43	,	"case");
+//        StatementMap.put(44	,	"default");
+//        StatementMap.put(45	,	"for");
+//        StatementMap.put(46	,	"foreach");
+//        StatementMap.put(47	,	"control");
+//
+//        StatementMap.put(49	,	"function");
+//        StatementMap.put(50	,	"function_decl");
+//        StatementMap.put(53	,	"return");
+//
+//        StatementMap.put(63	,	"struct");
+//        StatementMap.put(64	,	"struct_decl");
+//        StatementMap.put(65	,	"union");
+//        StatementMap.put(66	,	"union_decl");
+//        StatementMap.put(67	,	"class");
+//        StatementMap.put(68	,	"class_decl");
+//
+//        StatementMap.put(73	,	"forever");
+//        StatementMap.put(74	,	"emit");
+//        StatementMap.put(88	,	"throw");
+//
+//        StatementMap.put(95	,	"include");
+//        StatementMap.put(96	,	"define");
+//
+//        StatementMap.put(114	,	"lock");
+//        StatementMap.put(115	,	"fixed");
+//        StatementMap.put(116	,	"checked");
+//        StatementMap.put(117	,	"unchecked");
+//        StatementMap.put(118	,	"unsafe");
+//        StatementMap.put(119	,	"using_stmt");
+//
+////        StatementMap.put(14	,"assert");
+////        StatementMap.put(16	,"expr_stmt");
+////        StatementMap.put(18	,"decl_stmt");
+////        StatementMap.put(19	,"decl");
+////        StatementMap.put(21	,"break");
+////        StatementMap.put(22	,"continue");
+////        StatementMap.put(23	,"goto");
+////        StatementMap.put(24	,"label");
+////        StatementMap.put(25	,"typedef");
+//////        StatementMap.put(26	,"asm");
+////        StatementMap.put(27	,"enum");
+////        StatementMap.put(30	,"while");
+////        StatementMap.put(31	,"lock");
+////        StatementMap.put(32	,"fixed");
+////        StatementMap.put(33	,"checked");
+////        StatementMap.put(34	,"unchecked");
+////        StatementMap.put(35	,"unsafe");
+////        StatementMap.put(36	,"do");
+////        StatementMap.put(37	,"switch");
+////        StatementMap.put(38	,"case");
+////        StatementMap.put(39	,"default");
+////        StatementMap.put(40	,"for");
+////        StatementMap.put(41	,"foreach");
+////        StatementMap.put(45	,"function");
+////        StatementMap.put(46	,"function_decl");
+////        StatementMap.put(49	,"return");
+////        StatementMap.put(59	,"struct");
+////        StatementMap.put(60	,"struct_decl");
+////        StatementMap.put(61	,"union");
+////        StatementMap.put(62	,"union_decl");
+////        StatementMap.put(63	,"class");
+////        StatementMap.put(64	,"class_decl");
+////        StatementMap.put(70	,"try");
+////        StatementMap.put(71	,"catch");
+////        StatementMap.put(72	,"finally");
+////        StatementMap.put(73	,"throw");
+////        StatementMap.put(74	,"throws");
+////        StatementMap.put(80	,"include");
+////        StatementMap.put(81	,"define");
+////        StatementMap.put(82	,"undef");
+////        StatementMap.put(84	,"if");
+////        StatementMap.put(85	,"ifdef");
+////        StatementMap.put(86	,"ifndef");
+////        StatementMap.put(87	,"else");
+////        StatementMap.put(88	,"elif");
+////        StatementMap.put(89	,"endif");
+////        StatementMap.put(90	,"then");
+////        StatementMap.put(91	,"pragma");
+////        StatementMap.put(92	,"error");
+////        StatementMap.put(93	,"macro");
+////        StatementMap.put(96	,"constructor_decl");
+//
+//
+//
+//    }
 
     public static <T, E> List<T> getKeysByValue(Map<T, E> map, E value) {
         return map.entrySet()
