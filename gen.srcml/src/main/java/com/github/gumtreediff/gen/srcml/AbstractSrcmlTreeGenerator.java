@@ -270,7 +270,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                 }else if (t.getLabel().equals("")){
 
 //                    System.out.println(t.getType());
-                    if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 ||  t.getType() == 53 || t.getType() == 27|| NodeMap_new.StatementMap.containsKey(t.getParent().getType())){
+                    if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 ||  t.getType() == 53 || t.getType() == 27|| NodeMap_new.StatementMap.containsKey(t.getType())){
                         t.setLabel(t.getLabel() + t.getChildrenLabels());
 
                     }
