@@ -194,13 +194,20 @@ public class NodeMap_new {
 
     static {
         DeclarationMap = new HashMap<Integer, String>();
-        DeclarationMap.put(19	,"decl"); //
-        DeclarationMap.put(45	,"function"); //
-        DeclarationMap.put(46	,"function_decl"); //
-        DeclarationMap.put(60	,"struct_decl"); //
-        DeclarationMap.put(62	,"union_decl"); //
-        DeclarationMap.put(64	,"class_decl"); //
-        DeclarationMap.put(96	,"constructor_decl");
+        DeclarationMap.put(21  ,       "decl_stmt");
+        DeclarationMap.put(22  ,       "decl");
+        DeclarationMap.put(50  ,       "function_decl");
+        DeclarationMap.put(49  ,       "function");
+        DeclarationMap.put(5   ,       "modifier");
+        DeclarationMap.put(29  ,       "typedef");
+        DeclarationMap.put(23  ,       "init");
+        DeclarationMap.put(24  ,       "range");
+        DeclarationMap.put(64  ,       "struct_decl");
+        DeclarationMap.put(63  ,       "struct");
+        DeclarationMap.put(65  ,       "union");
+        DeclarationMap.put(66  ,       "union_decl");
+        DeclarationMap.put(32  ,       "enum");
+        DeclarationMap.put(33  ,       "enum_decl");
     }
     static {
         StatementMap = new HashMap<Integer, String>();
@@ -212,8 +219,8 @@ public class NodeMap_new {
         StatementMap.put(39	,	"while");
         StatementMap.put(45	,	"for");
         StatementMap.put(41	,	"do");
-        StatementMap.put(25	,	"break");
-        StatementMap.put(26	,	"continue");
+//        StatementMap.put(25	,	"break");
+//        StatementMap.put(26	,	"continue");
         StatementMap.put(53	,	"return");
         StatementMap.put(42	,	"switch");
         StatementMap.put(43	,	"case");
@@ -222,20 +229,20 @@ public class NodeMap_new {
         StatementMap.put(27	,	"goto");
         StatementMap.put(28	,	"label");
 
-//        StatementMap.put(21	,	"decl_stmt");
-//        StatementMap.put(22	,	"decl");
-//        StatementMap.put(50	,	"function_decl");
-//        StatementMap.put(49	,	"function");
-//        StatementMap.put(5	,	"modifier");
-//        StatementMap.put(29	,	"typedef");
-//        StatementMap.put(23	,	"init");
-//        StatementMap.put(24	,	"range");
-//        StatementMap.put(64	,	"struct_decl");
-//        StatementMap.put(63	,	"struct");
-//        StatementMap.put(65	,	"union");
-//        StatementMap.put(66	,	"union_decl");
-//        StatementMap.put(32	,	"enum");
-//        StatementMap.put(33	,	"enum_decl");
+        StatementMap.put(21	,	"decl_stmt");
+        StatementMap.put(22	,	"decl");
+        StatementMap.put(50	,	"function_decl");
+        StatementMap.put(49	,	"function");
+        StatementMap.put(5	,	"modifier");
+        StatementMap.put(29	,	"typedef");
+        StatementMap.put(23	,	"init");
+        StatementMap.put(24	,	"range");
+        StatementMap.put(64	,	"struct_decl");
+        StatementMap.put(63	,	"struct");
+        StatementMap.put(65	,	"union");
+        StatementMap.put(66	,	"union_decl");
+        StatementMap.put(32	,	"enum");
+        StatementMap.put(33	,	"enum_decl");
     }
 //    static {
 //        StatementMap = new HashMap<Integer, String>();
