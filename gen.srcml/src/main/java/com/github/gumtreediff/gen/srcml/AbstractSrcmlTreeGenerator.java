@@ -220,6 +220,10 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
         for (ITree t : ctx.getRoot().postOrder()) {
 
             if (!t.isLeaf()) {
+                //put the keywords as labels
+                if(t.getType() == 34 | t.getType() ==37 || t.getType() ==38 || t.getType()==39 || t.getType() == 41 || t.getType()==45){
+                    t.setLabel(NodeMap_new.map.get(t.getType())+" "  +t.getLabel());
+                }
                 if (t.getPos() == ITree.NO_VALUE || t.getLength() == ITree.NO_VALUE) {
 
                     ITree firstChild = t.getChild(0);
