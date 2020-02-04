@@ -218,7 +218,9 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
     private void fixPos(TreeContext ctx) {
         for (ITree t : ctx.getRoot().postOrder()) {
-
+            if(t.getType() == 63){
+                t.getLabel();
+            }
             if (!t.isLeaf()) {
                 //put the keywords as labels
                 if(t.getType() == 34 | t.getType() ==37 || t.getType() ==38 || t.getType()==39 || t.getType() == 41 || t.getType()==45){
@@ -281,11 +283,11 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
 //                    System.out.println(t.getType());
                     if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 ||  t.getType() == 53 || t.getType() == 27|| NodeMap_new.StatementMap.containsKey(t.getType())){
-                        if(!NodeMap_new.DeclarationMap.containsKey(t.getType()) )//&& !(NodeMap_new.StatementMap.containsKey(t.getParent().getType())))
+//                        if(!NodeMap_new.DeclarationMap.containsKey(t.getType()) )//&& !(NodeMap_new.StatementMap.containsKey(t.getParent().getType())))
                             if (!((t.getType() == 9) && t.getChildren().size() == 1 && NodeMap_new.StatementMap.containsKey(t.getChild(0).getType())))
                                 t.setLabel(t.getLabel() + t.getChildrenLabels());
-                            else
-                                t.setLabel("");
+//                            else
+//                                t.setLabel("");
 
                     }
                 }
