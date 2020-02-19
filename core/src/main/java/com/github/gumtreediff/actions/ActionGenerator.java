@@ -29,10 +29,7 @@ import com.github.gumtreediff.tree.TreeUtils;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ActionGenerator {
 
@@ -92,7 +89,6 @@ public class ActionGenerator {
 
         lastId = newSrc.getSize() + 1;
         newMappings.link(srcFakeRoot, dstFakeRoot);
-
         List<ITree> bfsDst = TreeUtils.breadthFirst(origDst);
         for (ITree x: bfsDst) {
             ITree w = null;
@@ -150,6 +146,28 @@ public class ActionGenerator {
         }
 
         //FIXME should ensure isomorphism.
+        //haoye.tian create false parent action
+        ListIterator<Action> acts = actions.listIterator();
+        int length = actions.size();
+        ITree p = null;
+        for (int i=0;i < length; i++) {
+            p = actions.get(i).getNode().getParent();
+            if (p == null) {
+                continue;
+            }
+            boolean hasAction = false;
+            for (int j = 0; j < length; j++)
+                if (actions.get(j).getNode() == p) {
+                    hasAction = true;
+                    break;
+                }
+            if (!hasAction) {
+                actions.add(new Update(p, p, false));
+//                actions.add(new Update(origSrcTrees.get(newMappings.getSrc(p).getId()), p, false));
+                length += 1;
+            }
+        }
+
         return actions;
     }
 

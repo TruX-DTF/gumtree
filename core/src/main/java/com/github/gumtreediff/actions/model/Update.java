@@ -26,11 +26,19 @@ public class Update extends Action {
 
     private String value;
     private ITree newNode;
+    private boolean temp = true;
 
     public Update(ITree node, ITree newNode) {
         super(node, node.getPos(), node.getLength());
         this.value = newNode.getLabel();
         this.newNode = newNode;
+    }
+
+    public Update(ITree node, ITree newNode, boolean flag) {
+        super(node, node.getPos(), node.getLength());
+        this.value = newNode.getLabel();
+        this.newNode = newNode;
+        this.temp = flag;
     }
 
     @Override
@@ -44,6 +52,10 @@ public class Update extends Action {
     
     public ITree getNewNode() {
     	return this.newNode;
+    }
+
+    public boolean getflag() {
+        return this.temp;
     }
 
     @Override
