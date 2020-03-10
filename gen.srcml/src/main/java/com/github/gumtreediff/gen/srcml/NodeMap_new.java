@@ -187,6 +187,8 @@ public class NodeMap_new {
             map.put(168	,	"position");
             map.put(169	,	"clause");
             map.put(170	,	"empty_stmt");
+            map.put(171	,	"cpp:if");
+            map.put(172	,	"cpp:else");
 
 
 
@@ -212,7 +214,7 @@ public class NodeMap_new {
     static {
         StatementMap = new HashMap<Integer, String>();
         StatementMap.put(34	,	"if");
-        StatementMap.put(8	,	"condition");
+//        StatementMap.put(8	,	"condition");
         StatementMap.put(36	,	"then");
         StatementMap.put(37	,	"else");
         StatementMap.put(38	,	"elseif");
@@ -224,19 +226,19 @@ public class NodeMap_new {
         StatementMap.put(53	,	"return");
         StatementMap.put(42	,	"switch");
         StatementMap.put(43	,	"case");
-        StatementMap.put(44	,	"default");
+//        StatementMap.put(44	,	"default");
         StatementMap.put(9	,	"block");
         StatementMap.put(27	,	"goto");
         StatementMap.put(28	,	"label");
 
         StatementMap.put(21	,	"decl_stmt");
-        StatementMap.put(22	,	"decl");
+//        StatementMap.put(22	,	"decl");
         StatementMap.put(50	,	"function_decl");
         StatementMap.put(49	,	"function");
-        StatementMap.put(5	,	"modifier");
+//        StatementMap.put(5	,	"modifier");
         StatementMap.put(29	,	"typedef");
-        StatementMap.put(23	,	"init");
-        StatementMap.put(24	,	"range");
+//        StatementMap.put(23	,	"init");
+//        StatementMap.put(24	,	"range");
         StatementMap.put(64	,	"struct_decl");
         StatementMap.put(63	,	"struct");
         StatementMap.put(65	,	"union");
@@ -244,6 +246,7 @@ public class NodeMap_new {
         StatementMap.put(32	,	"enum");
         StatementMap.put(33	,	"enum_decl");
         StatementMap.put(19	,	"expr_stmt");
+        StatementMap.put(82	,	"extern");
     }
 //    static {
 //        StatementMap = new HashMap<Integer, String>();
