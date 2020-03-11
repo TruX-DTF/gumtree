@@ -123,6 +123,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 //                        }
                         ITree t = context.createTree(type, "", typeLabel);
 
+
                         if (trees.isEmpty()) {
                             context.setRoot(t);
                             t.setPos(0);
@@ -328,6 +329,14 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 //                t.setLength(t.getLabel().length());
             }
             t.setLength(t.getLabel().length());
+//            if(t.getType()== 19 && t.getLabel().equals("") && t.isLeaf()){
+//                int childPosition = t.getParent().getChildPosition(t);
+//                List<ITree> children = t.getParent().getChildren();
+//                children.remove(childPosition);
+//                t.getParent().setChildren(children);
+//
+//
+//            }
         }
     }
 
@@ -413,8 +422,11 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                 new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8))) {
             StringBuilder buf = new StringBuilder();
             String line = null;
-            while ((line = br.readLine()) != null)
+            while ((line = br.readLine()) != null){
+                String s = "<expr_stmt><pos:position pos:line=\"[0-9]+\" pos:column=\"[0-9]+\"/></expr_stmt>";
+                line = line.replaceAll(s,"");
                 buf.append(line + System.lineSeparator());
+            }
             p.waitFor();
             if (p.exitValue() != 0)
                 throw new RuntimeException(buf.toString());
