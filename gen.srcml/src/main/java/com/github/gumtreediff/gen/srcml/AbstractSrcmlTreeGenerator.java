@@ -114,8 +114,10 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                         }
 //                        ITree t = context.createTree(type, "");
                         if(typeLabel.equals("literal")){
+                            if(s.getAttributeByName(COMMENT_BLOCK) != null){
                             String value = s.getAttributeByName(COMMENT_BLOCK).getValue();
                             typeLabel = typeLabel + ":"+value;
+                            }
                         }
                         List<Integer> keysByValue = getKeysByValue(NodeMap_new.map, typeLabel);
                         if(keysByValue == null || keysByValue.size() ==0){
