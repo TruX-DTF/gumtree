@@ -189,6 +189,12 @@ public class NodeMap_new {
             map.put(170	,	"empty_stmt");
             map.put(171	,	"cpp:if");
             map.put(172	,	"cpp:else");
+            map.put(173	,	"literal:string");
+            map.put(174	,	"literal:number");
+            map.put(175	,	"literal:char");
+            map.put(176	,	"literal:boolean");
+            map.put(177	,	"literal:complex");
+            map.put(178	,	"literal:null");
 
 
 
@@ -225,7 +231,7 @@ public class NodeMap_new {
 //        StatementMap.put(26	,	"continue");
         StatementMap.put(53	,	"return");
         StatementMap.put(42	,	"switch");
-        StatementMap.put(43	,	"case");
+//        StatementMap.put(43	,	"case");
 //        StatementMap.put(44	,	"default");
         StatementMap.put(9	,	"block");
         StatementMap.put(27	,	"goto");
@@ -247,6 +253,7 @@ public class NodeMap_new {
         StatementMap.put(33	,	"enum_decl");
         StatementMap.put(19	,	"expr_stmt");
         StatementMap.put(82	,	"extern");
+//        StatementMap.put(31	,	"macro");
     }
 //    static {
 //        StatementMap = new HashMap<Integer, String>();

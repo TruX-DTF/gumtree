@@ -58,7 +58,8 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
     private HashSet<String> removeType = new HashSet<>(Arrays.asList("empty_stmt","comment"));
     private HashSet<String> labeled = new HashSet<String>(
 //            Arrays.asList("comment"));
-            Arrays.asList("specifier", "name",  "argument","expr","type","value","index","operator","literal","incr","modifier","break","continue","default"));
+            Arrays.asList("specifier", "name",  "argument","expr","type","value","index","operator","literal","incr","modifier","break","continue","default","literal:string","literal:number",	"literal:char",	"literal:boolean",	"literal:complex",	"literal:null"));
+
 
     private StringBuilder currentLabel;
 
@@ -112,6 +113,10 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                             typeLabel = prefix + ":"+typeLabel;
                         }
 //                        ITree t = context.createTree(type, "");
+                        if(typeLabel.equals("literal")){
+                            String value = s.getAttributeByName(COMMENT_BLOCK).getValue();
+                            typeLabel = typeLabel + ":"+value;
+                        }
                         List<Integer> keysByValue = getKeysByValue(NodeMap_new.map, typeLabel);
                         if(keysByValue == null || keysByValue.size() ==0){
                             System.out.println(typeLabel);
@@ -121,6 +126,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 //                            r.nextEvent();
 //                            continue;
 //                        }
+
                         ITree t = context.createTree(type, "", typeLabel);
 
 
@@ -215,7 +221,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
                     }
                 }else if (t.getLabel().equals("")){
-                    if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 || NodeMap_new.StatementMap.containsKey(t.getType())){
+                    if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 || t.getType() == 43 || NodeMap_new.StatementMap.containsKey(t.getType())){
                         String childrenLabels = t.getChildrenLabels();
                         if(t.getType() == 53){
                             t.setLabel("return "+childrenLabels);
