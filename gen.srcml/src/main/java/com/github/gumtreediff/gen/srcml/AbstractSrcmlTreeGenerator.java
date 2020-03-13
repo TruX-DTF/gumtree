@@ -46,7 +46,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
     //    private static final String SRCML_CMD = System.getProperty("gumtree.srcml.path", "srcml");
     private String SRCML_CMD = "/Users/anil.koyuncu/Downloads22/srcML/src2srcml";
-//    private static String namespace = "http://www.sdml.info/srcML/position";
+    //    private static String namespace = "http://www.sdml.info/srcML/position";
     private static String namespace = "http://www.srcML.org/srcML/position";
     private static final QName LINE = new  QName(namespace, "line", "pos");
 
@@ -58,7 +58,7 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
     private HashSet<String> removeType = new HashSet<>(Arrays.asList("empty_stmt","comment"));
     private HashSet<String> labeled = new HashSet<String>(
 //            Arrays.asList("comment"));
-            Arrays.asList("specifier", "name",  "argument","expr","type","value","index","operator","literal","incr","modifier","break","continue","default","literal:string","literal:number",	"literal:char",	"literal:boolean",	"literal:complex",	"literal:null"));
+            Arrays.asList("specifier", "name",  "argument","expr","type","value","index","operator","literal","incr","modifier","break","continue","default","literal:string","literal:number","literal:char","literal:boolean","literal:complex","literal:null"));
 
 
     private StringBuilder currentLabel;
@@ -112,11 +112,11 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                         if (prefix.equals("cpp") && (typeLabel.equals("if") || typeLabel.equals("else"))){
                             typeLabel = prefix + ":"+typeLabel;
                         }
-//                        ITree t = context.createTree(type, "");
+
                         if(typeLabel.equals("literal")){
                             if(s.getAttributeByName(COMMENT_BLOCK) != null){
-                            String value = s.getAttributeByName(COMMENT_BLOCK).getValue();
-                            typeLabel = typeLabel + ":"+value;
+                                String value = s.getAttributeByName(COMMENT_BLOCK).getValue();
+                                typeLabel = typeLabel + ":"+value;
                             }
                         }
                         List<Integer> keysByValue = getKeysByValue(NodeMap_new.map, typeLabel);
@@ -124,10 +124,6 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                             System.out.println(typeLabel);
                         }
                         int type = keysByValue.get(0);
-//                        if (type == 2){
-//                            r.nextEvent();
-//                            continue;
-//                        }
 
                         ITree t = context.createTree(type, "", typeLabel);
 
@@ -143,7 +139,6 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                     }
                 } else if (ev.isEndElement()) {
                     EndElement end = ev.asEndElement();
-//                    if (type(end.getName().getLocalPart()) != position) {
                     if(removeType.contains(end.getName().getLocalPart() ) ){
                         if(end.getName().getLocalPart().equals("comment") && isBlock){
                             isBlock = false;
@@ -151,10 +146,6 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                         continue;
                     }
                     if (!end.getName().getLocalPart().equals("position") && !isBlock){
-//                        if(trees.peekFirst().getType() == 2){
-//                            r.nextEvent();
-//                            continue;
-//                        }
                         if (isLabeled(trees)){
                             trees.peekFirst().setLabel(currentLabel.toString());
                         }
@@ -167,8 +158,6 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                         chars.getData();
                     }
                     if (!chars.isWhiteSpace() && isLabeled(trees))
-//                    if (!chars.isWhiteSpace() )
-//                        currentLabel.append(chars.getData().trim().replace("\\n","").replace("\n","").trim());
                         currentLabel.append(chars.getData().replace("\n",""));
                 }
             }
@@ -186,12 +175,9 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
     private void fixPos(TreeContext ctx) {
         for (ITree t : ctx.getRoot().postOrder()) {
-//            if(t.getType() == 63){
-//                t.getLabel();
-//            }
             if (!t.isLeaf()) {
                 //put the keywords as labels
-                if(t.getType() == 34 || t.getType() ==37 || t.getType() ==38 || t.getType()==39 || t.getType() == 41 || t.getType()==45){
+                if(t.getType() == 34 || t.getType() ==37 || t.getType() ==38 || t.getType()==39 || t.getType() == 41 || t.getType()==45 || t.getType() ==55 || t.getType()==14){
                     t.setLabel(NodeMap_new.map.get(t.getType())+" "  +t.getLabel());
                 }
                 if (t.getPos() == ITree.NO_VALUE || t.getLength() == ITree.NO_VALUE || t.getType()==10) {
@@ -201,26 +187,24 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
                     if (t.getChildren().size() == 1) {
                         t.setLabel(t.getLabel() + firstChild.getLabel());
-//                        t.setLength(t.getLabel().length());
                     }
                     else {
 
                         ITree lastChild = t.getChild(t.getChildren().size() - 1);
                         if(t.getPos() == -1){
 
-                                    if(t.getChild(0).getChildren().size() == 0) {
-                                        t.getChild(0).setPos(t.getChild(1).getPos());
-                                        t.setPos(lastChild.getPos());
-                                    }
+                            if(t.getChild(0).getChildren().size() == 0) {
+                                t.getChild(0).setPos(t.getChild(1).getPos());
+                                t.setPos(lastChild.getPos());
+                            }
 
+                        }else{
+                            t.getPos();
                         }
 
                         if(t.getType() != 1){
                             t.setLabel(t.getLabel() + t.getChildrenLabels());
                         }
-
-//                        t.setLength(t.getLabel().length());
-
                     }
                 }else if (t.getLabel().equals("")){
                     if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 || t.getType() == 43 || NodeMap_new.StatementMap.containsKey(t.getType())){
@@ -228,30 +212,11 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                         if(t.getType() == 53){
                             t.setLabel("return "+childrenLabels);
                         }else{
-                        if (!childrenLabels.equals("")){
-                            t.setLabel(childrenLabels);
+                            if (!childrenLabels.equals("")){
+                                t.setLabel(childrenLabels);
+                            }
                         }
-                        }
-//                        else{
-//                            if(t.getChildren().size() == 1 && t.getChild(0).getType() == 53){
-//                                t.getChild(0).setLabel("return");
-//                                t.getChild(0).setLength(t.getChild(0).getLabel().length());
-//                                t.setLabel(t.getChildrenLabels());
-//                            }else{
-//                                t.setLabel("");
-//                            }
-//                        }
-                        }
-
-//                    System.out.println(t.getType());
-//                    if(t.getType() == 60 || t.getType() == 56 || t.getType() == 47 || t.getType() == 8 ||  t.getType() == 53 || t.getType() == 27|| NodeMap_new.StatementMap.containsKey(t.getType())){
-////                        if(!NodeMap_new.DeclarationMap.containsKey(t.getType()) )//&& !(NodeMap_new.StatementMap.containsKey(t.getParent().getType())))
-//                            if (!((t.getType() == 9) && t.getChildren().size() == 1 && NodeMap_new.StatementMap.containsKey(t.getChild(0).getType())))
-//                                t.setLabel(t.getLabel() + t.getChildrenLabels());
-//                            else
-//                                t.setLabel("");
-//
-//                    }
+                    }
                 }
 
             }
@@ -259,6 +224,20 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
 
 
                 if (t.getPos() == ITree.NO_VALUE ) {
+
+                    if(t.getType() == 7){
+                        ITree parent = t.getParent();
+                        if(parent.getType() == 22){
+                            ITree child = parent.getParent().getChild(0);
+                            if (child.getType() == 22){
+                                ITree child1 = child.getChild(0);
+                                if(child1.getType() == 7){
+                                    t.setLabel(child1.getLabel());
+                                    t.setPos(child1.getPos());
+                                }
+                            }
+                        }
+                    }
 
                     int childPosition = t.getParent().getChildPosition(t);
                     if(childPosition != 0){
@@ -270,81 +249,63 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                             ITree child = t.getParent().getChild(childPosition + 1);
                             t.setPos(child.getPos()-1);
                         }else{
-//                            t.setPos(t.getParent().getPos());
-                            t.setPos(ITree.NO_VALUE );
+
+                            /*
+                            (34 "if" "" ((183 -1)) (
+                                (8 "condition" "i != j" ((186 6)) (
+                                    (20 "expr" "i != j" ((187 6)) (
+                                        (6 "name" "i" ((187 1)) ()
+                                        (4 "operator" "!=" ((188 2)) ()
+                                        (6 "name" "j" ((190 1)) ()))
+                                (36 "then" "" () (
+                                    (9 "block" "" () ()))
+                                    * */
+                            if (t.getPos() == ITree.NO_VALUE ){
+
+                                    ITree firstParent = t.getParent();
+                                    if(firstParent.getType() == 36){//then
+                                        ITree secondParent = firstParent.getParent();
+                                        if(secondParent.getType() == 34){//
+                                            if(secondParent.getChildren().size()>1){
+                                                int childPosition1 = secondParent.getChildPosition(firstParent);
+                                                if (childPosition1 !=0){
+                                                    ITree child = secondParent.getChild(childPosition1 - 1);
+                                                    firstParent.setPos(child.getPos()+child.getLength());
+//                                                    firstParent.setLength(0);
+                                                    firstParent.getChild(0).setPos(child.getPos()+child.getLength());
+//                                                    firstParent.getChild(0).setLength(0);
+                                                }
+                                            }
+                                        }
+                                    }else if(firstParent.getType() == 55){//sizeof
+                                        ITree secondParent = firstParent.getParent();
+                                        if(secondParent.getType() == 20){//
+                                            if(secondParent.getChildren().size()>1){
+                                                int childPosition1 = secondParent.getChildPosition(firstParent);
+                                                if (childPosition1 ==0){
+                                                    ITree child = secondParent.getChild(childPosition1 + 1);
+                                                    firstParent.setPos(child.getPos()-child.getLength());
+//                                                    firstParent.setLength(0);
+                                                    firstParent.getChild(0).setPos(child.getPos()-child.getLength());
+//                                                    firstParent.getChild(0).setLength(0);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    ITree child = t.getParent().getChild(childPosition);
+                                    if(child.getType() ==61){ //condition
+                                        t.setPos(child.getPos()-1);
+                                    }
+
+                            }
                         }
 
                     }
                 }
-                /*(47 "control" "s = list , len = res len" ((10902 28)) (
-                    (23 "init" "s = list , len = res" ((10903 20)) (
-                        (20 "expr" "s = list" ((10903 8)) (
-                            (6 "name" "s" ((10903 1)) ()
-                            (4 "operator" "=" ((10905 1)) ()
-                            (6 "name" "list" ((10907 4)) ())
-                        (4 "operator" "," ((10911 1)) ()
-                        (20 "expr" "len = res" ((10913 9)) (
-                            (6 "name" "len" ((10913 3)) ()
-                            (4 "operator" "=" ((10917 1)) ()
-                            (6 "name" "res" ((10919 3)) ()))
-                    (8 "condition" "len" ((10924 3)) (
-                        (20 "expr" "len" ((10924 3)) (
-                            (6 "name" "len" ((10924 3)) ()))
-                    (48 "incr" "" ((10928 0)) ())*/
-                /* (35 "ternary" "upperinode ovl_inode_lower inode" ((7711 32)) (
-                (8 "condition" "upperinode" ((7711 10)) (
-                    (20 "expr" "upperinode" ((7711 10)) (
-                        (6 "name" "upperinode" ((7711 10)) ()))
-                (36 "then" "" () ()
-                (37 "else" "ovl_inode_lower inode" ((7725 21)) (*/
-//                if (t.getType() == 48 || t.getType() ==36){ //incr
-//                    if (t.getPos() == ITree.NO_VALUE ){
-//                        int childPosition = t.getParent().getChildPosition(t);
-//                        if(childPosition != 0){
-//                            ITree child = t.getParent().getChild(childPosition - 1);
-//                            if(child.getType() ==8){ //condition
-//                                t.setPos(child.getPos()+child.getLength()+1);
-//                            }
-//                        }
-//                    }
-//                }
-//                /*                (60 "argument_list" "" ((4887 15)) (
-//                    (61 "argument" "" () ()
-//                    (61 "argument" "carp_softc" ((4890 11)) ()))*/
-//                if(t.getType() == 61){
-//                    if (t.getPos() == ITree.NO_VALUE ) {
-//                        int childPosition = t.getParent().getChildPosition(t);
-//                        if(childPosition != 0){
-//                            ITree child = t.getParent().getChild(childPosition - 1);
-//                            if(child.getType() ==61){ //condition
-//                                t.setPos(child.getPos()+child.getLength()+1);
-//                            }
-//                        }else{
-//                            ITree child = t.getParent().getChild(childPosition + 1);
-//                            if(child.getType() ==61){ //condition
-//                                t.setPos(child.getPos()-1);
-//                            }
-//                        }
-//                    }
-//                }
 
-//                if (t.getType() == 146){
-//
-//                }
-
-
-
-//                t.setLength(t.getLabel().length());
             }
             t.setLength(t.getLabel().length());
-//            if(t.getType()== 19 && t.getLabel().equals("") && t.isLeaf()){
-//                int childPosition = t.getParent().getChildPosition(t);
-//                List<ITree> children = t.getParent().getChildren();
-//                children.remove(childPosition);
-//                t.getParent().setChildren(children);
-//
-//
-//            }
+
         }
     }
 
@@ -431,8 +392,13 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
             StringBuilder buf = new StringBuilder();
             String line = null;
             while ((line = br.readLine()) != null){
-                String s = "<expr_stmt><pos:position pos:line=\"[0-9]+\" pos:column=\"[0-9]+\"/></expr_stmt>";
-                line = line.replaceAll(s,"");
+
+////                String e = "<else pos:line=\"[0-9]+\" pos:column=\"[0-9]+\">else\\W*<block type=\"pseudo\"><empty_stmt pos:line=\"[0-9]+\" pos:column=\"[0-9]+\">;<pos:position pos:line=\"[0-9]+\" pos:column=\"[0-9]+\"/></empty_stmt></block></else>";
+//                String e = "<else pos:line=\\\\\\\"[0-9]+\\\\\\\" pos:column=\\\\\\\"[0-9]+\\\\\\\">else\\\\W*<block type=\\\\\\\"pseudo\\\\\\\"><empty_stmt pos:line=\\\\\\\"[0-9]+\\\\\\\" pos:column=\\\\\\\"[0-9]+\\\\\\\">;<pos:position pos:line=\\\\\\\"[0-9]+\\\\\\\" pos:column=\\\\\\\"[0-9]+\\\\\\\"/></empty_stmt></block></else>";
+//                //<else pos:line="37" pos:column="4">else <block type="pseudo"><empty_stmt pos:line="37" pos:column="9">;<pos:position pos:line="37" pos:column="10"/></empty_stmt></block></else></if>
+//                line = line.replaceAll(e,"");
+//                String s = "<expr_stmt><pos:position pos:line=\"[0-9]+\" pos:column=\"[0-9]+\"/></expr_stmt>";
+//                line = line.replaceAll(s,"");
                 buf.append(line + System.lineSeparator());
             }
             p.waitFor();
@@ -440,7 +406,12 @@ public abstract class AbstractSrcmlTreeGenerator extends TreeGenerator {
                 throw new RuntimeException(buf.toString());
             r.close();
             p.destroy();
-            return buf.toString();
+            String s = buf.toString();
+            String p1 = "<expr_stmt><pos:position pos:line=\"[0-9]+\" pos:column=\"[0-9]+\"/></expr_stmt>";
+            String p2 = "<else pos:line=\"[0-9]+\" pos:column=\"[0-9]+\">else\\W*<block type=\"pseudo\"><empty_stmt pos:line=\"[0-9]+\" pos:column=\"[0-9]+\">;<pos:position pos:line=\"[0-9]+\" pos:column=\"[0-9]+\"/></empty_stmt></block></else>";
+            s = s.replaceAll(p2,"");
+            s = s.replaceAll(p1,"");
+            return s;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
