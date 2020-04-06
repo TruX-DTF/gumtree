@@ -66,7 +66,7 @@ public class CTreeGenerator extends TreeGenerator {
         }
         w.close();
         br.close();
-        ProcessBuilder b = new ProcessBuilder(COCCI_CMD, f.getAbsolutePath());
+        ProcessBuilder b = new ProcessBuilder("/Users/haoyetian/Documents/Lu_code/cgum/cgum", f.getAbsolutePath());
         b.directory(f.getParentFile());
         try {
             Process p = b.start();
@@ -83,7 +83,8 @@ public class CTreeGenerator extends TreeGenerator {
                 );
             r.close();
             String xml = buf.toString();
-            return TreeIoUtils.fromXml(CTreeGenerator.defaultUnserializers).generateFromString(xml);
+            TreeContext treeContext = TreeIoUtils.fromXml(CTreeGenerator.defaultUnserializers).generateFromString(xml);
+            return treeContext;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {

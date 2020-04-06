@@ -93,7 +93,7 @@ public class GumTreeGenerator {
 
 
 
-	public ITree generateITreeForJavaFileForCode(File javaFile) {
+	public ITree generateITreeForCFileForCode(File javaFile) {
 		ITree gumTree = null;
 		try {
 			TreeContext tc = null;
